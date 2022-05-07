@@ -15,4 +15,10 @@ public interface OrderService {
     Order findById(long orderId, long userId);
 
     boolean isBought(Long id, Long productId, String os);
+
+    Page<Order> listAll(String pageStr, String sortField, String sortDir);
+
+    Order findById(Long id);
+
+    void save(Order foundOrder);
 }

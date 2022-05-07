@@ -16,6 +16,7 @@ import vn.haui.cntt.myproject.service.ProductService;
 import vn.haui.cntt.myproject.util.StandardizeStringUtil;
 import vn.haui.cntt.myproject.util.VNCharacterUtil;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -45,9 +46,9 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    public void save(Product product){
-        productRepository.save(product);
-    }
+//    public void save(Product product){
+//        productRepository.save(product);
+//    }
 
     public Page<Product> getProductByProductSearch(String nameSearch, String pageNumber, String sortField, String sortDir, String categoryId){
         if (pageNumber==null || !pageNumber.chars().allMatch(Character::isDigit) || pageNumber.equals("")) pageNumber="1";
@@ -82,5 +83,21 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> findByCategoryId(Long categoryId) {
         return productRepository.findByCategoryId(categoryId);
+    }
+
+    public List<Product> listAll(){
+        return productRepository.findAllByDeletedFlag(0);
+    }
+
+    public Product save(Product product){
+        Product savedProduct = productRepository.save(product);
+        return savedProduct;
+    }
+
+    public void deleteProduct(Product foundProduct, String username){
+        foundProduct.setDeletedFlag(true);
+        foundProduct.setUpdatedBy(username);
+        foundProduct.setUpdatedDate(LocalDateTime.now());
+        productRepository.save(foundProduct);
     }
 }

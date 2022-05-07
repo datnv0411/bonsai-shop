@@ -1,0 +1,14 @@
+
+V
+java:S4684T"@Replace this persistent entity with a simple POJO or DTO object.(å‹¾ú
+X
+java:S1126b"BReplace this if-then-else statement by a single method invocation.(†ÃÛè
+h	java:S100x"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¾ÐÊ®ýÿÿÿÿ
+W
+java:S4684Ž"@Replace this persistent entity with a simple POJO or DTO object.(ãˆ•ÿ
+h
+java:S1192E"KDefine a constant instead of duplicating this literal "user/login" 6 times.(°ôÈÂ8ÆãÆï‰0
+c
+java:S1192o"HDefine a constant instead of duplicating this literal "message" 4 times.(ß˜½ùüÿÿÿÿ
+•
+java:S1192q"zDefine a constant instead of duplicating this literal "redirect:/address?page=1&sortField=is_default&sortDir=des" 4 times.(ø¾¹Èþÿÿÿÿ

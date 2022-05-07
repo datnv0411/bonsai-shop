@@ -10,4 +10,8 @@ public interface ProductCommentService {
     void save(ProductComment productComment);
 
     ProductComment findById(Long id);
+
+    List<ProductComment> findByProductId(Long id);
+
+    void deleteProductComment(ProductComment pc, String username);
 }

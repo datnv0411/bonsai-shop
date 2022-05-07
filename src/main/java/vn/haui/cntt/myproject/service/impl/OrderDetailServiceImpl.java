@@ -55,4 +55,9 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     public List<OrderDetail> findByOrderId(Long orderId) {
         return orderDetailRepository.findByOrderIdAndDeletedFlag(orderId, false);
     }
+
+    @Override
+    public void save(OrderDetail od) {
+        orderDetailRepository.save(od);
+    }
 }

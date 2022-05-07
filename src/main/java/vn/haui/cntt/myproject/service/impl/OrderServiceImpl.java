@@ -96,4 +96,30 @@ public class OrderServiceImpl implements OrderService {
         }
         return false;
     }
+
+    @Override
+    public Page<Order> listAll(String pageNumber, String sortField, String sortDir) {
+        if (pageNumber==null || !pageNumber.chars().allMatch(Character::isDigit) || pageNumber.equals("")) pageNumber="1";
+        if (sortField==null || sortField.equals("")) sortField="id";
+        if (sortDir == null || sortDir.equals("")) sortDir="des";
+
+        Sort sort = Sort.by(sortField);
+        sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
+
+        int pageNumberInt = Integer.parseInt(pageNumber);
+
+        Pageable pageable = PageRequest.of(pageNumberInt - 1,9, sort);
+
+        return orderRepository.findAllByDeletedFlag(0, pageable);
+    }
+
+    @Override
+    public Order findById(Long id) {
+        return orderRepository.findByIdAndDeletedFlag(id, false);
+    }
+
+    @Override
+    public void save(Order foundOrder) {
+        orderRepository.save(foundOrder);
+    }
 }

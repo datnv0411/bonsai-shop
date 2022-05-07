@@ -1,5 +1,7 @@
 package vn.haui.cntt.myproject.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,4 +17,10 @@ public interface VoucherRepository extends JpaRepository<Voucher, Long> {
     Voucher applyVoucher(@Param("codeVoucher") String codeVoucher, @Param("subTotal") long subTotal);
 
     Voucher findByCodeVoucherAndDeletedFlag(String voucherCode, boolean b);
+
+    @Query(value = "select * from voucher where deleted_flag = :deletedFlag", nativeQuery = true)
+    Page<Voucher> findAllByDeletedFlag(@Param(value = "deletedFlag") Integer i, Pageable pageable);
+
+    @Query(value = "select * from voucher where deleted_flag = :deletedFlag and id = :voucherId", nativeQuery = true)
+    Voucher findByIdAndDeletedFlag(@Param("voucherId") Long id, @Param(value = "deletedFlag") Integer i);
 }

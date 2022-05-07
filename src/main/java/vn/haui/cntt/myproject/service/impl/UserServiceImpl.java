@@ -1,6 +1,10 @@
 package vn.haui.cntt.myproject.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -69,13 +73,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Boolean checkRoleUser() {
-        return mUserRepository.findByUsername(getUserName()).getRole().stream().anyMatch(o ->
+        return mUserRepository.findByUsernameAndDeletedFlag(getUserName(), 0).getRole().stream().anyMatch(o ->
                 o.getName().equals("ROLE_USER"));
     }
 
     @Override
     public User getCurrentUser() {
-        return mUserRepository.findByUsername(getUserName());
+        return mUserRepository.findByUsernameAndDeletedFlag(getUserName(), 0);
     }
 
     @Override
@@ -101,7 +105,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateAccount(User user) {
+    public User updateAccount(User user, String username) {
         User newUser = mUserRepository.findByIdAndDeletedFlag(user.getId(), false);
         newUser.setUsername(user.getUsername());
         newUser.setFirstName(user.getFirstName());
@@ -111,11 +115,13 @@ public class UserServiceImpl implements UserService {
         newUser.setAvatar(user.getAvatar());
         newUser.setPassword(user.getPassword());
         encodePassword(newUser);
+        newUser.setUpdatedBy(username);
+        newUser.setUpdatedDate(LocalDateTime.now());
         return mUserRepository.save(newUser);
     }
 
     @Override
-    public User updateAccountWithoutPassword(User user) {
+    public User updateAccountWithoutPassword(User user, String username) {
         User newUser = mUserRepository.findByIdAndDeletedFlag(user.getId(), false);
         newUser.setUsername(user.getUsername());
         newUser.setFirstName(user.getFirstName());
@@ -123,12 +129,57 @@ public class UserServiceImpl implements UserService {
         newUser.setCellphone(user.getCellphone());
         newUser.setGender(user.getGender());
         newUser.setAvatar(user.getAvatar());
+        newUser.setUpdatedBy(username);
+        newUser.setUpdatedDate(LocalDateTime.now());
         return mUserRepository.save(newUser);
     }
 
     @Override
     public User getByEmail(String email) {
         return mUserRepository.findByEmail(email);
+    }
+
+    @Override
+    public Page<User> listAll(String pageStr, String sortField, String sortDir) {
+        if (pageStr==null || !pageStr.chars().allMatch(Character::isDigit) || pageStr.equals("")) pageStr="1";
+        if (sortField==null || sortField.equals("")) sortField="id";
+        if (sortDir == null || sortDir.equals("")) sortDir="asc";
+
+        Sort sort = Sort.by(sortField);
+        sort = sortDir.equals("des") ? sort.descending() : sort.ascending();
+
+        int pageNumberInt = Integer.parseInt(pageStr);
+
+        Pageable pageable = PageRequest.of(pageNumberInt - 1,5, sort);
+
+        return mUserRepository.findAllUser(0, pageable);
+    }
+
+    @Override
+    public User findById(Long id) {
+        return mUserRepository.findByUserId(id, 0);
+    }
+
+    @Override
+    public void deleteUser(User foundUser , String username) {
+        foundUser.setDeletedFlag(true);
+        foundUser.setUpdatedDate(LocalDateTime.now());
+        foundUser.setUpdatedBy(username);
+        mUserRepository.save(foundUser);
+    }
+
+    @Override
+    public void save(User user, Role foundRole, String username) {
+        user.addRole(foundRole);
+        user.setDeletedFlag(false);
+        user.setCreatedDate(LocalDateTime.now());
+        user.setCreatedBy(username);
+        mUserRepository.save(user);
+    }
+
+    @Override
+    public void saveUser(User user) {
+        mUserRepository.save(user);
     }
 
     @Override

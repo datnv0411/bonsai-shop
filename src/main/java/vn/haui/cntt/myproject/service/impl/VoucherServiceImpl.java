@@ -2,6 +2,10 @@ package vn.haui.cntt.myproject.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.haui.cntt.myproject.entity.Voucher;
@@ -44,5 +48,36 @@ public class VoucherServiceImpl implements VoucherService {
     @Override
     public Voucher findByVoucherCode(String voucherCode) {
         return voucherRepository.findByCodeVoucherAndDeletedFlag(voucherCode, false);
+    }
+
+    @Override
+    public Page<Voucher> listAll(String pageNumber, String sortField, String sortDir) {
+        if (pageNumber==null || !pageNumber.chars().allMatch(Character::isDigit) || pageNumber.equals("")) pageNumber="1";
+        if (sortField==null || sortField.equals("")) sortField="id";
+        if (sortDir == null || sortDir.equals("")) sortDir="des";
+        Sort sort = Sort.by(sortField);
+        sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
+
+        int pageNumberInt = Integer.parseInt(pageNumber);
+
+        Pageable pageable = PageRequest.of(pageNumberInt - 1,9, sort);
+
+        return voucherRepository.findAllByDeletedFlag(0, pageable);
+    }
+
+    @Override
+    public void save(Voucher voucher) {
+        voucherRepository.save(voucher);
+    }
+
+    @Override
+    public Voucher findByIdAndDeletedFlag(Long id) {
+        return voucherRepository.findByIdAndDeletedFlag(id, 0);
+    }
+
+    @Override
+    public void delete(Voucher voucher) {
+        voucher.setDeletedFlag(true);
+        voucherRepository.save(voucher);
     }
 }

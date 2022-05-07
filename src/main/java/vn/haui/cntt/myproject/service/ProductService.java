@@ -8,7 +8,7 @@ import java.util.List;
 public interface ProductService {
     Page<Product> listAll(String pageNumber, String sortField, String sortDir, String categoryId);
 
-    void save(Product product);
+    //void save(Product product);
 
     Page<Product> getProductByProductSearch(String keyWord, String pageNumber, String sortField, String sortDir, String categoryId);
 
@@ -17,4 +17,11 @@ public interface ProductService {
     Product findById(Long productId);
 
     List<Product> findByCategoryId(Long categoryId);
+
+    List<Product> listAll();
+
+    Product save(Product product);
+
+    void deleteProduct(Product product, String username);
+
 }

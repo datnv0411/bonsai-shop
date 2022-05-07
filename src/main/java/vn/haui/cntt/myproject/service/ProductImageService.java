@@ -8,4 +8,8 @@ public interface ProductImageService {
     List<ProductImage> listProductImage();
 
     List<ProductImage> findById(Long productId);
+
+    void deleteProductImage(ProductImage pi, String username);
+
+    void save(ProductImage pi);
 }

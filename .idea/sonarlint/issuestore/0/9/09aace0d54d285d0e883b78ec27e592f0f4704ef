@@ -1,0 +1,17 @@
+
+V
+java:S4684*"@Replace this persistent entity with a simple POJO or DTO object.(¨ĞÖ¯
+‡
+java:S1128"eRemove this unused import 'org.springframework.security.authentication.AnonymousAuthenticationToken'.(¬Ÿ¡¿ûÿÿÿÿ8†úï‰0
+j
+java:S1128"MRemove this unused import 'org.springframework.security.core.Authentication'.(ñıÓ“8†úï‰0
+w
+java:S1128"aRemove this unused import 'org.springframework.security.core.annotation.AuthenticationPrincipal'.(Øù¢
+y
+java:S1128"\Remove this unused import 'org.springframework.security.core.context.SecurityContextHolder'.(ŒÄæë8†úï‰0
+U
+java:S1128"?Remove this unused import 'vn.haui.cntt.myproject.entity.Role'.(’º¨ı
+k
+java:S1128"URemove this unused import 'vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl'.(À·¡‹
+F
+java:S1128"+Remove this unused import 'java.util.List'.(Õë±Äøÿÿÿÿ

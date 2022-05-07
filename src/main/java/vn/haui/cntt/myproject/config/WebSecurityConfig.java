@@ -77,12 +77,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .usernameParameter("email")
                     .passwordParameter("psw")
                     .defaultSuccessUrl("/home")
+                .successHandler(new AuthenticationSuccessHandler() {
+                    @Override
+                    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+                        String name = authentication.getName();
+                        System.out.println(name);
+                        response.sendRedirect("/doLogin");
+                    }
+                })
                     .failureUrl("/404")
                 .and()
                 .logout()
                     .permitAll()
                     .logoutUrl("/logout")
-                    .logoutSuccessUrl("/")
+                    .logoutSuccessUrl("/login")
                 .and()
                 .exceptionHandling().accessDeniedPage("/404");
     }

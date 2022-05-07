@@ -1,5 +1,7 @@
 package vn.haui.cntt.myproject.service;
 
+import org.springframework.data.domain.Page;
+import vn.haui.cntt.myproject.entity.Role;
 import vn.haui.cntt.myproject.entity.User;
 
 public interface UserService {
@@ -24,9 +26,19 @@ public interface UserService {
 
     void setAvatarDefault(User user);
 
-    User updateAccount(User user);
+    User updateAccount(User user, String username);
 
-    User updateAccountWithoutPassword(User user);
+    User updateAccountWithoutPassword(User user, String username);
 
     User getByEmail(String email);
+
+    Page<User> listAll(String pageStr, String sortField, String sortDir);
+
+    User findById(Long id);
+
+    void deleteUser(User foundUser, String username);
+
+    void save(User user, Role foundRole, String username);
+
+    void saveUser(User user);
 }

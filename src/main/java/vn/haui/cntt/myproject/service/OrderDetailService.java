@@ -11,4 +11,6 @@ public interface OrderDetailService {
     List<OrderDetail> addFromCart(List<Cart> carts, String username);
 
     List<OrderDetail> findByOrderId(Long orderId);
+
+    void save(OrderDetail od);
 }

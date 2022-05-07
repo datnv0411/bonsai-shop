@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+
+<!-- =========================================================
+* Sneat - Bootstrap 5 HTML Admin Template - Pro | v1.0.0
+==============================================================
+
+* Product Page: https://themeselection.com/products/sneat-bootstrap-html-admin-template/
+* Created by: ThemeSelection
+* License: You must have a valid license purchased in order to legally use the theme for your project.
+* Copyright ThemeSelection (https://themeselection.com)
+
+=========================================================
+ -->
+<!-- beautify ignore:start -->
+<html
+  lang="en"
+  class="light-style customizer-hide"
+  dir="ltr"
+  data-theme="theme-default"
+  data-assets-path="../assets/"
+  data-template="vertical-menu-template-free"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+>
+<div th:replace="a-fragment :: head" th:remove="tag"></div>
+
+  <body>
+    <!-- Content -->
+
+    <div class="container-xxl">
+      <div class="authentication-wrapper authentication-basic container-p-y">
+        <div class="authentication-inner">
+          <!-- Register Card -->
+          <div class="card">
+            <div class="card-body">
+              <!-- Logo -->
+              <div class="app-brand justify-content-center">
+                <a href="index.html" class="app-brand-link gap-2">
+                  <div th:replace="a-fragment :: spanHead" th:remove="tag"></div>
+                  <span class="app-brand-text demo text-body fw-bolder">BonsaiShop Admin</span>
+                </a>
+              </div>
+              <!-- /Logo -->
+              <h4 class="mb-2">Đăng ký ngay 🚀</h4>
+              <p class="mb-4">Cùng nhau chia sẻ thời gian quản lý!</p>
+
+              <form id="formAuthentication" class="mb-3" th:action="@{/process-register}" method="POST"
+                    th:object="${user}">
+                <div class="mb-3">
+                  <label for="username" class="form-label">Tên người dùng</label>
+                  <input class="form-control" id="username" type="text" placeholder="Tên người dùng" th:field="*{username}"/>
+                </div>
+                <div class="mb-3">
+                  <label for="email" class="form-label">Email</label>
+                  <input th:field="*{email}" type="email" class="form-control" id="email" name="email" placeholder="Email" />
+                </div>
+                <div class="mb-3 form-password-toggle">
+                  <label class="form-label" for="password">Mật khẩu</label>
+                  <div class="input-group input-group-merge">
+                    <input
+                      type="password"
+                      id="password"
+                      class="form-control"
+                      name="password"
+                      th:field="*{password}" minlength="6"
+                      placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                      aria-describedby="password"
+                    />
+                    <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label for="cellphone" class="form-label">Số điện thoại</label>
+                  <input class="form-control" id="cellphone" type="tel" placeholder="Số điện thoại" th:field="*{cellphone}"/>
+                </div>
+                <div class="mb-3">
+                  <label for="firstName" class="form-label">Họ</label>
+                  <input class="form-control" id="firstName" type="text" placeholder="Họ" th:field="*{firstName}"/>
+                </div>
+                <div class="mb-3">
+                  <label for="lastName" class="form-label">Tên</label>
+                  <input class="form-control" id="lastName" type="text" placeholder="Tên" th:field="*{lastName}"/>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Giới tính</label>
+                  <input type="radio" placeholder="Giới tính" value="Nam" th:field="*{gender}" checked>Nam</input>
+                  <input type="radio" placeholder="Giới tính" value="Nữ" th:field="*{gender}">Nữ</input>
+                </div>
+                <button type="submit" class="btn btn-primary d-grid w-100">Đăng ký</button>
+              </form>
+
+              <p class="text-center">
+                <span>Bạn đã có tài khoản?</span>
+                <a href="login">
+                  <span>Đăng nhập ngay</span>
+                </a>
+              </p>
+            </div>
+          </div>
+          <!-- Register Card -->
+        </div>
+      </div>
+    </div>
+
+    <!-- / Content -->
+
+    <div th:replace="a-fragment :: coreScript" th:remove="tag"></div>
+  </body>
+</html>

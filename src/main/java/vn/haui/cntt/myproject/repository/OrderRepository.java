@@ -21,4 +21,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query(value = "select o.id, o.created_by, o.created_date, o.deleted_flag, o.updated_by, o.updated_date, o.order_status, o.user_id, o.order_code, o.address_id, o.voucher_id from ordered o inner join order_detail od on o.id = od.order_id " +
             "where o.user_id = :userId and od.product_id = :productId and o.order_status LIKE :orderStatus%", nativeQuery = true)
     Order findUserBoughtOrNot(@Param(value ="userId") Long id, @Param(value = "productId") Long productId, @Param(value = "orderStatus") String os);
+
+    @Query(value = "select * from ordered where deleted_flag = :deletedFlag", nativeQuery = true)
+    Page<Order> findAllByDeletedFlag(@Param(value = "deletedFlag") int i, Pageable pageable);
+
+    Order findByIdAndDeletedFlag(Long id, boolean b);
 }

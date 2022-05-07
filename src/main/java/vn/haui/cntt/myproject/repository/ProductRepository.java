@@ -38,4 +38,7 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, L
     Page<Product> findAllWithDeletedFlag(Pageable pageable);
 
     Product findByIdAndDeletedFlag(Long productId, boolean b);
+
+    @Query(value = "select * from product where deleted_flag = :deletedFlag", nativeQuery = true)
+    List<Product> findAllByDeletedFlag(@Param(value = "deletedFlag") int i);
 }

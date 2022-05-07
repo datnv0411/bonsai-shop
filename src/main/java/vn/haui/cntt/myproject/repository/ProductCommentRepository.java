@@ -11,4 +11,6 @@ public interface ProductCommentRepository extends JpaRepository<ProductComment, 
     List<ProductComment> findAllByProductIdAndDeletedFlag(Long productId, boolean b);
 
     ProductComment findByIdAndDeletedFlag(Long id, boolean b);
+
+    List<ProductComment> findByProductIdAndDeletedFlag(Long id, boolean b);
 }

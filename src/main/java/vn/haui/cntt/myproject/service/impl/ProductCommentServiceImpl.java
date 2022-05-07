@@ -33,4 +33,17 @@ public class ProductCommentServiceImpl implements ProductCommentService {
     public ProductComment findById(Long id) {
         return productCommentRepository.findByIdAndDeletedFlag(id, false);
     }
+
+    @Override
+    public List<ProductComment> findByProductId(Long id) {
+        return productCommentRepository.findByProductIdAndDeletedFlag(id, false);
+    }
+
+    @Override
+    public void deleteProductComment(ProductComment pc, String username) {
+        pc.setDeletedFlag(true);
+        pc.setUpdatedBy(username);
+        pc.setUpdatedDate(LocalDateTime.now());
+        productCommentRepository.save(pc);
+    }
 }

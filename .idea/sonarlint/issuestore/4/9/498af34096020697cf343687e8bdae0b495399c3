@@ -1,25 +1,14 @@
 
 U
 java:S1161#":Add the "@Override" annotation above this method signature(ò—Şëıÿÿÿÿ
+U	java:S106T"9Replace this use of System.out or System.err by a logger.(«‹Îõ8Íí¸ñ‰0
 
-java:S1128	"dRemove this unused import 'org.springframework.security.config.annotation.web.builders.WebSecurity'.(–ëğ8í¬¾ê‰0
+java:S1128	"dRemove this unused import 'org.springframework.security.config.annotation.web.builders.WebSecurity'.(–ëğ8à†¯ò‰0
 }
-java:S1128"[Remove this unused import 'org.springframework.security.config.http.SessionCreationPolicy'.(‚ÌÎîüÿÿÿÿ8í¬¾ê‰0
-j
-java:S1128"MRemove this unused import 'org.springframework.security.core.Authentication'.(ñıÓ“8Ïıßê‰0
+java:S1128"[Remove this unused import 'org.springframework.security.config.http.SessionCreationPolicy'.(‚ÌÎîüÿÿÿÿ8à†¯ò‰0
 s
-java:S1128"VRemove this unused import 'org.springframework.security.core.AuthenticationException'.(¤ò›¿8í¬¾ê‰0
+java:S1128"VRemove this unused import 'org.springframework.security.core.AuthenticationException'.(¤ò›¿8à†¯ò‰0
 †
-java:S1128"iRemove this unused import 'org.springframework.security.web.authentication.AuthenticationFailureHandler'.(á†ÒÚ8í¬¾ê‰0
-‹
-java:S1128"iRemove this unused import 'org.springframework.security.web.authentication.AuthenticationSuccessHandler'.(Â©ŠÏüÿÿÿÿ8Ïıßê‰0
+java:S1128"iRemove this unused import 'org.springframework.security.web.authentication.AuthenticationFailureHandler'.(á†ÒÚ8à†¯ò‰0
 i
-java:S1128"GRemove this unused import 'vn.haui.cntt.myproject.service.UserService'.(çïßµşÿÿÿÿ8¶àÄê‰0
-X
-java:S1128";Remove this unused import 'javax.servlet.ServletException'.(Š‰™Œ8Ïıßê‰0
-_
-java:S1128"BRemove this unused import 'javax.servlet.http.HttpServletRequest'.(ø©¹…8Ïıßê‰0
-`
-java:S1128"CRemove this unused import 'javax.servlet.http.HttpServletResponse'.(Á¨ïë8Ïıßê‰0
-R
-java:S1128"0Remove this unused import 'java.io.IOException'.(ªº»Úıÿÿÿÿ8Ïıßê‰0
+java:S1128"GRemove this unused import 'vn.haui.cntt.myproject.service.UserService'.(çïßµşÿÿÿÿ8à†¯ò‰0

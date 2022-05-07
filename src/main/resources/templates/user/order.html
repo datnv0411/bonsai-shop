@@ -86,10 +86,10 @@
                                     </td>
                                 </tr>
                             </tbody>
-                            <div th:if="${#lists.isEmpty(orders)}">
-                                <h3>Không tìm thấy kết quả nào.</h3>
-                            </div>
                         </table>
+                        <div th:if="${#lists.isEmpty(orders)}">
+                            <h3>Không tìm thấy kết quả nào.</h3>
+                        </div>
                     </div>
                     <div >
                         Trang: [[${page}]]  &nbsp;

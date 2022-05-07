@@ -62,7 +62,10 @@
                     </thead>
                     <tbody class="table-border-bottom-0" th:each="pc : ${listProducts}">
                       <tr>
-                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong th:text="${pc.product.nameProduct}">firstName</strong></td>
+                        <td>
+                          <i class="fab fa-angular fa-lg text-danger me-3"></i>
+                          <strong th:text="${pc.product.nameProduct}" th:title="${pc.product.nameProduct}" style="display: block;width: 100px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;"></strong>
+                        </td>
                         <td th:text="${pc.category.name}"></td>
                         <td th:text="${pc.product.origin}"></td>
                         <td th:text="${pc.product.price}"></td>

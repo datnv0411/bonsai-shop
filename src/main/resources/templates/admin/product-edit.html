@@ -47,16 +47,6 @@
                     <li class="nav-item">
                       <a class="nav-link active" href="javascript:void(0);"><i class="bx bx-user me-1"></i> Chi tiết sản phẩm </a>
                     </li>
-<!--                    <li class="nav-item">-->
-<!--                      <a class="nav-link" href="pages-account-settings-notifications.html"-->
-<!--                        ><i class="bx bx-bell me-1"></i> Notifications</a-->
-<!--                      >-->
-<!--                    </li>-->
-<!--                    <li class="nav-item">-->
-<!--                      <a class="nav-link" href="pages-account-settings-connections.html"-->
-<!--                        ><i class="bx bx-link-alt me-1"></i> Connections</a-->
-<!--                      >-->
-<!--                    </li>-->
                   </ul>
                   <div class="card mb-4">
                     <h5 class="card-header">Thông tin sản phẩm</h5>
@@ -81,7 +71,7 @@
                           <div class="mb-3 col-md-6" th:object="${category}">
                             <label class="form-label">Danh mục</label>
                             <select class="btn btn-primary dropdown-toggle" th:field="*{name}">
-                              <option th:each="c : ${listCategories}" th:selected="${productCategory.category.id == c.id} ? 'true' : 'false'" th:value="${c.name}" th:text="${c.name}"></option>
+                              <option th:each="c : ${listCategories}" th:selected="${productCategory.category.id == c.id} ? 'true' : 'false'" th:value="${c.name}" th:text="${productCategory.category.name}"></option>
                             </select>
                           </div>
                           <div class="mb-3 col-md-6">

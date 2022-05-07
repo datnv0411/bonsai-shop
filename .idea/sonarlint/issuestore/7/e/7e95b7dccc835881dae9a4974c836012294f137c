@@ -1,0 +1,13 @@
+
+V
+java:S4684*"@Replace this persistent entity with a simple POJO or DTO object.(¨ĞÖ¯
+~
+java:S1128"aRemove this unused import 'org.springframework.security.core.annotation.AuthenticationPrincipal'.(Øù¢8»ßê‰0
+U
+java:S1128"?Remove this unused import 'vn.haui.cntt.myproject.entity.Role'.(’º¨ı
+r
+java:S1128"URemove this unused import 'vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl'.(À·¡‹8»ßê‰0
+F
+java:S1128"+Remove this unused import 'java.util.List'.(Õë±Äøÿÿÿÿ
+\
+java:S11920"FDefine a constant instead of duplicating this literal "login" 3 times.(Íı‡Ç

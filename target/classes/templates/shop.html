@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!-- Basic -->
+
+<head th:replace="fragment :: head">
+
+<body>
+    <div th:replace="fragment :: top"></div>
+    <!-- Start All Title Box -->
+    <div class="all-title-box">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2>Cửa hàng</h2>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="home">Trang chủ</a></li>
+                        <li class="breadcrumb-item active">CỬA HÀNG</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End All Title Box -->
+
+    <!-- Start Shop Page  -->
+    <div class="shop-box-inner">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-9 col-lg-9 col-sm-12 col-xs-12 shop-content-right">
+                    <div class="right-product-box">
+                        <div class="product-item-filter row">
+                            <div class="col-12 col-sm-8 text-center text-sm-left">
+                                <div class="toolbar-sorter-right">
+                                    <span>Sắp xếp </span>
+                                    <select id="sortingProduct" name="sortingProduct" class="selectpicker show-tick form-control sortingProduct" data-placeholder="$ USD" onchange="location = this.value;">
+                                        <option id="op0" value="0" hidden>Mới nhất</option>
+                                        <option id="op1" th:value="@{'/product?page=' + ${page} + '&sortField=id&sortDir=des&categoryId=' + ${categoryId}}">
+                                            Mới nhất
+                                        </option>
+                                        <option id="op2" th:value="@{'/product?page=' + ${page} + '&sortField=id&sortDir=asc&categoryId=' + ${categoryId}}">
+                                            Cũ nhất
+                                        </option>
+                                        <option id="op3" th:value="@{'/product?page=' + ${page} + '&sortField=name_product&sortDir=asc&categoryId=' + ${categoryId}}">
+                                            A → Z
+                                        </option>
+                                        <option id="op4" th:value="@{'/product?page=' + ${page} + '&sortField=name_product&sortDir=des&categoryId=' + ${categoryId}}">
+                                            Z → A
+                                        </option>
+                                        <option id="op5" th:value="@{'/product?page=' + ${page} + '&sortField=price&sortDir=des&categoryId=' + ${categoryId}}">Giá cao → thấp</option>
+                                        <option id="op6" th:value="@{'/product?page=' + ${page} + '&sortField=price&sortDir=asc&categoryId=' + ${categoryId}}">Giá thấp → cao</option>
+<!--                                        <option th:value="@{'/product?page=' + ${page} + '&sortField=quantity&sortDir=des&categoryId=' + ${categoryId}}">Bán chạy nhất</option>-->
+                                    </select>
+                                </div>
+                                <p>Hiển thị ra [[${totalItems}]] kết quả</p>
+                            </div>
+                            <div class="col-12 col-sm-4 text-center text-sm-right">
+                                <ul class="nav nav-tabs ml-auto">
+                                    <li>
+                                        <a class="nav-link active" href="#grid-view" data-toggle="tab"> <i class="fa fa-th"></i> </a>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link" href="#list-view" data-toggle="tab"> <i class="fa fa-list-ul"></i> </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="product-categorie-box">
+                            <div class="tab-content">
+                                <div role="tabpanel" class="tab-pane fade show active" id="grid-view">
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 col-lg-4 col-xl-4" th:each="product : ${listProducts}">
+                                            <div class="products-single fix">
+                                                <div class="box-img-hover">
+                                                    <div class="type-lb">
+                                                        <p th:class="${product.price == product.priceSale} ? 'new' : 'sale'"
+                                                           th:text="${product.price == product.priceSale} ? 'New' : 'Sale'">Sale</p>
+                                                    </div>
+                                                    <img th:src="@{'images/product/' + ${product.productImages[0].path}}" class="img-fluid" alt="Image">
+                                                    <div class="mask-icon">
+                                                        <a th:href="@{'product-detail?productId=' + ${product.id}}" class="cart" href="#">Mua ngay</a>
+                                                    </div>
+                                                </div>
+                                                <div class="why-text">
+                                                    <h4 style="display:none;" th:text="${product.id}"></h4>
+                                                    <h4>
+                                                        <span th:text="${product.nameProduct}">Name Product</span>
+                                                        <p th:text="${product.quantity > 0} ? 'Còn hàng' : 'Đã bán hết'">Status</p>
+                                                    </h4>
+                                                    <h5><span th:text="${product.price == product.priceSale} ? ${product.price} : ${product.priceSale}">Price</span> VND<span></span></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div role="tabpanel" class="tab-pane fade" id="list-view">
+                                    <div class="list-view-box" th:each="product : ${listProducts}">
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6 col-lg-4 col-xl-4">
+                                                <div class="products-single fix">
+                                                    <div class="box-img-hover">
+                                                        <div class="type-lb">
+                                                            <p th:class="${product.price == product.priceSale} ? 'new' : 'sale'"
+                                                               th:text="${product.price == product.priceSale} ? 'New' : 'Sale'">Sale</p>
+                                                        </div>
+                                                        <img th:src="@{'images/product/' + ${product.productImages[0].path}}" class="img-fluid" alt="Image">
+                                                        <div class="mask-icon">
+                                                            <ul>
+                                                                <li><a th:href="@{'product-detail?productId=' + ${product.id}}" data-toggle="tooltip" data-placement="right" title="Xem chi tiết"><i class="fas fa-eye"></i></a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6 col-lg-8 col-xl-8">
+                                                <div class="why-text full-width">
+                                                    <h4 style="display:none;" th:text="${product.id}"></h4>
+                                                    <h4 th:text="${product.nameProduct}">Name Product</h4>
+                                                    <h5 th:if="${product.price == product.priceSale}"><span th:text="${product.price}"></span><span> VND</span></h5>
+                                                    <h5 th:unless="${product.price == product.priceSale}"> <del><span th:text="${product.price}"></span><span> VND</span></del>
+                                                        <h5><span th:text="${product.priceSale}"></span><span> VND</span></h5></h5>
+                                                    <h5 th:text="${product.quantity > 0} ? 'Còn hàng' : 'Đã bán hết'">Status</h5>
+                                                    <p th:text="${product.description}">Description</p>
+                                                    <p>
+                                                        <span>Nguồn gốc: </span>
+                                                        <span th:text="${product.origin}">Origin</span>
+                                                    </p>
+                                                    <a th:href="@{'product-detail?productId=' + ${product.id}}" class="btn hvr-hover" href="#">Mua ngay</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div >
+                                    Trang: [[${page}]]
+
+                                    <a th:if="${page > 1}" th:href="@{'/product?page=1&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&categoryId=' + ${categoryId}}">First</a>
+                                    <span th:unless="${page > 1}">First</span>
+                                    &nbsp;
+
+                                    <a th:if="${page > 1}" th:href="@{'/product?page=' + ${page - 1} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&categoryId=' + ${categoryId}}">Previous</a>
+                                    <span th:unless="${page > 1}">Previous</span>
+                                    &nbsp;
+
+                                    <span th:each="i : ${#numbers.sequence(1, totalPages)}">
+                                        <a th:if="${i != page}" th:href="@{'/product?page=' + ${i} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&categoryId=' + ${categoryId}}">[[${i}]]</a>
+                                        <span th:unless="${i != page}">[[${i}]]</span>
+                                        &nbsp;&nbsp;
+                                    </span>
+
+                                    <a th:if="${page < totalPages}" th:href="@{'/product?page=' + ${page + 1} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&categoryId=' + ${categoryId}}">Next</a>
+                                    <span th:unless="${page < totalPages}">Next</span>
+                                    &nbsp;
+
+                                    <a th:if="${page < totalPages}" th:href="@{'/product?page=' + ${totalPages} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&categoryId=' + ${categoryId}}">Last</a>
+                                    <span th:unless="${page < totalPages}">Last</span>
+                                    &nbsp;
+                                </div>
+                                <div th:if="${#lists.isEmpty(listProducts)}">
+                                    <h3>Không tìm thấy kết quả nào.</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+				<div class="col-xl-3 col-lg-3 col-sm-12 col-xs-12 sidebar-shop-left">
+                    <div class="product-categori">
+                        <div class="search-product">
+                            <form th:action="@{search}">
+                                <input type="hidden" name="page" th:value="1">
+                                <input type="hidden" name="sortField" th:value="${sortField}">
+                                <input type="hidden" name="sortDir" th:value="${sortDir}">
+                                <input type="hidden" name="categoryId" th:value="${categoryId}">
+                                <input class="form-control" name="nameSearch" th:value="${nameSearch}" placeholder="Tìm kiếm sản phẩm..." type="text" required>
+                                <button type="submit"> <i class="fa fa-search"></i> </button>
+                            </form>
+                        </div>
+                        <div class="filter-sidebar-left">
+                            <div class="title-left">
+                                <h3>Danh mục</h3>
+                            </div>
+                            <div class="list-group list-group-collapse list-group-sm list-group-tree" id="list-group-men" data-children=".sub-men"
+                                 th:each="category : ${categories}">
+                                <a th:href="@{'/product?page=1&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&categoryId=' + ${category.id}}"
+                                   class="list-group-item list-group-item-action"
+                                   th:text="${category.name}"> Cây văn phòng </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Shop Page -->
+
+    <div th:replace="fragment :: instagramFeed" th:remove="tag"></div>
+    <footer>
+        <div th:replace="fragment :: footer" th:remove="tag"></div>
+    </footer>
+    <div th:replace="fragment :: copyright" th:remove="tag"></div>
+    <a th:replace="fragment :: backToTop" th:remove="tag"></a>
+    <div th:replace="fragment :: finalScript" th:remove="tag"></div>
+    <script th:src="@{/js/load-product-search.js}"></script>
+    <script type="text/javascript">
+        contextPath = "[[@{/}]]";
+        var page = "[[${page}]]";
+        var categoryId = "[[${categoryId}]]";
+        var sortField = "[[${sortField}]]";
+        var sortDir = "[[${sortDir}]]";
+
+
+    </script>
+</body>
+
+</html>

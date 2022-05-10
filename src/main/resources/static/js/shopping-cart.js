@@ -102,7 +102,6 @@ function removeFromCart(link){
 
 function removeProduct(rowNumber){
     rowId = "row" + rowNumber;
-    alert(rowId);
     $("#"+rowId).remove();
 }
 

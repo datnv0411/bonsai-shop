@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 import vn.haui.cntt.myproject.entity.Order;
 import vn.haui.cntt.myproject.enums.OrderStatusEnum;
 
+import java.util.List;
+
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query(value = "select * from ordered o inner join order_detail od on o.id=od.order_id " +
@@ -26,4 +28,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Page<Order> findAllByDeletedFlag(@Param(value = "deletedFlag") int i, Pageable pageable);
 
     Order findByIdAndDeletedFlag(Long id, boolean b);
+
+    List<Order> findAllByDeletedFlag(boolean b);
+
+    List<Order> findByOrderStatusAndDeletedFlag(OrderStatusEnum status, boolean b);
 }

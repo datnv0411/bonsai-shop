@@ -62,8 +62,8 @@
                                     <td>
                                         <p><span th:id="'subtotal' + ${item.product.id}"  class="total-pr">[[${item.subtotal}]]</span><span> VND</span></p>
                                     </td>
-                                    <td id="removePr" class="remove-pr">
-                                        <a th:href="@{'/cart/delete?productId=' + ${item.product.id}}"
+                                    <td id="removePr">
+                                        <a class="remove-pr" th:href="@{'/cart/delete?productId=' + ${item.product.id}}"
                                         th:rowNumber="${status.count}">
 									<i class="fas fa-times"></i>
 								</a>

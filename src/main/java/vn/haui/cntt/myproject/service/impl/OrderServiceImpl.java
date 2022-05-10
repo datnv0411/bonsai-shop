@@ -122,4 +122,14 @@ public class OrderServiceImpl implements OrderService {
     public void save(Order foundOrder) {
         orderRepository.save(foundOrder);
     }
+
+    @Override
+    public List<Order> findAll() {
+        return orderRepository.findAllByDeletedFlag(false);
+    }
+
+    @Override
+    public List<Order> findByStatus(OrderStatusEnum status) {
+        return orderRepository.findByOrderStatusAndDeletedFlag(status, false);
+    }
 }

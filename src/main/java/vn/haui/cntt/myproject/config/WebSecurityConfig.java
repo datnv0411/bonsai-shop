@@ -31,6 +31,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private DataSource dataSource;
 
+    private static final String KEY = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
     @Bean
     public UserDetailsService userDetailsService(){
         return new CustomUserDetailsServiceImpl();
@@ -90,6 +92,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .logoutUrl("/logout")
                     .logoutSuccessUrl("/login")
                 .and()
-                .exceptionHandling().accessDeniedPage("/404");
+                .exceptionHandling().accessDeniedPage("/404")
+                .and()
+                .rememberMe()
+                    .key(KEY)
+                    .tokenValiditySeconds(3*24*60*60);
     }
 }

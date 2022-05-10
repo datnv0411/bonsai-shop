@@ -2,6 +2,7 @@ package vn.haui.cntt.myproject.service;
 
 import org.springframework.data.domain.Page;
 import vn.haui.cntt.myproject.entity.*;
+import vn.haui.cntt.myproject.enums.OrderStatusEnum;
 
 import java.util.List;
 
@@ -21,4 +22,8 @@ public interface OrderService {
     Order findById(Long id);
 
     void save(Order foundOrder);
+
+    List<Order> findAll();
+
+    List<Order> findByStatus(OrderStatusEnum orderStatusEnum);
 }

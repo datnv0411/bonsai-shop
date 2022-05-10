@@ -87,6 +87,7 @@ function removeFromCart(link){
         url: url
         }).done(function(response){
             rowNumber = link.attr("rowNumber");
+            console.log(rowNumber);
             removeProduct(rowNumber);
             updateTotal();
             if(parseFloat(count[0].innerHTML) > 0){
@@ -102,7 +103,7 @@ function removeFromCart(link){
 
 function removeProduct(rowNumber){
     rowId = "row" + rowNumber;
-    alert(rowId);
+    console.log(rowId);
     $("#"+rowId).remove();
 }
 

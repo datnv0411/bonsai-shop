@@ -10,8 +10,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import vn.haui.cntt.myproject.entity.Order;
 import vn.haui.cntt.myproject.entity.PaymentOrder;
 import vn.haui.cntt.myproject.entity.User;
+import vn.haui.cntt.myproject.enums.OrderStatusEnum;
+import vn.haui.cntt.myproject.service.OrderService;
 import vn.haui.cntt.myproject.service.PaymentOrderService;
 import vn.haui.cntt.myproject.service.UserService;
 import vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl;
@@ -27,6 +30,8 @@ public class AdAppController {
     private final UserService userService;
     @Autowired
     private final PaymentOrderService paymentOrderService;
+    @Autowired
+    private final OrderService orderService;
 
     @GetMapping("/admin/home")
     public String viewHomePage(@AuthenticationPrincipal CustomUserDetailImpl loggerUser, Model model){
@@ -35,7 +40,7 @@ public class AdAppController {
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
             return "admin/auth-login-basic";
         }
-        try {
+//        try {
             String email = loggerUser.getEmail();
             User loggedUser = userService.getByEmail(email);
             List<PaymentOrder> paymentOrder1 = paymentOrderService.findByStatus("Đã thanh toán", "2022-01-01", "2022-01-31");
@@ -44,15 +49,16 @@ public class AdAppController {
             List<PaymentOrder> paymentOrder4 = paymentOrderService.findByStatus("Đã thanh toán", "2022-04-01", "2022-04-30");
             List<PaymentOrder> paymentOrder5 = paymentOrderService.findByStatus("Đã thanh toán", "2022-05-01", "2022-05-31");
             List<PaymentOrder> paymentOrder6 = paymentOrderService.findByStatus("Đã thanh toán", "2022-06-01", "2022-06-30");
+            List<PaymentOrder> paymentOrder7 = paymentOrderService.findByStatus("Đã thanh toán", "2022-07-01", "2022-07-31");
+            List<PaymentOrder> paymentOrder8 = paymentOrderService.findByStatus("Đã thanh toán", "2022-08-01", "2022-08-31");
+            List<PaymentOrder> paymentOrder9 = paymentOrderService.findByStatus("Đã thanh toán", "2022-09-01", "2022-09-30");
+            List<PaymentOrder> paymentOrder10 = paymentOrderService.findByStatus("Đã thanh toán", "2022-10-01", "2022-10-31");
+            List<PaymentOrder> paymentOrder11 = paymentOrderService.findByStatus("Đã thanh toán", "2022-11-01", "2022-11-30");
+            List<PaymentOrder> paymentOrder12 = paymentOrderService.findByStatus("Đã thanh toán", "2022-12-01", "2022-12-31");
 
             List money = new ArrayList();
 
-            Long money1 = 0l;
-            Long money2 = 0l;
-            Long money3 = 0l;
-            Long money4 = 0l;
-            Long money5 = 0l;
-            Long money6 = 0l;
+            Long money1 = 0l, money2 = 0l, money3 = 0l, money4 = 0l, money5 = 0l, money6 = 0l, money7 = 0l, money8 = 0l, money9 = 0l, money10 = 0l, money11 = 0l, money12 = 0l;
 
             for (PaymentOrder po : paymentOrder1
             ) {
@@ -78,21 +84,63 @@ public class AdAppController {
             ) {
                 money6 += po.getTotalPaid();
             }
-            Long moneyAll = money1 + money2 + money3 + money4 + money5 + money6;
+            for (PaymentOrder po : paymentOrder7
+            ) {
+                money7 += po.getTotalPaid();
+            }
+            for (PaymentOrder po : paymentOrder8
+            ) {
+                money8 += po.getTotalPaid();
+            }
+            for (PaymentOrder po : paymentOrder9
+            ) {
+                money9 += po.getTotalPaid();
+            }
+            for (PaymentOrder po : paymentOrder10
+            ) {
+                money10 += po.getTotalPaid();
+            }
+            for (PaymentOrder po : paymentOrder11
+            ) {
+                money11 += po.getTotalPaid();
+            }
+            for (PaymentOrder po : paymentOrder12
+            ) {
+                money12 += po.getTotalPaid();
+            }
+            Long moneyAll = money1 + money2 + money3 + money4 + money5 + money6 + money7 + money8 + money9 + money10 + money11 + money12;
             money.add(money1);
             money.add(money2);
             money.add(money3);
             money.add(money4);
             money.add(money5);
             money.add(money6);
+            money.add(money7);
+            money.add(money8);
+            money.add(money9);
+            money.add(money10);
+            money.add(money11);
+            money.add(money12);
+
+            List<Order> orders = orderService.findAll();
+            List<Order> orders1 = orderService.findByStatus(OrderStatusEnum.Chờ);
+            List<Order> orders2 = orderService.findByStatus(OrderStatusEnum.Đang_giao_hàng);
+            List<Order> orders3 = orderService.findByStatus(OrderStatusEnum.Đã_giao);
+            List<Order> orders4 = orderService.findByStatus(OrderStatusEnum.Đã_hủy);
+
             model.addAttribute("user", loggedUser);
             model.addAttribute("paymentOrder", money);
             model.addAttribute("total", moneyAll);
+            model.addAttribute("orders", orders.size());
+            model.addAttribute("orderCho", orders1.size());
+            model.addAttribute("orderDangGiao", orders2.size());
+            model.addAttribute("orderDaGiao", orders3.size());
+            model.addAttribute("orderDaHuy", orders4.size());
 
             return "admin/ad-index";
-        } catch (Exception e){
-            return "404";
-        }
+//        } catch (Exception e){
+//            return "404";
+//        }
     }
 
 //    @GetMapping("/admin/register")

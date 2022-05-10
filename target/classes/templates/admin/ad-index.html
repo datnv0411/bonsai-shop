@@ -70,17 +70,32 @@
                             <div class="card">
                                 <div class="row row-bordered g-0">
                                     <div class="col-md-8">
-                                        <h5 class="card-header m-0 me-2 pb-3">Total Revenue</h5>
+                                        <h5 class="card-header m-0 me-2 pb-3">Tổng doanh thu</h5>
                                         <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <h5 class="card-header m-0 me-2 pb-3">Total Paid: </h5>
-                                        <h6 class="card-header m-0 me-2 pb-3"><span th:text="${total}"></span><span> VND</span></h6>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <!--/ Total Revenue -->
+                        <div class="col-12 col-lg-8 order-2 order-md-3 order-lg-2 mb-4">
+                            <div class="card">
+                                <div class="row row-bordered g-0">
+                                    <div class="col-md-8">
+                                        <h5 class="card-header m-0 me-2 pb-3">Báo cáo đơn hàng</h5>
+                                        <canvas id="myChart1" style="width:100%;max-width:600px"></canvas>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <h6 class="card-header m-0 me-2 pb-3">Tổng số đơn hàng: <span th:text="${orders}"></span></h6>
+                                        <h6 class="card-header m-0 me-2 pb-3">Số đơn đang chờ: <span th:text="${orderCho}"></span></h6>
+                                        <h6 class="card-header m-0 me-2 pb-3">Số đơn đang giao: <span th:text="${orderDangGiao}"></span></h6>
+                                        <h6 class="card-header m-0 me-2 pb-3">Số đơn đã giao: <span th:text="${orderDaGiao}"></span></h6>
+                                        <h6 class="card-header m-0 me-2 pb-3">Số đơn bị hủy: <span th:text="${orderDaHuy}"></span></h6>
+                                        <h5 class="card-header m-0 me-2 pb-3">Tổng doanh thu: </h5>
+                                        <h6 class="card-header m-0 me-2 pb-3"><span th:text="${total}"></span><span> VND</span></h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- / Content -->
@@ -137,9 +152,9 @@
 <div th:replace="a-fragment :: coreScript" th:remove="tag"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 <script language="JavaScript" type="text/javascript">
-      var xValues = ["Jan 2022", "Feb 2022", "March 2022", "April 2022", "May 2022", "June 2022"];
+      var xValues = ["Jan 2022", "Feb 2022", "Mar 2022", "Apr 2022", "May 2022", "Jun 2022", "Jul 2022", "Aug 2022", "Sep 2022", "Oct 2022", "Nov 2022", "Dec 2022"];
 var yValues = [[${paymentOrder}]];
-var barColors = ["blue", "red", "yellow", "green","brown","orange"];
+var barColors = ["blue", "red", "yellow", "green","brown","orange", "violet", "cornsilk", "carrot", "bisque", "limegreen", "antiquewhite"];
 console.log(yValues);
 
 new Chart("myChart", {
@@ -155,12 +170,40 @@ new Chart("myChart", {
     legend: {display: false},
     title: {
       display: true,
-      text: "Total Revenue 2022"
+      text: "TỔNG SỐ TIỀN ĐÃ THANH TOÁN NĂM 2022"
     }
   }
 });
 
+var xValues1 = ["Chờ", "Đang giao", "Đã giao", "Bị hủy"];
+var v1 = [[${orderCho}]];
+var v2 = [[${orderDangGiao}]];
+var v3 = [[${orderDaGiao}]];
+var v4 = [[${orderDaHuy}]];
+var yValues1 = [v1, v2, v3, v4];
+var barColors1 = [
+  "red",
+  "orange",
+  "green",
+  "blue"
+];
 
+new Chart("myChart1", {
+  type: "pie",
+  data: {
+    labels: xValues1,
+    datasets: [{
+      backgroundColor: barColors1,
+      data: yValues1
+    }]
+  },
+  options: {
+    title: {
+      display: true,
+      text: "ĐƠN HÀNG"
+    }
+  }
+});
 
 </script>
 </body>

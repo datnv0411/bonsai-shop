@@ -48,16 +48,17 @@
                     th:object="${user}">
                 <div class="mb-3">
                   <label for="username" class="form-label">Tên người dùng</label>
-                  <input class="form-control" id="username" type="text" placeholder="Tên người dùng" th:field="*{username}"/>
+                  <input required class="form-control" id="username" type="text" placeholder="Tên người dùng" th:field="*{username}"/>
                 </div>
                 <div class="mb-3">
                   <label for="email" class="form-label">Email</label>
-                  <input th:field="*{email}" type="email" class="form-control" id="email" name="email" placeholder="Email" />
+                  <input required th:field="*{email}" type="email" class="form-control" id="email" name="email" placeholder="Email" />
                 </div>
                 <div class="mb-3 form-password-toggle">
                   <label class="form-label" for="password">Mật khẩu</label>
                   <div class="input-group input-group-merge">
                     <input
+                            required
                       type="password"
                       id="password"
                       class="form-control"
@@ -71,15 +72,15 @@
                 </div>
                 <div class="mb-3">
                   <label for="cellphone" class="form-label">Số điện thoại</label>
-                  <input class="form-control" id="cellphone" type="tel" placeholder="Số điện thoại" th:field="*{cellphone}"/>
+                  <input required class="form-control" id="cellphone" type="tel" placeholder="Số điện thoại" th:field="*{cellphone}"/>
                 </div>
                 <div class="mb-3">
                   <label for="firstName" class="form-label">Họ</label>
-                  <input class="form-control" id="firstName" type="text" placeholder="Họ" th:field="*{firstName}"/>
+                  <input required class="form-control" id="firstName" type="text" placeholder="Họ" th:field="*{firstName}"/>
                 </div>
                 <div class="mb-3">
                   <label for="lastName" class="form-label">Tên</label>
-                  <input class="form-control" id="lastName" type="text" placeholder="Tên" th:field="*{lastName}"/>
+                  <input required class="form-control" id="lastName" type="text" placeholder="Tên" th:field="*{lastName}"/>
                 </div>
                 <div class="mb-3">
                   <label class="form-label">Giới tính</label>

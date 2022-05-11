@@ -35,7 +35,7 @@
             <div class="card-body">
               <!-- Logo -->
               <div class="app-brand justify-content-center">
-                <a href="admin/login" class="app-brand-link gap-2">
+                <a href="home" class="app-brand-link gap-2">
                   <div th:replace="a-fragment :: spanHead" th:remove="tag"></div>
                   <span class="app-brand-text demo text-body fw-bolder">BonsaiShop</span>
                 </a>
@@ -47,19 +47,20 @@
               <form id="formAuthentication" class="mb-3" th:action="@{/login}" method="post">
                 <div class="mb-3">
                   <label class="form-label">Email</label>
-                  <input type="email" class="form-control" name="email" placeholder="Email"
+                  <input required type="email" class="form-control" name="email" placeholder="Email"
                     autofocus
                   />
                 </div>
                 <div class="mb-3 form-password-toggle">
                   <div class="d-flex justify-content-between">
                     <label class="form-label">Mật khẩu</label>
-<!--                    <a href="auth-forgot-password-basic.html">-->
-<!--                      <small>Quên mật khẩu?</small>-->
-<!--                    </a>-->
+                    <a th:href="@{/forgot-password}">
+                      <small>Quên mật khẩu?</small>
+                    </a>
                   </div>
                   <div class="input-group input-group-merge">
                     <input
+                            required
                       type="password"
                       class="form-control"
                       name="psw"

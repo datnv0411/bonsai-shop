@@ -29,6 +29,9 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class AdProductController {
+    private static final String LOGIN = "admin/auth-login-basic";
+    private static final String MESSAGE = "message";
+
     @Autowired
     private final ProductService productService;
     @Autowired
@@ -52,7 +55,7 @@ public class AdProductController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
         try {
             String email = loggedUser.getEmail();
@@ -72,7 +75,7 @@ public class AdProductController {
             ) {
                 for (ProductImage pi: productImages
                 ) {
-                    if(pi.getProduct().getId()==pr.getId()){
+                    if(pi.getProduct().getId().equals(pr.getId())){
                         pi.setProduct(pr);
                     }
                 }
@@ -82,7 +85,7 @@ public class AdProductController {
                  ) {
                 for (Product p : list
                      ) {
-                    if(pc.getProduct().getId() == p.getId()){
+                    if(pc.getProduct().getId().equals(p.getId())){
                         pc.setProduct(p);
                     }
                 }
@@ -92,7 +95,7 @@ public class AdProductController {
                  ) {
                 for (Category c : categories
                      ) {
-                    if(pc.getCategory().getId() == c.getId()){
+                    if(pc.getCategory().getId().equals(c.getId())){
                         pc.setCategory(c);
                     }
                 }
@@ -120,7 +123,7 @@ public class AdProductController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
@@ -151,7 +154,7 @@ public class AdProductController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
@@ -210,7 +213,7 @@ public class AdProductController {
             }
         }
 
-        redirectAttributes.addFlashAttribute("message", "Sản phẩm đã được tạo.");
+        redirectAttributes.addFlashAttribute(MESSAGE, "Sản phẩm đã được tạo.");
 
         return "redirect:/admin/products?page=1&sortField=id&sortDir=des";
         } catch (Exception e){
@@ -265,7 +268,7 @@ public class AdProductController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
@@ -310,7 +313,7 @@ public class AdProductController {
                 }
             }
 
-            redirectAttributes.addFlashAttribute("message", "Thông tin sản phẩm đã được cập nhật.");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Thông tin sản phẩm đã được cập nhật.");
 
             return "redirect:/admin/product?id=" + id;
         } catch (Exception e){
@@ -321,12 +324,12 @@ public class AdProductController {
     @GetMapping("/admin/delete/product/{id}")
     public String deleteUser(RedirectAttributes redirectAttributes,
                              @AuthenticationPrincipal CustomUserDetailImpl loggerUser,
-                             @PathVariable(value = "id") Long id) throws IOException {
+                             @PathVariable(value = "id") Long id) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
@@ -346,7 +349,7 @@ public class AdProductController {
             }
             productService.deleteProduct(foundProduct, loggerUser.getUsername());
 
-            redirectAttributes.addFlashAttribute("message", "Đã xóa.");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Đã xóa.");
 
             return "redirect:/admin/products?page=1&sortField=id&sortDir=asc";
         } catch (Exception e){

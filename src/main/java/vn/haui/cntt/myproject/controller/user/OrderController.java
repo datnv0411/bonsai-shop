@@ -11,23 +11,18 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import vn.haui.cntt.myproject.entity.*;
-import vn.haui.cntt.myproject.enums.OrderStatusEnum;
 import vn.haui.cntt.myproject.service.*;
 import vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl;
-import vn.haui.cntt.myproject.util.RandomOrderCode;
 
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 public class OrderController {
+    private static final String LOGIN = "admin/auth-login-basic";
+
     @Autowired
     private final OrderService orderService;
     @Autowired
@@ -49,7 +44,7 @@ public class OrderController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return LOGIN;
         }
 
         try {
@@ -76,18 +71,15 @@ public class OrderController {
     }
 
     @GetMapping("/order-detail")
-    public String viewOrderDetail(@AuthenticationPrincipal CustomUserDetailImpl loggedUser, Model model,
+    public String viewOrderDetail(Model model,
                                   @Param(value = "orderId") Long orderId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return LOGIN;
         }
 
         try {
-            String email = loggedUser.getEmail();
-            User user = mUserService.getByEmail(email);
-
             List<OrderDetail> list = orderDetailService.findByOrderId(orderId);
 
             model.addAttribute("listOrderDetails", list);
@@ -103,7 +95,7 @@ public class OrderController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return LOGIN;
         }
 
         try {
@@ -128,7 +120,7 @@ public class OrderController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return LOGIN;
         }
 
         try {
@@ -143,20 +135,27 @@ public class OrderController {
     }
 
     @GetMapping(value = "vnpay", name = "responsePaymentVnpay")
-    public String checkPaymentVnPay(@RequestParam(name = "vnp_ResponseCode") String vnp_ResponseCode,
-                                    @RequestParam(name = "vnp_TxnRef") String vnp_TxnRef,
-                                    @RequestParam(name = "vnp_Amount") String vnp_Amount,
-                                    @AuthenticationPrincipal CustomUserDetailImpl loggedUser, Model model){
+    public String checkPaymentVnPay(@RequestParam(name = "vnp_ResponseCode") String vnpResponseCode,
+                                    @RequestParam(name = "vnp_TxnRef") String vnpTxnRef,
+                                    @RequestParam(name = "vnp_Amount") String vnpAmount,
+                                    @AuthenticationPrincipal CustomUserDetailImpl loggedUser){
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return LOGIN;
         }
         try {
-            paymentService.checkResultPaid(vnp_ResponseCode, vnp_TxnRef , vnp_Amount);
+            String email = loggedUser.getEmail();
+            User user = mUserService.getByEmail(email);
+            paymentService.checkResultPaid(vnpResponseCode, vnpTxnRef , vnpAmount);
+            List<Cart> carts = cartService.listCart(user);
+            for (Cart c : carts
+            ) {
+                cartService.deleteCart(c);
+            }
 
-            long orderId = Long.parseLong(vnp_TxnRef);
+            long orderId = Long.parseLong(vnpTxnRef);
 
             return "redirect:/order-detail?orderId=" + orderId;
         } catch (Exception e){

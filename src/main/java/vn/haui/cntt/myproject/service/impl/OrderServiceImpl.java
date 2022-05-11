@@ -12,13 +12,10 @@ import vn.haui.cntt.myproject.entity.*;
 import vn.haui.cntt.myproject.enums.OrderStatusEnum;
 import vn.haui.cntt.myproject.repository.OrderRepository;
 import vn.haui.cntt.myproject.repository.PaymentOrderRepository;
-import vn.haui.cntt.myproject.repository.ProductRepository;
 import vn.haui.cntt.myproject.service.OrderService;
 import vn.haui.cntt.myproject.util.RandomOrderCode;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Service

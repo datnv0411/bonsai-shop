@@ -22,13 +22,15 @@ import vn.haui.cntt.myproject.service.ProductCategoryService;
 import vn.haui.cntt.myproject.service.UserService;
 import vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 public class AdCategoryController {
+    private static final String LOGIN = "admin/auth-login-basic";
+    private static final String MESSAGE = "message";
+
     @Autowired
     private final CategoryService categoryService;
     @Autowired
@@ -44,7 +46,7 @@ public class AdCategoryController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "auth-login-basic";
+            return LOGIN;
         }
 
         try {
@@ -78,7 +80,7 @@ public class AdCategoryController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
@@ -99,12 +101,12 @@ public class AdCategoryController {
 
     @PostMapping("/admin/category/save")
     public String saveCategory(@ModelAttribute(name = "newCategory") Category category, RedirectAttributes redirectAttributes,
-                             @AuthenticationPrincipal CustomUserDetailImpl loggerUser) throws IOException {
+                             @AuthenticationPrincipal CustomUserDetailImpl loggerUser) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
@@ -113,7 +115,7 @@ public class AdCategoryController {
         category.setDeletedFlag(false);
         categoryService.save(category);
 
-        redirectAttributes.addFlashAttribute("message", "Danh mục đã được tạo.");
+        redirectAttributes.addFlashAttribute(MESSAGE, "Danh mục đã được tạo.");
 
         return "redirect:/admin/categories?page=1&sortField=id&sortDir=des";
         } catch (Exception e){
@@ -128,7 +130,7 @@ public class AdCategoryController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
@@ -150,12 +152,12 @@ public class AdCategoryController {
     @PostMapping("/admin/category/update/{id}")
     public String updateUser(@ModelAttribute(name = "foundCategory") Category category, RedirectAttributes redirectAttributes,
                              @AuthenticationPrincipal CustomUserDetailImpl loggerUser,
-                             @PathVariable(value = "id") Long id) throws IOException {
+                             @PathVariable(value = "id") Long id) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
@@ -166,7 +168,7 @@ public class AdCategoryController {
         category.setDeletedFlag(foundCategory.getDeletedFlag());
         categoryService.save(category);
 
-        redirectAttributes.addFlashAttribute("message", "Thông tin danh mục đã được cập nhật.");
+        redirectAttributes.addFlashAttribute(MESSAGE, "Thông tin danh mục đã được cập nhật.");
 
         return "redirect:/admin/category?id=" + id;
         } catch (Exception e){
@@ -177,12 +179,12 @@ public class AdCategoryController {
     @GetMapping("/admin/delete/category/{id}")
     public String deleteUser(RedirectAttributes redirectAttributes,
                              @AuthenticationPrincipal CustomUserDetailImpl loggerUser,
-                             @PathVariable(value = "id") Long id) throws IOException {
+                             @PathVariable(value = "id") Long id) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
@@ -191,7 +193,7 @@ public class AdCategoryController {
 
             categoryService.delete(foundCategory, username);
 
-            redirectAttributes.addFlashAttribute("message", "Đã xóa.");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Đã xóa.");
             return "redirect:/admin/categories?page=1&sortField=id&sortDir=asc";
         } catch (Exception e){
             return "404";

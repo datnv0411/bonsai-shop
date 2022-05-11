@@ -28,6 +28,9 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class AdVoucherController {
+    private static final String LOGIN = "admin/auth-login-basic";
+    private static final String MESSAGE = "message";
+
     @Autowired
     private final VoucherService voucherService;
     @Autowired
@@ -43,7 +46,7 @@ public class AdVoucherController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
@@ -77,7 +80,7 @@ public class AdVoucherController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
@@ -104,7 +107,7 @@ public class AdVoucherController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
@@ -126,7 +129,7 @@ public class AdVoucherController {
 
         voucherService.save(voucher);
 
-        redirectAttributes.addFlashAttribute("message", "Voucher đã được tạo.");
+        redirectAttributes.addFlashAttribute(MESSAGE, "Voucher đã được tạo.");
 
         return "redirect:/admin/vouchers?page=1&sortField=id&sortDir=des";
         } catch (Exception e){
@@ -141,7 +144,7 @@ public class AdVoucherController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
@@ -169,7 +172,7 @@ public class AdVoucherController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
@@ -195,7 +198,7 @@ public class AdVoucherController {
 
         voucherService.save(voucher);
 
-        redirectAttributes.addFlashAttribute("message", "Thông tin voucher đã được cập nhật.");
+        redirectAttributes.addFlashAttribute(MESSAGE, "Thông tin voucher đã được cập nhật.");
 
         return "redirect:/admin/voucher?id=" + id;
         } catch (Exception e){
@@ -206,12 +209,12 @@ public class AdVoucherController {
     @GetMapping("/admin/delete/voucher/{id}")
     public String deleteUser(RedirectAttributes redirectAttributes,
                              @AuthenticationPrincipal CustomUserDetailImpl loggerUser,
-                             @PathVariable(value = "id") Long id) throws IOException {
+                             @PathVariable(value = "id") Long id) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
@@ -219,7 +222,7 @@ public class AdVoucherController {
 
         voucherService.delete(voucher);
 
-        redirectAttributes.addFlashAttribute("message", "Đã xóa.");
+        redirectAttributes.addFlashAttribute(MESSAGE, "Đã xóa.");
         return "redirect:/admin/vouchers?page=1&sortField=id&sortDir=asc";
         } catch (Exception e){
             return "404";

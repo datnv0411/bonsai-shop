@@ -32,6 +32,8 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class AdOrderController {
+    private static final String LOGIN = "admin/auth-login-basic";
+
     @Autowired
     private final UserService mUserService;
     @Autowired
@@ -49,7 +51,7 @@ public class AdOrderController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
         try {
         String email = loggedUser.getEmail();
@@ -83,7 +85,7 @@ public class AdOrderController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
@@ -108,7 +110,7 @@ public class AdOrderController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
@@ -133,12 +135,12 @@ public class AdOrderController {
     public String updateUser(@ModelAttribute(name = "foundOrder") Order order, RedirectAttributes redirectAttributes,
                              @ModelAttribute(name = "paymentStatus") PaymentOrder paymentOrder,
                              @AuthenticationPrincipal CustomUserDetailImpl loggerUser,
-                             @PathVariable(value = "id") Long id) throws IOException {
+                             @PathVariable(value = "id") Long id) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
@@ -168,12 +170,12 @@ public class AdOrderController {
     @GetMapping("/admin/delete/order/{id}")
     public String deleteUser(RedirectAttributes redirectAttributes,
                              @AuthenticationPrincipal CustomUserDetailImpl loggerUser,
-                             @PathVariable(value = "id") Long id) throws IOException {
+                             @PathVariable(value = "id") Long id) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {

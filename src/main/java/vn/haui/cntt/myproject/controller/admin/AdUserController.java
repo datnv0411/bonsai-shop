@@ -27,6 +27,10 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class AdUserController {
+    private static final String LOGIN = "admin/auth-login-basic";
+    private static final String MESSAGE = "message";
+    private static final String RETURN_URL = "redirect:/admin/users?page=1&sortField=id&sortDir=asc";
+
     @Autowired
     private final UserService mUserService;
     @Autowired
@@ -37,11 +41,11 @@ public class AdUserController {
     @GetMapping("/admin/users")
     public String viewListUsers(@AuthenticationPrincipal CustomUserDetailImpl loggedUser,
                                 Model model, @Param("page") int page,
-                                @Param("sortField") String sortField, @Param("sortDir") String sortDir) throws IOException {
+                                @Param("sortField") String sortField, @Param("sortDir") String sortDir) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
@@ -75,7 +79,7 @@ public class AdUserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
@@ -104,7 +108,7 @@ public class AdUserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
@@ -122,9 +126,9 @@ public class AdUserController {
         imageService.uploadFile(uploadDir, multipartFile, user.getAvatar());
         mUserService.saveUser(user);
 
-        redirectAttributes.addFlashAttribute("message", "Thông tin người dùng đã được cập nhật.");
+        redirectAttributes.addFlashAttribute(MESSAGE, "Thông tin người dùng đã được cập nhật.");
 
-        return "redirect:/admin/users?page=1&sortField=id&sortDir=asc";
+        return RETURN_URL;
         } catch (Exception e){
             return "404";
         }
@@ -167,7 +171,7 @@ public class AdUserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
@@ -191,9 +195,9 @@ public class AdUserController {
                 mUserService.updateAccount(user, loggerUser.getUsername());
             }
 
-            redirectAttributes.addFlashAttribute("message", "Thông tin người dùng đã được cập nhật.");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Thông tin người dùng đã được cập nhật.");
 
-            return "redirect:/admin/users?page=1&sortField=id&sortDir=asc";
+            return RETURN_URL;
         } catch (Exception e){
             return "404";
         }
@@ -202,12 +206,12 @@ public class AdUserController {
     @GetMapping("/admin/delete/{id}")
     public String deleteUser(RedirectAttributes redirectAttributes,
                              @AuthenticationPrincipal CustomUserDetailImpl loggerUser,
-                             @PathVariable(value = "id") Long id) throws IOException {
+                             @PathVariable(value = "id") Long id) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
@@ -215,9 +219,9 @@ public class AdUserController {
 
             mUserService.deleteUser(foundUser, loggerUser.getUsername());
 
-            redirectAttributes.addFlashAttribute("message", "Đã xóa.");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Đã xóa.");
 
-            return "redirect:/admin/users?page=1&sortField=id&sortDir=asc";
+            return RETURN_URL;
         } catch (Exception e){
             return "404";
         }

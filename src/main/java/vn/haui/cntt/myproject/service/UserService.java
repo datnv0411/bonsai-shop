@@ -41,4 +41,10 @@ public interface UserService {
     void save(User user, Role foundRole, String username);
 
     void saveUser(User user);
+
+    void updateResetPassword(String token, String email) throws Exception;
+
+    User get(String rpt);
+
+    public void updatePassword(User user, String newPass);
 }

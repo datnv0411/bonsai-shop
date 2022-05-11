@@ -9,8 +9,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.haui.cntt.myproject.entity.Product;
-import vn.haui.cntt.myproject.entity.ProductImage;
-import vn.haui.cntt.myproject.repository.ProductImageRepository;
 import vn.haui.cntt.myproject.repository.ProductRepository;
 import vn.haui.cntt.myproject.service.ProductService;
 import vn.haui.cntt.myproject.util.StandardizeStringUtil;
@@ -45,10 +43,6 @@ public class ProductServiceImpl implements ProductService {
             return productRepository.findAllWithCategoryId(categoryId, pageable);
         }
     }
-
-//    public void save(Product product){
-//        productRepository.save(product);
-//    }
 
     public Page<Product> getProductByProductSearch(String nameSearch, String pageNumber, String sortField, String sortDir, String categoryId){
         if (pageNumber==null || !pageNumber.chars().allMatch(Character::isDigit) || pageNumber.equals("")) pageNumber="1";
@@ -90,8 +84,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public Product save(Product product){
-        Product savedProduct = productRepository.save(product);
-        return savedProduct;
+        return productRepository.save(product);
     }
 
     public void deleteProduct(Product foundProduct, String username){

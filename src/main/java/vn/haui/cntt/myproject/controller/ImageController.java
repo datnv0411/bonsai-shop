@@ -19,7 +19,6 @@ public class ImageController {
     //get image's url
     @RequestMapping("admin/images/{folder}/{id}/{fileName:.+}")
     public ResponseEntity<byte[]> readDetailFile(@PathVariable String folder,@PathVariable String id, @PathVariable String fileName) {
-        //log.info("Mapped readDetailFile method {{GET: product/files/{fileName:.+}}}");
         try {
             byte[] bytes = imageService.readFileContent(folder+"/"+id+"/"+fileName);
             return ResponseEntity
@@ -33,7 +32,6 @@ public class ImageController {
 
     @RequestMapping("admin/images/{folder}/{fileName:.+}")
     public ResponseEntity<byte[]> readDetailFile2(@PathVariable String folder, @PathVariable String fileName) {
-        //log.info("Mapped readDetailFile method {{GET: product/files/{fileName:.+}}}");
         try {
             byte[] bytes = imageService.readFileContent(folder+"/"+fileName);
             return ResponseEntity

@@ -8,7 +8,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.haui.cntt.myproject.entity.User;
@@ -19,6 +18,8 @@ import vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl;
 @RestController
 @RequiredArgsConstructor
 public class ShoppingCartController {
+    private static final String LOGIN = "admin/auth-login-basic";
+
     @Autowired
     private final CartService cartService;
     @Autowired
@@ -30,7 +31,7 @@ public class ShoppingCartController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return LOGIN;
         }
 
         String email = loggedUser.getEmail();
@@ -47,7 +48,7 @@ public class ShoppingCartController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return LOGIN;
         }
 
         String email = loggedUser.getEmail();
@@ -63,7 +64,7 @@ public class ShoppingCartController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return LOGIN;
         }
 
         try {

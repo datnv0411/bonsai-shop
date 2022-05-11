@@ -24,6 +24,8 @@ import java.time.LocalDateTime;
 @Controller
 @RequiredArgsConstructor
 public class UserController {
+    private static final String LOGIN = "admin/auth-login-basic";
+
     @Autowired
     private final UserService mUserService;
     @Autowired
@@ -34,7 +36,7 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return LOGIN;
         }
 
         try {
@@ -50,7 +52,7 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return LOGIN;
         }
 
         try {
@@ -73,7 +75,7 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return LOGIN;
         }
 
         try {

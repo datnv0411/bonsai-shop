@@ -10,14 +10,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import vn.haui.cntt.myproject.entity.Cart;
 import vn.haui.cntt.myproject.entity.User;
 import vn.haui.cntt.myproject.service.CartService;
-import vn.haui.cntt.myproject.service.ProductCategoryService;
-import vn.haui.cntt.myproject.service.ProductService;
 import vn.haui.cntt.myproject.service.UserService;
 import vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl;
 
@@ -36,7 +31,7 @@ public class CartController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return "admin/auth-login-basic";
         }
 
         try {
@@ -60,7 +55,7 @@ public class CartController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return "admin/auth-login-basic";
         }
 
         try {

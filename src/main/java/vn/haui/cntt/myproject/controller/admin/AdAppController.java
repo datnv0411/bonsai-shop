@@ -9,7 +9,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import vn.haui.cntt.myproject.entity.Order;
 import vn.haui.cntt.myproject.entity.PaymentOrder;
 import vn.haui.cntt.myproject.entity.User;
@@ -25,6 +24,8 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class AdAppController {
+    private static final String LOGIN = "admin/auth-login-basic";
+    private static final String PAID = "Đã thanh toán";
 
     @Autowired
     private final UserService userService;
@@ -38,27 +39,38 @@ public class AdAppController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
-//        try {
+        try {
             String email = loggerUser.getEmail();
             User loggedUser = userService.getByEmail(email);
-            List<PaymentOrder> paymentOrder1 = paymentOrderService.findByStatus("Đã thanh toán", "2022-01-01", "2022-01-31");
-            List<PaymentOrder> paymentOrder2 = paymentOrderService.findByStatus("Đã thanh toán", "2022-02-01", "2022-02-28");
-            List<PaymentOrder> paymentOrder3 = paymentOrderService.findByStatus("Đã thanh toán", "2022-03-01", "2022-03-31");
-            List<PaymentOrder> paymentOrder4 = paymentOrderService.findByStatus("Đã thanh toán", "2022-04-01", "2022-04-30");
-            List<PaymentOrder> paymentOrder5 = paymentOrderService.findByStatus("Đã thanh toán", "2022-05-01", "2022-05-31");
-            List<PaymentOrder> paymentOrder6 = paymentOrderService.findByStatus("Đã thanh toán", "2022-06-01", "2022-06-30");
-            List<PaymentOrder> paymentOrder7 = paymentOrderService.findByStatus("Đã thanh toán", "2022-07-01", "2022-07-31");
-            List<PaymentOrder> paymentOrder8 = paymentOrderService.findByStatus("Đã thanh toán", "2022-08-01", "2022-08-31");
-            List<PaymentOrder> paymentOrder9 = paymentOrderService.findByStatus("Đã thanh toán", "2022-09-01", "2022-09-30");
-            List<PaymentOrder> paymentOrder10 = paymentOrderService.findByStatus("Đã thanh toán", "2022-10-01", "2022-10-31");
-            List<PaymentOrder> paymentOrder11 = paymentOrderService.findByStatus("Đã thanh toán", "2022-11-01", "2022-11-30");
-            List<PaymentOrder> paymentOrder12 = paymentOrderService.findByStatus("Đã thanh toán", "2022-12-01", "2022-12-31");
+            List<PaymentOrder> paymentOrder1 = paymentOrderService.findByStatus(PAID, "2022-01-01", "2022-01-31");
+            List<PaymentOrder> paymentOrder2 = paymentOrderService.findByStatus(PAID, "2022-02-01", "2022-02-28");
+            List<PaymentOrder> paymentOrder3 = paymentOrderService.findByStatus(PAID, "2022-03-01", "2022-03-31");
+            List<PaymentOrder> paymentOrder4 = paymentOrderService.findByStatus(PAID, "2022-04-01", "2022-04-30");
+            List<PaymentOrder> paymentOrder5 = paymentOrderService.findByStatus(PAID, "2022-05-01", "2022-05-31");
+            List<PaymentOrder> paymentOrder6 = paymentOrderService.findByStatus(PAID, "2022-06-01", "2022-06-30");
+            List<PaymentOrder> paymentOrder7 = paymentOrderService.findByStatus(PAID, "2022-07-01", "2022-07-31");
+            List<PaymentOrder> paymentOrder8 = paymentOrderService.findByStatus(PAID, "2022-08-01", "2022-08-31");
+            List<PaymentOrder> paymentOrder9 = paymentOrderService.findByStatus(PAID, "2022-09-01", "2022-09-30");
+            List<PaymentOrder> paymentOrder10 = paymentOrderService.findByStatus(PAID, "2022-10-01", "2022-10-31");
+            List<PaymentOrder> paymentOrder11 = paymentOrderService.findByStatus(PAID, "2022-11-01", "2022-11-30");
+            List<PaymentOrder> paymentOrder12 = paymentOrderService.findByStatus(PAID, "2022-12-01", "2022-12-31");
 
-            List money = new ArrayList();
+            List<Long> money = new ArrayList();
 
-            Long money1 = 0l, money2 = 0l, money3 = 0l, money4 = 0l, money5 = 0l, money6 = 0l, money7 = 0l, money8 = 0l, money9 = 0l, money10 = 0l, money11 = 0l, money12 = 0l;
+            Long money1 = 0l;
+            Long money2 = 0l;
+            Long money3 = 0l;
+            Long money4 = 0l;
+            Long money5 = 0l;
+            Long money6 = 0l;
+            Long money7 = 0l;
+            Long money8 = 0l;
+            Long money9 = 0l;
+            Long money10 = 0l;
+            Long money11 = 0l;
+            Long money12 = 0l;
 
             for (PaymentOrder po : paymentOrder1
             ) {
@@ -138,27 +150,10 @@ public class AdAppController {
             model.addAttribute("orderDaHuy", orders4.size());
 
             return "admin/ad-index";
-//        } catch (Exception e){
-//            return "404";
-//        }
+        } catch (Exception e){
+            return "404";
+        }
     }
-
-//    @GetMapping("/admin/register")
-//    public String showSignUpForm(Model model){
-//        User newUser = new User();
-//
-//        model.addAttribute("user", newUser);
-//        return "auth-register-basic";
-//    }
-//
-//    @PostMapping("/admin/process-register")
-//    public String processRegistration(User user) {
-//        userService.encodePassword(user);
-//        userService.isRoleAdmin(user);
-//        userService.setAvatarDefault(user);
-//
-//        return "auth-login-basic";
-//    }
 
     @GetMapping("/404")
     public String error404(){
@@ -166,11 +161,11 @@ public class AdAppController {
     }
 
     @GetMapping("/admin/logout")
-    public String logout(){
+    public String adSignOut(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
@@ -182,11 +177,11 @@ public class AdAppController {
     }
 
     @GetMapping("/logout")
-    public String userLogout(){
+    public String usSignOut(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
@@ -202,7 +197,7 @@ public class AdAppController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         String email = loggerUser.getEmail();
@@ -223,7 +218,7 @@ public class AdAppController {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-                return "admin/auth-login-basic";
+                return LOGIN;
             }
             return "redirect:/home";
         } catch (Exception e){

@@ -19,10 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Service
 @Transactional
@@ -63,12 +59,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Boolean checkRoleAdmin(String email) {
-        User user = mUserRepository.findByEmailAndRoleAdmin(email);
-        if(user == null){
-            return false;
-        } else {
-            return true;
-        }
+        return mUserRepository.findByEmailAndRoleAdmin(email).getEmail().isEmpty();
     }
 
     @Override
@@ -179,6 +170,36 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void saveUser(User user) {
+        mUserRepository.save(user);
+    }
+
+    @Override
+    public void updateResetPassword(String token, String email) throws Exception {
+        User user = mUserRepository.findByEmail(email);
+
+        if (user != null){
+            user.setResetPasswordToken(token);
+            mUserRepository.save(user);
+        } else {
+            throw new Exception("Không tìm thấy thông tin phù hợp!");
+        }
+    }
+
+    @Override
+    public User get(String rpt) {
+        return mUserRepository.findByResetPasswordToken(rpt);
+    }
+
+    @Override
+    public void updatePassword(User user, String newPass) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodePass = passwordEncoder.encode(newPass);
+
+        user.setPassword(encodePass);
+        user.setResetPasswordToken(null);
+        user.setUpdatedBy(user.getUsername());
+        user.setUpdatedDate(LocalDateTime.now());
+
         mUserRepository.save(user);
     }
 

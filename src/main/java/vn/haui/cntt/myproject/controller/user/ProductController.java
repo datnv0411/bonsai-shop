@@ -59,7 +59,7 @@ public class ProductController {
             ) {
                 for (ProductImage pi: productImages
                 ) {
-                    if(pi.getProduct().getId()==pr.getId()){
+                    if(pi.getProduct().getId().equals(pr.getId())){
                         pi.setProduct(pr);
                     }
                 }
@@ -154,7 +154,7 @@ public class ProductController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return "admin/auth-login-basic";
         }
 
         try {
@@ -184,13 +184,10 @@ public class ProductController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return "admin/auth-login-basic";
         }
 
         try {
-            String email = loggedUser.getEmail();
-            User user = mUserService.getByEmail(email);
-
             ProductComment productComment = productCommentService.findById(id);
             Long productId = productComment.getProduct().getId();
             productComment.setDeletedFlag(true);

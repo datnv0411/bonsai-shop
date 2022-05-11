@@ -29,12 +29,12 @@ public class PaymentServiceImpl implements PaymentService {
     private PaymentOrderRepository paymentOrderRepository;
 
 
-    final String VNP_TMNCODE = "H75QIGLL";
-    final static String VNP_HASHSECRET = "AFWJXAEGYIFGFUOPUYPTOYUOOQBHRBSC";
-    final String VNP_URL = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?";
-    final String VNP_VERSION = "2.1.0";
-    final String VNP_COMMAND = "pay";
-    final String ORDER_TYPE = "180000";
+    static final String VNP_TMNCODE = "H75QIGLL";
+    static final String VNP_HASHSECRET = "AFWJXAEGYIFGFUOPUYPTOYUOOQBHRBSC";
+    static final String VNP_URL = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?";
+    static final String VNP_VERSION = "2.1.0";
+    static final String VNP_COMMAND = "pay";
+    static final String ORDER_TYPE = "180000";
 
     @Override
     public Payment findByPaymentName(String payment) {
@@ -88,15 +88,13 @@ public class PaymentServiceImpl implements PaymentService {
 
         String vnp_SecureHash = Sha512Util.hmac(VNP_HASHSECRET, rawHash);
 
-        String urlResult = VNP_URL+rawHash+"&vnp_SecureHash=" + vnp_SecureHash;
-        return urlResult;
+        return VNP_URL+rawHash+"&vnp_SecureHash=" + vnp_SecureHash;
     }
 
     @Override
     public void checkResultPaid(String vnp_responseCode, String vnp_txnRef, String vnp_amount) {
         if ("00".equals(vnp_responseCode)){
             long orderId = Long.parseLong(vnp_txnRef);
-            long totalPaid = Long.parseLong(vnp_amount);
 
             PaymentOrder paymentOrder = paymentOrderRepository.findByOrderIdAndDeletedFlag(orderId, false);
             paymentOrder.setStatus("Đã thanh toán");

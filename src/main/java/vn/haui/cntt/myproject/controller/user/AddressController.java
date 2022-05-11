@@ -23,6 +23,10 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class AddressController {
+    private static final String LOGIN = "admin/auth-login-basic";
+    private static final String MESSAGE = "message";
+    private static final String RETURN_URL = "redirect:/address?page=1&sortField=is_default&sortDir=des";
+
     @Autowired
     private final AddressService addressService;
 
@@ -36,7 +40,7 @@ public class AddressController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "login";
+            return LOGIN;
         }
 
         try {
@@ -66,7 +70,7 @@ public class AddressController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return LOGIN;
         }
 
         try {
@@ -87,7 +91,7 @@ public class AddressController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return LOGIN;
         }
 
         try {
@@ -95,11 +99,7 @@ public class AddressController {
             User user = mUserService.getByEmail(email);
 
             List<Address> addressList = addressService.findByUserId(user.getId());
-            if(addressList.isEmpty()){
-                address.setDefault(true);
-            } else {
-                address.setDefault(false);
-            }
+            address.setDefault(addressList.isEmpty());
 
             address.setUser(user);
             address.setCreatedBy(loggerUser.getUsername());
@@ -108,21 +108,21 @@ public class AddressController {
 
             addressService.save(address);
 
-            redirectAttributes.addFlashAttribute("message", "Thêm mới địa chỉ thành công.");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Thêm mới địa chỉ thành công.");
 
-            return "redirect:/address?page=1&sortField=is_default&sortDir=des";
+            return RETURN_URL;
         } catch (Exception e){
             return "404";
         }
     }
 
     @GetMapping("/update-address")
-    public String UpdateAddress(Model model, @Param("addressId") Long addressId,
+    public String updateAddress(Model model, @Param("addressId") Long addressId,
                                 @AuthenticationPrincipal CustomUserDetailImpl loggerUser){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return LOGIN;
         }
 
        try {
@@ -146,7 +146,7 @@ public class AddressController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return LOGIN;
         }
 
         try {
@@ -157,9 +157,9 @@ public class AddressController {
 
             addressService.updateAddress(address, user);
 
-            redirectAttributes.addFlashAttribute("message", "Thông tin địa chỉ đã được cập nhật.");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Thông tin địa chỉ đã được cập nhật.");
 
-            return "redirect:/address?page=1&sortField=is_default&sortDir=des";
+            return RETURN_URL;
         } catch (Exception e){
             return "404";
         }
@@ -172,7 +172,7 @@ public class AddressController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return LOGIN;
         }
 
         try {
@@ -181,9 +181,9 @@ public class AddressController {
 
             addressService.deleteAddress(addressId, user);
 
-            redirectAttributes.addFlashAttribute("message", "Đã xóa địa chỉ thành công.");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Đã xóa địa chỉ thành công.");
 
-            return "redirect:/address?page=1&sortField=is_default&sortDir=des";
+            return RETURN_URL;
         } catch (Exception e){
             return "404";
         }
@@ -196,7 +196,7 @@ public class AddressController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return LOGIN;
         }
 
         try {
@@ -205,9 +205,9 @@ public class AddressController {
 
             addressService.setDefaultAddress(addressId, user.getId());
 
-            redirectAttributes.addFlashAttribute("message", "Thay đổi địa chỉ mặc định thành công.");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Thay đổi địa chỉ mặc định thành công.");
 
-            return "redirect:/address?page=1&sortField=is_default&sortDir=des";
+            return RETURN_URL;
         } catch (Exception e){
             return "404";
         }

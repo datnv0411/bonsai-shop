@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!-- Basic -->
+
+<head th:replace="fragment :: head">
+
+<body>
+<div th:replace="fragment :: top"></div>
+<!-- Start All Title Box -->
+<div class="all-title-box">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2>Thông tin tài khoản</h2>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="account">Tài khoản</a></li>
+                    <li class="breadcrumb-item active">ĐỊA CHỈ</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="cart-box-main">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div><a style="color:white;margin-bottom:5px;" class="btn hvr-hover" href="create-address">Thêm</a></div>
+                <div class="table-main table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Họ và tên</th>
+                            <th>Số điện thoại</th>
+                            <th>Địa chỉ</th>
+                            <th>Loại địa chỉ</th>
+                            <th>Địa chỉ mặc định</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody th:each="address : ${listAddress}">
+                        <tr>
+                            <td>
+                                <p th:text="${address.fullName}"></p>
+                            </td>
+                            <td>
+                                <p th:text="${address.cellphone}"></p>
+                            </td>
+                            <td>
+                                <p>
+                                    <span th:text="${address.specificAddress}"></span>
+                                    <span>, </span>
+                                    <span th:text="${address.town}"></span>
+                                    <span>, </span>
+                                    <span th:text="${address.district}"></span>
+                                    <span>, </span>
+                                    <span th:text="${address.province}"></span>
+                                </p>
+                            <td>
+                                <p th:text="${address.typeAddress}"></p>
+                            </td>
+                            <td>
+                                <input type="radio" th:checked="${address.isDefault} ? true : false" readonly>
+                            </td>
+                            <td>
+                                <a class="btn hvr-hover" style="color:white;"
+                                   th:href="@{'/update-address?addressId=' + ${address.id}}">Sửa
+                                </a>
+                                <a style="margin-left:10px; color:white;" class="btn hvr-hover"
+                                   th:href="@{'/delete-address?addressId=' + ${address.id}}" th:if="${!address.isDefault}">Xóa
+                                </a>
+                                <a style="margin-left:10px; color:white;" class="btn hvr-hover"
+                                   th:href="@{'/default-address?addressId=' + ${address.id}}" th:if="${!address.isDefault}">Thiết lập mặc định
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                        <div th:if="${#lists.isEmpty(listAddress)}">
+                            <h3>Không tìm thấy kết quả nào.</h3>
+                        </div>
+                    </table>
+                </div>
+                <div style="margin-top:5px;" th:if="${message != null}" class="alert alert-success text-center">[[${message}]]</div>
+                <div >
+                    <hr>
+                    Trang: [[${page}]] &nbsp;
+
+                    <a th:if="${page > 1}" th:href="@{'/address?page=1&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">First</a>
+                    <span th:unless="${page > 1}"> << </span>
+                    &nbsp;
+
+                    <a th:if="${page > 1}" th:href="@{'/address?page=' + ${page - 1} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Previous</a>
+                    <span th:unless="${page > 1}"> < </span>
+                    &nbsp;
+
+                    <span th:each="i : ${#numbers.sequence(1, totalPages)}">
+        <a th:if="${i != page}" th:href="@{'/address?page=' + ${i} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">[[${i}]]</a>
+        <span th:unless="${i != page}">[[${i}]]</span>
+        &nbsp;&nbsp;
+    </span>
+
+                    <a th:if="${page < totalPages}" th:href="@{'/address?page=' + ${page + 1} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Next</a>
+                    <span th:unless="${page < totalPages}"> > </span>
+                    &nbsp;
+
+                    <a th:if="${page < totalPages}" th:href="@{'/address?page=' + ${totalPages} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir"}>Last</a>
+                    <span th:unless="${page < totalPages}"> >> </span>
+                    &nbsp;
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<div th:replace="fragment :: instagramFeed" th:remove="tag"></div>
+<footer>
+    <div th:replace="fragment :: footer" th:remove="tag"></div>
+</footer>
+<div th:replace="fragment :: copyright" th:remove="tag"></div>
+<a th:replace="fragment :: backToTop" th:remove="tag"></a>
+<div th:replace="fragment :: finalScript" th:remove="tag"></div>
+</body>
+</html>
+<!--<script type="text/javascript">-->
+<!--    $(document).ready(function(){-->
+<!--        $('#fileImage').change(function(){-->
+<!--            showImageThumbnail(this);-->
+<!--        });-->
+<!--    });-->
+
+<!--    function showImageThumbnail(fileInput){-->
+<!--        file = fileInput.files[0];-->
+<!--        reader = new FileReader();-->
+
+<!--        reader.onload = function(e){-->
+<!--            $('#thumbnail').attr('src', e.target.result);-->
+<!--        };-->
+
+<!--        reader.readAsDataURL(file);-->
+<!--    }-->
+<!--</script>-->

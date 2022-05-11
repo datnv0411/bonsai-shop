@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!-- Basic -->
+
+<head th:replace="fragment :: head">
+
+<body>
+<div th:replace="fragment :: top"></div>
+<!-- Start All Title Box -->
+<div class="all-title-box">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2>Thông tin tài khoản</h2>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="account">Tài khoản</a></li>
+                    <li class="breadcrumb-item active">ĐỊA CHỈ</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div align="center">
+    <br>
+    <form class="form" th:action="@{/address/save}" th:object="${newAddress}" method="post">
+        <div class="text-center">
+            <h2>Thêm mới địa chỉ</h2>
+        </div>
+        <div class="border border-secondary rounded p-3">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Họ và tên: </label>
+                <div class="col-sm-8">
+                    <input class="form-control" type="text" th:field="*{fullName}" required/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Số điện thoại: </label>
+                <div class="col-sm-8">
+                    <input class="form-control" type="tel" th:field="*{cellphone}" required/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Tỉnh/ Thành phố: </label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" th:field="*{province}" required/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Quận/ Huyện: </label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" th:field="*{district}" required/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Xã: </label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" th:field="*{town}"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Địa chỉ: </label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" th:field="*{specificAddress}"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Loại địa chỉ: </label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" th:field="*{typeAddress}"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-12">
+                    <button class="btn hvr-hover" style="height: 37px; padding: 0px 20px; font-weight: 700; color: #ffffff; border: none;" type="submit">Thêm mới</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div th:replace="fragment :: instagramFeed" th:remove="tag"></div>
+<footer>
+    <div th:replace="fragment :: footer" th:remove="tag"></div>
+</footer>
+<div th:replace="fragment :: copyright" th:remove="tag"></div>
+<a th:replace="fragment :: backToTop" th:remove="tag"></a>
+<div th:replace="fragment :: finalScript" th:remove="tag"></div>
+</body>
+</html>

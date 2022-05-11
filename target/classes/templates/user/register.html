@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Login</title>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/login-page.css">
+</head>
+<body>
+
+<!--Form login-->
+<div class="login-page">
+    <div class="form">
+        <span class="close" title="Close Modal"><a href="home" style="text-decoration: none;">&times;</a></span>
+        <form class="register-form" th:action="@{/process-register}" method="post"
+              th:object="${user}">
+            <span class="app-brand-text demo text-body fw-bolder">BonsaiShop</span>
+            <h4 class="mb-2">Đăng ký ngay 🚀</h4>
+            <p class="mb-4">Đăng ký ngay để mua sắm!</p>
+            <input type="text" placeholder="Tên người dùng" th:field="*{username}"/>
+            <input type="email" placeholder="Email" th:field="*{email}"/>
+            <input type="tel" placeholder="Số điện thoại" th:field="*{cellphone}"/>
+            <input type="password" placeholder="Mật khẩu" th:field="*{password}" minlength="6"/>
+            <input type="text" placeholder="Họ" th:field="*{firstName}"/>
+            <input type="text" placeholder="Tên" th:field="*{lastName}"/>
+            <input type="radio" placeholder="Giới tính" value="Nam" th:field="*{gender}" checked>Nam</input>
+            <input type="radio" placeholder="Giới tính" value="Nữ" th:field="*{gender}">Nữ</input>
+            <button type="submit">Đăng ký</button>
+            <span class="message">Đã có tài khoản ? </span>
+            <a href="login">Đăng nhập ngay</a>
+        </form>
+    </div>
+</div>
+<!-- End Form Login -->
+<script>
+$('.message a').click(function(){
+   $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
+});
+</script>
+
+</body>
+</html>

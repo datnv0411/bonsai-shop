@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div th:fragment="quantity_control(qtyValue, productId, qtyProduct)">
+        <a class="page-link plusButton text-center" href="" th:pid="${productId}"><b>+</b></a>
+        <input type="text" th:value="${qtyValue}" class="form-control text-center"
+        onkeydown="return false;" th:id="'quantity' + ${productId}"
+        th:max="${qtyProduct}">
+        <a class="page-link minusButton text-center" href="" th:pid="${productId}"><b>-</b></a>
+    </div>
+</body>
+</html>

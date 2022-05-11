@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+
+<!-- =========================================================
+* Sneat - Bootstrap 5 HTML Admin Template - Pro | v1.0.0
+==============================================================
+
+* Product Page: https://themeselection.com/products/sneat-bootstrap-html-admin-template/
+* Created by: ThemeSelection
+* License: You must have a valid license purchased in order to legally use the theme for your project.
+* Copyright ThemeSelection (https://themeselection.com)
+
+=========================================================
+ -->
+<!-- beautify ignore:start -->
+<html
+        lang="en"
+        class="light-style customizer-hide"
+        dir="ltr"
+        data-theme="theme-default"
+        data-assets-path="../assets/"
+        data-template="vertical-menu-template-free"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+>
+<div th:replace="a-fragment :: head" th:remove="tag"></div>
+
+  <body>
+    <!-- Content -->
+
+    <div class="container-xxl">
+      <div class="authentication-wrapper authentication-basic container-p-y">
+        <div class="authentication-inner">
+          <!-- Register -->
+          <div class="card">
+            <div class="card-body">
+              <!-- Logo -->
+              <div class="app-brand justify-content-center">
+                <a href="admin/login" class="app-brand-link gap-2">
+                  <div th:replace="a-fragment :: spanHead" th:remove="tag"></div>
+                  <span class="app-brand-text demo text-body fw-bolder">BonsaiShop</span>
+                </a>
+              </div>
+              <!-- /Logo -->
+              <h4 class="mb-2">Chào mừng đến với BonsaiShop! 👋</h4>
+              <p class="mb-4">Đăng nhập ngay.</p>
+
+              <form id="formAuthentication" class="mb-3" th:action="@{/login}" method="post">
+                <div class="mb-3">
+                  <label class="form-label">Email</label>
+                  <input type="email" class="form-control" name="email" placeholder="Email"
+                    autofocus
+                  />
+                </div>
+                <div class="mb-3 form-password-toggle">
+                  <div class="d-flex justify-content-between">
+                    <label class="form-label">Mật khẩu</label>
+<!--                    <a href="auth-forgot-password-basic.html">-->
+<!--                      <small>Quên mật khẩu?</small>-->
+<!--                    </a>-->
+                  </div>
+                  <div class="input-group input-group-merge">
+                    <input
+                      type="password"
+                      class="form-control"
+                      name="psw"
+                      placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                      aria-describedby="password"
+                    />
+                    <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="remember-me" name="remember-me" />
+                    <label class="form-check-label" for="remember-me"> Lưu mật khẩu </label>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <button id="btnLogin" class="btn btn-primary d-grid w-100" type="submit">Đăng nhập</button>
+                </div>
+              </form>
+
+              <p class="text-center">
+                <span>Chưa có tài khoản?</span>
+                <a href="register">
+                  <span>Đăng ký ngay</span>
+                </a>
+              </p>
+            </div>
+          </div>
+          <!-- /Register -->
+        </div>
+      </div>
+    </div>
+
+    <!-- / Content -->
+
+    <div th:replace="a-fragment :: coreScript" th:remove="tag"></div>
+  </body>
+</html>

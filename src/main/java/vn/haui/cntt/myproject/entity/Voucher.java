@@ -23,8 +23,8 @@ import java.util.List;
 @Table(name = "voucher")
 public class Voucher extends BaseEntity {
     private String codeVoucher;
-    private Timestamp startTime;
-    private Timestamp endTime;
+    private String startTime;
+    private String endTime;
     private int timesOfUse;
     private int quantity;
     private String image;

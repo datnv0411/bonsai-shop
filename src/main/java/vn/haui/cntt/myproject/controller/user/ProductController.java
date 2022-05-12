@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import vn.haui.cntt.myproject.entity.*;
+import vn.haui.cntt.myproject.enums.ProductStatusEnum;
 import vn.haui.cntt.myproject.service.*;
 import vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl;
 
@@ -64,6 +65,8 @@ public class ProductController {
                     }
                 }
             }
+
+
 
             model.addAttribute("page", page);
             model.addAttribute("totalItems", totalItems);

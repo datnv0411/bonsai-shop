@@ -59,7 +59,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Boolean checkRoleAdmin(String email) {
-        return mUserRepository.findByEmailAndRoleAdmin(email).getEmail().isEmpty();
+        User user = mUserRepository.findByEmailAndRoleAdmin(email);
+        if(user == null){
+            return false;
+        } else {
+            return true;
+        }
     }
 
     @Override

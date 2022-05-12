@@ -107,7 +107,7 @@ public class OrderServiceImpl implements OrderService {
 
         Pageable pageable = PageRequest.of(pageNumberInt - 1,9, sort);
 
-        return orderRepository.findAllByDeletedFlag(0, pageable);
+        return orderRepository.findByDeletedFlag(pageable);
     }
 
     @Override
@@ -122,7 +122,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> findAll() {
-        return orderRepository.findAllByDeletedFlag(false);
+        return orderRepository.findByDeletedFlag(false);
     }
 
     @Override

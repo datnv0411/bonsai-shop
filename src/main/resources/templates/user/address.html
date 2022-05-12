@@ -81,32 +81,24 @@
                     </table>
                 </div>
                 <div style="margin-top:5px;" th:if="${message != null}" class="alert alert-success text-center">[[${message}]]</div>
-                <div >
-                    <hr>
-                    Trang: [[${page}]] &nbsp;
-
-                    <a th:if="${page > 1}" th:href="@{'/address?page=1&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">First</a>
-                    <span th:unless="${page > 1}"> << </span>
-                    &nbsp;
-
-                    <a th:if="${page > 1}" th:href="@{'/address?page=' + ${page - 1} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Previous</a>
-                    <span th:unless="${page > 1}"> < </span>
-                    &nbsp;
-
-                    <span th:each="i : ${#numbers.sequence(1, totalPages)}">
-        <a th:if="${i != page}" th:href="@{'/address?page=' + ${i} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">[[${i}]]</a>
-        <span th:unless="${i != page}">[[${i}]]</span>
-        &nbsp;&nbsp;
-    </span>
-
-                    <a th:if="${page < totalPages}" th:href="@{'/address?page=' + ${page + 1} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Next</a>
-                    <span th:unless="${page < totalPages}"> > </span>
-                    &nbsp;
-
-                    <a th:if="${page < totalPages}" th:href="@{'/address?page=' + ${totalPages} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir"}>Last</a>
-                    <span th:unless="${page < totalPages}"> >> </span>
-                    &nbsp;
-                </div>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        <li th:class="${page>1} ? 'page-item' : 'page-item disabled'">
+                            <a class="page-link" th:href="${page>1} ? @{'/address?page=' + ${page - 1} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&categoryId=' + ${categoryId}} : ''" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                        </li>
+                        <li th:each="i : ${#numbers.sequence(1, totalPages)}" th:class="${i == page} ? 'page-item active' : 'page-item'">
+                            <a class="page-link" th:href="${i!=page} ? @{'/address?page=' + ${i} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&categoryId=' + ${categoryId}} : ''">[[${i}]]</a>
+                        </li>
+                        <li th:class="${page<totalPages} ? 'page-item' : 'page-item disabled'">
+                            <a class="page-link" th:href="@{'/address?page=' + ${page + 1} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&categoryId=' + ${categoryId}}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                                <span class="sr-only">Next</span></a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>

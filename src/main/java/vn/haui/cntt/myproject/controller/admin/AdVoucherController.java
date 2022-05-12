@@ -223,7 +223,7 @@ public class AdVoucherController {
         voucherService.delete(voucher);
 
         redirectAttributes.addFlashAttribute(MESSAGE, "Đã xóa.");
-        return "redirect:/admin/vouchers?page=1&sortField=id&sortDir=asc";
+        return "redirect:/admin/vouchers?page=1&sortField=id&sortDir=des";
         } catch (Exception e){
             return "404";
         }

@@ -71,7 +71,8 @@
                           <div class="mb-3 col-md-6" th:object="${category}">
                             <label class="form-label">Danh mục</label>
                             <select class="btn btn-primary dropdown-toggle" th:field="*{name}">
-                              <option th:each="c : ${listCategories}" th:selected="${productCategory.category.id == c.id} ? 'true' : 'false'" th:value="${c.name}" th:text="${productCategory.category.name}"></option>
+                              <option id="0" th:value="${productCategory.category.name}" th:text="${productCategory.category.name}"></option>
+                              <option th:each="c : ${listCategories}" th:value="${c.name}" th:id="'cate'+${c.id}" th:text="${c.name}"></option>
                             </select>
                           </div>
                           <div class="mb-3 col-md-6">
@@ -114,8 +115,11 @@
                           </div>
                           <div class="mb-3 col-md-6">
                             <label class="form-label">Trạng thái</label>
-                            <input required type="text" class="form-control" th:field="*{status}"
-                                   />
+                            <select class="btn btn-primary dropdown-toggle" th:field="*{status}">
+                              <option id="stt0" th:value="${foundProduct.status}" th:text="${foundProduct.status}"></option>
+                              <option th:value="'Còn_hàng'" th:id="'conHang'">Còn_hàng</option>
+                              <option th:value="'Hết_hàng'" th:id="'hetHang'">Hết_hàng</option>
+                            </select>
                           </div>
                           <div class="mb-3 col-md-6">
                             <label class="form-label">Mô tả</label>
@@ -278,6 +282,37 @@
           showImageThumbnail(this, index);
         });
       });
+
+      var s = "[[${foundProduct.status}]]";
+      if(s=="Còn_hàng"){
+        $("#conHang").hide();
+      } else {
+        if(s=="Hết_hàng"){
+          $("#hetHang").hide();
+        }
+      }
+
+
+      var c = "[[${productCategory.category.name}]]";
+      if(c=="Cây để bàn"){
+        $("#cate1").hide();
+      } else {
+        if(c=="Cây nội thất"){
+          $("#cate2").hide();
+        } else {
+          if(c=="Cây phong thủy"){
+            $("#cate3").hide();
+          } else {
+            if(c=="Cây văn phòng"){
+              $("#cate4").hide();
+            } else {
+              if(c=="Cây dây leo"){
+                $("#cate5").hide();
+              }
+            }
+          }
+        }
+      }
     });
 
     function showImageThumbnail(fileInput, index){

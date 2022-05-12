@@ -24,12 +24,12 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "where o.user_id = :userId and od.product_id = :productId and o.order_status LIKE :orderStatus%", nativeQuery = true)
     Order findUserBoughtOrNot(@Param(value ="userId") Long id, @Param(value = "productId") Long productId, @Param(value = "orderStatus") String os);
 
-    @Query(value = "select * from ordered where deleted_flag = :deletedFlag", nativeQuery = true)
-    Page<Order> findAllByDeletedFlag(@Param(value = "deletedFlag") int i, Pageable pageable);
+    @Query(value = "select * from ordered where deleted_flag = 0", nativeQuery = true)
+    Page<Order> findByDeletedFlag(Pageable pageable);
 
     Order findByIdAndDeletedFlag(Long id, boolean b);
 
-    List<Order> findAllByDeletedFlag(boolean b);
+    List<Order> findByDeletedFlag(boolean b);
 
     List<Order> findByOrderStatusAndDeletedFlag(OrderStatusEnum status, boolean b);
 }

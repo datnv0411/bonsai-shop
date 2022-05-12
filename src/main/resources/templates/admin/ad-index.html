@@ -70,8 +70,12 @@
                             <div class="card">
                                 <div class="row row-bordered g-0">
                                     <div class="col-md-8">
-                                        <h5 class="card-header m-0 me-2 pb-3">Tổng doanh thu</h5>
+                                        <h5 class="card-header m-0 me-2 pb-3">Doanh thu theo tháng</h5>
                                         <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <h5 class="card-header m-0 me-2 pb-3">Doanh thu (năm): </h5>
+                                        <h6 style="color:red;" class="card-header m-0 me-2 pb-3"><span th:text="${total}"></span><span> VND</span></h6>
                                     </div>
                                 </div>
                             </div>
@@ -90,8 +94,6 @@
                                         <h6 class="card-header m-0 me-2 pb-3">Số đơn đang giao: <span th:text="${orderDangGiao}"></span></h6>
                                         <h6 class="card-header m-0 me-2 pb-3">Số đơn đã giao: <span th:text="${orderDaGiao}"></span></h6>
                                         <h6 class="card-header m-0 me-2 pb-3">Số đơn bị hủy: <span th:text="${orderDaHuy}"></span></h6>
-                                        <h5 class="card-header m-0 me-2 pb-3">Tổng doanh thu: </h5>
-                                        <h6 class="card-header m-0 me-2 pb-3"><span th:text="${total}"></span><span> VND</span></h6>
                                     </div>
                                 </div>
                             </div>

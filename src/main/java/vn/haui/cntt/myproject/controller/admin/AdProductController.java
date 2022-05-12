@@ -296,7 +296,7 @@ public class AdProductController {
             productCategoryService.save(productCategory);
 
             product.setProductSearch(foundProduct.getProductSearch());
-            product.setCreatedBy(foundCategory.getCreatedBy());
+            product.setCreatedBy(foundProduct.getCreatedBy());
             product.setCreatedDate(foundProduct.getCreatedDate());
             product.setUpdatedDate(LocalDateTime.now());
             product.setUpdatedBy(loggerUser.getUsername());

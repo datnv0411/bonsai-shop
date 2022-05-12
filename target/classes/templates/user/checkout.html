@@ -41,7 +41,7 @@
                                     <label th:text="${ads.specificAddress}+', '+${ads.town}+', '+${ads.district}+', '+${ads.province}" class="custom-control-label" th:for="${ads.id}">Address</label>
                                     <div class="invalid-feedback" th:if="${#lists.isEmpty(addresses)}"> Hãy tạo địa chỉ ! </div>
                                 </div>
-                                <label><a class="btn hvr-hover" href="create-address">Thêm địa chỉ mới</a></label>
+                                <label><a style="color:white;" class="btn hvr-hover" href="create-address">Thêm địa chỉ mới</a></label>
                             </div>
                             <hr class="mb-4">
                             <div class="title"> <span>Thanh toán</span> </div>

@@ -57,8 +57,7 @@ public class CartServiceImpl implements CartService {
         Product product = productRepository.findById(productId).get();
         product.setQuantity(product.getQuantity() - quantity);
         productRepository.save(product);
-        long subtotal = product.getPriceSale() * quantity;
-        return subtotal;
+        return product.getPriceSale() * quantity;
     }
 
     public void removeProduct(Long productId, User user){

@@ -4,5 +4,7 @@ java:S2160"+Override the "equals" method in this class.(Æ°²8Ê°ÏØ†0
 U
 java:S1128
 "9Remove this unused import 'javax.persistence.ManyToMany'.(Àğ½8Œ¡‚«‡0
+K
+java:S1128"/Remove this unused import 'java.sql.Timestamp'.(èò½+8ŒöÕ¢‹0
 M
 java:S1128"+Remove this unused import 'java.util.List'.(Õë±Äøÿÿÿÿ8Œ¡‚«‡0

@@ -107,7 +107,8 @@
                         </div>
                         <hr> </div>
                 </div>
-                <div class="col-12 d-flex shopping-box"><a href="create-order" class="ml-auto btn hvr-hover">Mua hàng</a> </div>
+                <div th:if="${#lists.isEmpty(cartItems)}" class="col-12 d-flex shopping-box"><a href="list-product" class="ml-auto btn hvr-hover">Mua sắm</a> </div>
+                <div th:unless="${#lists.isEmpty(cartItems)}" class="col-12 d-flex shopping-box"><a href="create-order" class="ml-auto btn hvr-hover">Mua hàng</a> </div>
             </div>
         </div>
     </div>

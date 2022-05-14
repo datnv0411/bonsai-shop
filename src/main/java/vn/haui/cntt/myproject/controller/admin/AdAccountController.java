@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import vn.haui.cntt.myproject.entity.User;
+import vn.haui.cntt.myproject.dto.UserDto;
+import vn.haui.cntt.myproject.mapper.UserMapper;
 import vn.haui.cntt.myproject.service.UserService;
 import vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl;
 import vn.haui.cntt.myproject.service.impl.ImageServiceImpl;
@@ -41,7 +42,7 @@ public class AdAccountController {
 
         try {
             String email = loggedUser.getEmail();
-            User user = mUserService.getByEmail(email);
+            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
 
             model.addAttribute("user", user);
 
@@ -54,7 +55,7 @@ public class AdAccountController {
 
 
     @PostMapping("/admin/account/update")
-    public String updateUserDetail(@ModelAttribute(name = "user") User user, RedirectAttributes redirectAttributes,
+    public String updateUserDetail(@ModelAttribute(name = "user") UserDto user, RedirectAttributes redirectAttributes,
                                    @AuthenticationPrincipal CustomUserDetailImpl loggerUser,
                                    @RequestParam("fileImage") MultipartFile multipartFile) throws IOException {
 
@@ -66,7 +67,7 @@ public class AdAccountController {
 
         try {
             String email = loggerUser.getEmail();
-            User loggedUser = mUserService.getByEmail(email);
+            UserDto loggedUser = UserMapper.toUserDto(mUserService.getByEmail(email));
 
             if(!multipartFile.isEmpty()){
                 String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
@@ -79,9 +80,9 @@ public class AdAccountController {
             }
 
             if (user.getPassword() == null || user.getPassword().equals("")){
-                mUserService.updateAccountWithoutPassword(user, loggerUser.getUsername());
+                mUserService.updateAccountWithoutPassword(user.toUser(), loggerUser.getUsername());
             } else {
-                mUserService.updateAccount(user, loggerUser.getUsername());
+                mUserService.updateAccount(user.toUser(), loggerUser.getUsername());
             }
 
             loggerUser.setUsername(user.getUsername());

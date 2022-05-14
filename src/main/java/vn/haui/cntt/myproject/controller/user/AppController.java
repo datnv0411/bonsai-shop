@@ -5,8 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import vn.haui.cntt.myproject.entity.User;
+
+import vn.haui.cntt.myproject.dto.UserDto;
 import vn.haui.cntt.myproject.service.impl.UserServiceImpl;
 
 @Controller
@@ -24,18 +26,18 @@ public class AppController {
 
     @GetMapping("/register")
     public String showSignUpForm(Model model){
-        User newUser = new User();
+        UserDto newUser = new UserDto();
 
         model.addAttribute("user", newUser);
         return "admin/auth-register-basic";
     }
-
+ 
     @PostMapping("/process-register")
-    public String processRegistration(User user){
+    public String processRegistration(@ModelAttribute(name = "user") UserDto user){
         try{
-            userService.encodePassword(user);
-            userService.isRoleUser(user);
-            userService.setAvatarDefault(user);
+            userService.isRoleUser(user.toUser());
+            userService.encodePassword(user.toUser());
+            userService.setAvatarDefault(user.toUser());
 
             return "redirect:/login";
         } catch (Exception e) {

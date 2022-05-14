@@ -11,7 +11,7 @@ public interface OrderService {
 
     void cancelOrder(User user, Long orderId);
 
-    void save(Order order, User user, List<OrderDetail> orderDetail, Voucher voucher, Address checkAddress, Payment foundPayment, Long totalPrice);
+    void save(Order order, User user, Voucher voucher, Address checkAddress, Payment foundPayment, Long totalPrice);
 
     Order findById(long orderId, long userId);
 
@@ -21,7 +21,7 @@ public interface OrderService {
 
     Order findById(Long id);
 
-    void save(Order foundOrder);
+    Order save(Order foundOrder);
 
     List<Order> findAll();
 

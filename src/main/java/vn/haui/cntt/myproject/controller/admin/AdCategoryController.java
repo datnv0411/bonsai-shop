@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import vn.haui.cntt.myproject.entity.Category;
-import vn.haui.cntt.myproject.entity.User;
+import vn.haui.cntt.myproject.dto.CategoryDto;
+import vn.haui.cntt.myproject.dto.UserDto;
+import vn.haui.cntt.myproject.mapper.CategoryMapper;
+import vn.haui.cntt.myproject.mapper.UserMapper;
 import vn.haui.cntt.myproject.service.CategoryService;
 import vn.haui.cntt.myproject.service.ProductCategoryService;
 import vn.haui.cntt.myproject.service.UserService;
@@ -51,13 +53,13 @@ public class AdCategoryController {
 
         try {
             String email = loggedUser.getEmail();
-            User user = mUserService.getByEmail(email);
+            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
 
             String pageStr = String.valueOf(page);
-            Page<Category> pages = categoryService.listAll(pageStr, sortField, sortDir);
+            Page<CategoryDto> pages = categoryService.listAll(pageStr, sortField, sortDir).map(CategoryMapper::toCategoryDto);
             long totalItems = pages.getTotalElements();
             int totalPages = pages.getTotalPages();
-            List<Category> categories = pages.getContent();
+            List<CategoryDto> categories = pages.getContent();
 
             model.addAttribute("user", user);
             model.addAttribute("page", page);
@@ -85,12 +87,12 @@ public class AdCategoryController {
 
         try {
             String email = loggerUser.getEmail();
-            User loggedUser = mUserService.getByEmail(email);
+            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
 
-            Category category = new Category();
+            CategoryDto category = new CategoryDto();
 
 
-            model.addAttribute("user", loggedUser);
+            model.addAttribute("user", user);
             model.addAttribute("newCategory", category);
 
             return "admin/category-create";
@@ -100,7 +102,7 @@ public class AdCategoryController {
     }
 
     @PostMapping("/admin/category/save")
-    public String saveCategory(@ModelAttribute(name = "newCategory") Category category, RedirectAttributes redirectAttributes,
+    public String saveCategory(@ModelAttribute(name = "newCategory") CategoryDto category, RedirectAttributes redirectAttributes,
                              @AuthenticationPrincipal CustomUserDetailImpl loggerUser) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -113,7 +115,7 @@ public class AdCategoryController {
         category.setCreatedDate(LocalDateTime.now());
         category.setCreatedBy(loggerUser.getUsername());
         category.setDeletedFlag(false);
-        categoryService.save(category);
+        categoryService.save(category.toCategory());
 
         redirectAttributes.addFlashAttribute(MESSAGE, "Danh mục đã được tạo.");
 
@@ -135,12 +137,12 @@ public class AdCategoryController {
 
         try {
             String email = loggerUser.getEmail();
-            User loggedUser = mUserService.getByEmail(email);
+            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
 
-            Category category = categoryService.findById(id);
+            CategoryDto category = CategoryMapper.toCategoryDto(categoryService.findById(id));
 
 
-            model.addAttribute("user", loggedUser);
+            model.addAttribute("user", user);
             model.addAttribute("foundCategory", category);
 
             return "admin/category-edit";
@@ -150,7 +152,7 @@ public class AdCategoryController {
     }
 
     @PostMapping("/admin/category/update/{id}")
-    public String updateUser(@ModelAttribute(name = "foundCategory") Category category, RedirectAttributes redirectAttributes,
+    public String updateUser(@ModelAttribute(name = "foundCategory") CategoryDto category, RedirectAttributes redirectAttributes,
                              @AuthenticationPrincipal CustomUserDetailImpl loggerUser,
                              @PathVariable(value = "id") Long id) {
 
@@ -161,12 +163,12 @@ public class AdCategoryController {
         }
 
         try {
-        Category foundCategory = categoryService.findById(id);
+        CategoryDto foundCategory = CategoryMapper.toCategoryDto(categoryService.findById(id));
         category.setId(foundCategory.getId());
         category.setUpdatedDate(LocalDateTime.now());
         category.setUpdatedBy(loggerUser.getUsername());
         category.setDeletedFlag(foundCategory.getDeletedFlag());
-        categoryService.save(category);
+        categoryService.save(category.toCategory());
 
         redirectAttributes.addFlashAttribute(MESSAGE, "Thông tin danh mục đã được cập nhật.");
 
@@ -188,10 +190,10 @@ public class AdCategoryController {
         }
 
         try {
-            Category foundCategory = categoryService.findById(id);
+            CategoryDto foundCategory = CategoryMapper.toCategoryDto(categoryService.findById(id));
             String username = loggerUser.getUsername();
 
-            categoryService.delete(foundCategory, username);
+            categoryService.delete(foundCategory.toCategory(), username);
 
             redirectAttributes.addFlashAttribute(MESSAGE, "Đã xóa.");
             return "redirect:/admin/categories?page=1&sortField=id&sortDir=asc";

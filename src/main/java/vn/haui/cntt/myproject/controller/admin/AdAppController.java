@@ -9,10 +9,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import vn.haui.cntt.myproject.entity.Order;
-import vn.haui.cntt.myproject.entity.PaymentOrder;
-import vn.haui.cntt.myproject.entity.User;
+import vn.haui.cntt.myproject.dto.OrderDto;
+import vn.haui.cntt.myproject.dto.PaymentOrderDto;
+import vn.haui.cntt.myproject.dto.UserDto;
 import vn.haui.cntt.myproject.enums.OrderStatusEnum;
+import vn.haui.cntt.myproject.mapper.OrderMapper;
+import vn.haui.cntt.myproject.mapper.PaymentOrderMapper;
+import vn.haui.cntt.myproject.mapper.UserMapper;
 import vn.haui.cntt.myproject.service.OrderService;
 import vn.haui.cntt.myproject.service.PaymentOrderService;
 import vn.haui.cntt.myproject.service.UserService;
@@ -20,6 +23,7 @@ import vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -43,19 +47,19 @@ public class AdAppController {
         }
         try {
             String email = loggerUser.getEmail();
-            User loggedUser = userService.getByEmail(email);
-            List<PaymentOrder> paymentOrder1 = paymentOrderService.findByStatus(PAID, "2022-01-01", "2022-01-31");
-            List<PaymentOrder> paymentOrder2 = paymentOrderService.findByStatus(PAID, "2022-02-01", "2022-02-28");
-            List<PaymentOrder> paymentOrder3 = paymentOrderService.findByStatus(PAID, "2022-03-01", "2022-03-31");
-            List<PaymentOrder> paymentOrder4 = paymentOrderService.findByStatus(PAID, "2022-04-01", "2022-04-30");
-            List<PaymentOrder> paymentOrder5 = paymentOrderService.findByStatus(PAID, "2022-05-01", "2022-05-31");
-            List<PaymentOrder> paymentOrder6 = paymentOrderService.findByStatus(PAID, "2022-06-01", "2022-06-30");
-            List<PaymentOrder> paymentOrder7 = paymentOrderService.findByStatus(PAID, "2022-07-01", "2022-07-31");
-            List<PaymentOrder> paymentOrder8 = paymentOrderService.findByStatus(PAID, "2022-08-01", "2022-08-31");
-            List<PaymentOrder> paymentOrder9 = paymentOrderService.findByStatus(PAID, "2022-09-01", "2022-09-30");
-            List<PaymentOrder> paymentOrder10 = paymentOrderService.findByStatus(PAID, "2022-10-01", "2022-10-31");
-            List<PaymentOrder> paymentOrder11 = paymentOrderService.findByStatus(PAID, "2022-11-01", "2022-11-30");
-            List<PaymentOrder> paymentOrder12 = paymentOrderService.findByStatus(PAID, "2022-12-01", "2022-12-31");
+            UserDto loggedUser = UserMapper.toUserDto(userService.getByEmail(email));
+            List<PaymentOrderDto> paymentOrder1 = paymentOrderService.findByStatus(PAID, "2022-01-01", "2022-01-31").stream().map(PaymentOrderMapper::toPaymentOrderDto).collect(Collectors.toList());
+            List<PaymentOrderDto> paymentOrder2 = paymentOrderService.findByStatus(PAID, "2022-02-01", "2022-02-28").stream().map(PaymentOrderMapper::toPaymentOrderDto).collect(Collectors.toList());
+            List<PaymentOrderDto> paymentOrder3 = paymentOrderService.findByStatus(PAID, "2022-03-01", "2022-03-31").stream().map(PaymentOrderMapper::toPaymentOrderDto).collect(Collectors.toList());
+            List<PaymentOrderDto> paymentOrder4 = paymentOrderService.findByStatus(PAID, "2022-04-01", "2022-04-30").stream().map(PaymentOrderMapper::toPaymentOrderDto).collect(Collectors.toList());
+            List<PaymentOrderDto> paymentOrder5 = paymentOrderService.findByStatus(PAID, "2022-05-01", "2022-05-31").stream().map(PaymentOrderMapper::toPaymentOrderDto).collect(Collectors.toList());
+            List<PaymentOrderDto> paymentOrder6 = paymentOrderService.findByStatus(PAID, "2022-06-01", "2022-06-30").stream().map(PaymentOrderMapper::toPaymentOrderDto).collect(Collectors.toList());
+            List<PaymentOrderDto> paymentOrder7 = paymentOrderService.findByStatus(PAID, "2022-07-01", "2022-07-31").stream().map(PaymentOrderMapper::toPaymentOrderDto).collect(Collectors.toList());
+            List<PaymentOrderDto> paymentOrder8 = paymentOrderService.findByStatus(PAID, "2022-08-01", "2022-08-31").stream().map(PaymentOrderMapper::toPaymentOrderDto).collect(Collectors.toList());
+            List<PaymentOrderDto> paymentOrder9 = paymentOrderService.findByStatus(PAID, "2022-09-01", "2022-09-30").stream().map(PaymentOrderMapper::toPaymentOrderDto).collect(Collectors.toList());
+            List<PaymentOrderDto> paymentOrder10 = paymentOrderService.findByStatus(PAID, "2022-10-01", "2022-10-31").stream().map(PaymentOrderMapper::toPaymentOrderDto).collect(Collectors.toList());
+            List<PaymentOrderDto> paymentOrder11 = paymentOrderService.findByStatus(PAID, "2022-11-01", "2022-11-30").stream().map(PaymentOrderMapper::toPaymentOrderDto).collect(Collectors.toList());
+            List<PaymentOrderDto> paymentOrder12 = paymentOrderService.findByStatus(PAID, "2022-12-01", "2022-12-31").stream().map(PaymentOrderMapper::toPaymentOrderDto).collect(Collectors.toList());
 
             List<Long> money = new ArrayList();
 
@@ -72,51 +76,51 @@ public class AdAppController {
             Long money11 = 0l;
             Long money12 = 0l;
 
-            for (PaymentOrder po : paymentOrder1
+            for (PaymentOrderDto po : paymentOrder1
             ) {
                 money1 += po.getTotalPaid();
             }
-            for (PaymentOrder po : paymentOrder2
+            for (PaymentOrderDto po : paymentOrder2
             ) {
                 money2 += po.getTotalPaid();
             }
-            for (PaymentOrder po : paymentOrder3
+            for (PaymentOrderDto po : paymentOrder3
                  ) {
                 money3 += po.getTotalPaid();
             }
-            for (PaymentOrder po : paymentOrder4
+            for (PaymentOrderDto po : paymentOrder4
             ) {
                 money4 += po.getTotalPaid();
             }
-            for (PaymentOrder po : paymentOrder5
+            for (PaymentOrderDto po : paymentOrder5
             ) {
                 money5 += po.getTotalPaid();
             }
-            for (PaymentOrder po : paymentOrder6
+            for (PaymentOrderDto po : paymentOrder6
             ) {
                 money6 += po.getTotalPaid();
             }
-            for (PaymentOrder po : paymentOrder7
+            for (PaymentOrderDto po : paymentOrder7
             ) {
                 money7 += po.getTotalPaid();
             }
-            for (PaymentOrder po : paymentOrder8
+            for (PaymentOrderDto po : paymentOrder8
             ) {
                 money8 += po.getTotalPaid();
             }
-            for (PaymentOrder po : paymentOrder9
+            for (PaymentOrderDto po : paymentOrder9
             ) {
                 money9 += po.getTotalPaid();
             }
-            for (PaymentOrder po : paymentOrder10
+            for (PaymentOrderDto po : paymentOrder10
             ) {
                 money10 += po.getTotalPaid();
             }
-            for (PaymentOrder po : paymentOrder11
+            for (PaymentOrderDto po : paymentOrder11
             ) {
                 money11 += po.getTotalPaid();
             }
-            for (PaymentOrder po : paymentOrder12
+            for (PaymentOrderDto po : paymentOrder12
             ) {
                 money12 += po.getTotalPaid();
             }
@@ -134,11 +138,11 @@ public class AdAppController {
             money.add(money11);
             money.add(money12);
 
-            List<Order> orders = orderService.findAll();
-            List<Order> orders1 = orderService.findByStatus(OrderStatusEnum.Chờ);
-            List<Order> orders2 = orderService.findByStatus(OrderStatusEnum.Đang_giao_hàng);
-            List<Order> orders3 = orderService.findByStatus(OrderStatusEnum.Đã_giao);
-            List<Order> orders4 = orderService.findByStatus(OrderStatusEnum.Đã_hủy);
+            List<OrderDto> orders = orderService.findAll().stream().map(OrderMapper::toOrderDto).collect(Collectors.toList());
+            List<OrderDto> orders1 = orderService.findByStatus(OrderStatusEnum.Chờ).stream().map(OrderMapper::toOrderDto).collect(Collectors.toList());
+            List<OrderDto> orders2 = orderService.findByStatus(OrderStatusEnum.Đang_giao_hàng).stream().map(OrderMapper::toOrderDto).collect(Collectors.toList());
+            List<OrderDto> orders3 = orderService.findByStatus(OrderStatusEnum.Đã_giao).stream().map(OrderMapper::toOrderDto).collect(Collectors.toList());
+            List<OrderDto> orders4 = orderService.findByStatus(OrderStatusEnum.Đã_hủy).stream().map(OrderMapper::toOrderDto).collect(Collectors.toList());
 
             model.addAttribute("user", loggedUser);
             model.addAttribute("paymentOrder", money);
@@ -201,7 +205,7 @@ public class AdAppController {
         }
 
         String email = loggerUser.getEmail();
-        User loggedUser = userService.getByEmail(email);
+        UserDto loggedUser = UserMapper.toUserDto(userService.getByEmail(email));
 
         boolean checked = userService.checkRoleAdmin(loggedUser.getEmail());
 

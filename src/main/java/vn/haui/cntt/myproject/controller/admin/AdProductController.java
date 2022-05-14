@@ -14,7 +14,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import vn.haui.cntt.myproject.entity.*;
+import vn.haui.cntt.myproject.dto.*;
+import vn.haui.cntt.myproject.mapper.*;
 import vn.haui.cntt.myproject.service.*;
 import vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl;
 import vn.haui.cntt.myproject.service.impl.ImageServiceImpl;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -59,44 +61,44 @@ public class AdProductController {
         }
         try {
             String email = loggedUser.getEmail();
-            User user = mUserService.getByEmail(email);
+            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
 
             String pageStr = String.valueOf(page);
-            Page<ProductCategory> pages = productCategoryService.listAll(pageStr, sortField, sortDir);
+            Page<ProductCategoryDto> pages = productCategoryService.listAll(pageStr, sortField, sortDir).map(ProductCategoryMapper::toProductCategoryDto);
             long totalItems = pages.getTotalElements();
             int totalPages = pages.getTotalPages();
-            List<ProductCategory> productCategoryList = pages.getContent();
+            List<ProductCategoryDto> productCategoryList = pages.getContent();
 
-            List<ProductImage> productImages = productImageService.listProductImage();
-            List<Product> list = productService.listAll();
-            List<Category> categories = categoryService.findAll();
+            List<ProductImageDto> productImages = productImageService.listProductImage().stream().map(ProductImageMapper::toProductImageDto).collect(Collectors.toList());
+            List<ProductDto> list = productService.listAll().stream().map(ProductMapper::toProductDto).collect(Collectors.toList());
+            List<CategoryDto> categories = categoryService.findAll().stream().map(CategoryMapper::toCategoryDto).collect(Collectors.toList());
 
-            for (Product pr: list
+            for (ProductDto pr: list
             ) {
-                for (ProductImage pi: productImages
+                for (ProductImageDto pi: productImages
                 ) {
                     if(pi.getProduct().getId().equals(pr.getId())){
-                        pi.setProduct(pr);
+                        pi.setProduct(pr.toProduct());
                     }
                 }
             }
 
-            for (ProductCategory pc : productCategoryList
+            for (ProductCategoryDto pc : productCategoryList
                  ) {
-                for (Product p : list
+                for (ProductDto p : list
                      ) {
                     if(pc.getProduct().getId().equals(p.getId())){
-                        pc.setProduct(p);
+                        pc.setProduct(p.toProduct());
                     }
                 }
             }
 
-            for (ProductCategory pc : productCategoryList
+            for (ProductCategoryDto pc : productCategoryList
                  ) {
-                for (Category c : categories
+                for (CategoryDto c : categories
                      ) {
                     if(pc.getCategory().getId().equals(c.getId())){
-                        pc.setCategory(c);
+                        pc.setCategory(c.toCategory());
                     }
                 }
             }
@@ -128,14 +130,14 @@ public class AdProductController {
 
         try {
             String email = loggerUser.getEmail();
-            User loggedUser = mUserService.getByEmail(email);
+            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
 
-            Product product = new Product();
-            List<Category> list = categoryService.findAll();
+            ProductDto product = new ProductDto();
+            List<CategoryDto> list = categoryService.findAll().stream().map(CategoryMapper::toCategoryDto).collect(Collectors.toList());
 
-            Category category = new Category();
+            CategoryDto category = new CategoryDto();
 
-            model.addAttribute("user", loggedUser);
+            model.addAttribute("user", user);
             model.addAttribute("newProduct", product);
             model.addAttribute("listCategories", list);
             model.addAttribute("category", category);
@@ -147,8 +149,8 @@ public class AdProductController {
     }
 
     @PostMapping("/admin/product/save")
-    public String saveNewProduct(@ModelAttribute(name = "newProduct") Product product, RedirectAttributes redirectAttributes,
-                                 @ModelAttribute(name = "category") Category category,
+    public String saveNewProduct(@ModelAttribute(name = "newProduct") ProductDto product, RedirectAttributes redirectAttributes,
+                                 @ModelAttribute(name = "category") CategoryDto category,
                                  @AuthenticationPrincipal CustomUserDetailImpl loggerUser,
                                  @RequestParam("fileImage") MultipartFile[] multipartFile) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -158,7 +160,7 @@ public class AdProductController {
         }
 
         try {
-        List<ProductImage> productImageList = new ArrayList<>();
+        List<ProductImageDto> productImageList = new ArrayList<>();
 
         String productSearch = StandardizeStringUtil.standardizeString(product.getNameProduct());
         productSearch = VNCharacterUtil.removeAccent(productSearch);
@@ -169,11 +171,11 @@ public class AdProductController {
         product.setCreatedBy(loggerUser.getUsername());
         product.setDeletedFlag(false);
 
-        productService.save(product);
+        productService.save(product.toProduct());
 
         for (MultipartFile m : multipartFile
         ) {
-            ProductImage productImage = new ProductImage();
+            ProductImageDto productImage = new ProductImageDto();
             if(!m.isEmpty()){
                 String extraImg = StringUtils.cleanPath(m.getOriginalFilename());
                 productImage.setPath(extraImg);
@@ -184,24 +186,24 @@ public class AdProductController {
             }
         }
 
-        for (ProductImage pi : productImageList
+        for (ProductImageDto pi : productImageList
         ) {
-            pi.setProduct(product);
+            pi.setProduct(product.toProduct());
             pi.setDeletedFlag(false);
             pi.setCreatedBy(loggerUser.getUsername());
             pi.setCreatedDate(LocalDateTime.now());
-            productImageService.save(pi);
+            productImageService.save(pi.toProductImage());
         }
-        product.setProductImages(productImageList);
+        product.setProductImages(ProductImageMapper.toListProductImage(productImageList));
 
-        ProductCategory productCategory = new ProductCategory();
-        Category foundCategory = categoryService.findByName(category.getName());
-        productCategory.setCategory(foundCategory);
-        productCategory.setProduct(product);
+        ProductCategoryDto productCategory = new ProductCategoryDto();
+        CategoryDto foundCategory = CategoryMapper.toCategoryDto(categoryService.findByName(category.getName()));
+        productCategory.setCategory(foundCategory.toCategory());
+        productCategory.setProduct(product.toProduct());
         productCategory.setDeletedFlag(false);
         productCategory.setCreatedBy(loggerUser.getUsername());
         productCategory.setCreatedDate(LocalDateTime.now());
-        productCategoryService.save(productCategory);
+        productCategoryService.save(productCategory.toProductCategory());
 
         String uploadDir = "product";
 
@@ -222,8 +224,7 @@ public class AdProductController {
     }
 
     @GetMapping("/admin/product")
-    public String getProduct(RedirectAttributes redirectAttributes,
-                          @AuthenticationPrincipal CustomUserDetailImpl loggerUser,
+    public String getProduct(@AuthenticationPrincipal CustomUserDetailImpl loggerUser,
                           @Param(value = "id") Long id, Model model){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -233,20 +234,20 @@ public class AdProductController {
 
         try {
             String email = loggerUser.getEmail();
-            User loggedUser = mUserService.getByEmail(email);
+            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
 
-            Product product = productService.findById(id);
-            List<ProductImage> productImage = productImageService.findById(product.getId());
-            List<Category> categories = categoryService.findAll();
-            ProductCategory pc = productCategoryService.findCategoryByProductId(product.getId());
-            Category category = new Category();
+            ProductDto product = ProductMapper.toProductDto(productService.findById(id));
+            List<ProductImageDto> productImage = productImageService.findById(product.getId()).stream().map(ProductImageMapper::toProductImageDto).collect(Collectors.toList());
+            List<CategoryDto> categories = categoryService.findAll().stream().map(CategoryMapper::toCategoryDto).collect(Collectors.toList());
+            ProductCategoryDto pc = ProductCategoryMapper.toProductCategoryDto(productCategoryService.findCategoryByProductId(product.getId()));
+            CategoryDto category = new CategoryDto();
 
-            for (ProductImage pi : productImage
+            for (ProductImageDto pi : productImage
             ) {
-                pi.setProduct(product);
+                pi.setProduct(product.toProduct());
             }
 
-            model.addAttribute("user", loggedUser);
+            model.addAttribute("user", user);
             model.addAttribute("foundProduct", product);
             model.addAttribute("listCategories", categories);
             model.addAttribute("productCategory", pc);
@@ -259,8 +260,8 @@ public class AdProductController {
     }
 
     @PostMapping("/admin/product/update/{id}")
-    public String updateUser(@ModelAttribute(name = "foundProduct") Product product, RedirectAttributes redirectAttributes,
-                             @ModelAttribute(name = "category") Category category,
+    public String updateUser(@ModelAttribute(name = "foundProduct") ProductDto product, RedirectAttributes redirectAttributes,
+                             @ModelAttribute(name = "category") CategoryDto category,
                              @AuthenticationPrincipal CustomUserDetailImpl loggerUser,
                              @RequestParam("fileImage") MultipartFile[] multipartFile,
                              @PathVariable(value = "id") Long id) throws IOException {
@@ -272,8 +273,8 @@ public class AdProductController {
         }
 
         try {
-            Product foundProduct = productService.findById(id);
-            List<ProductImage> productImage = productImageService.findById(foundProduct.getId());
+            ProductDto foundProduct = ProductMapper.toProductDto(productService.findById(id));
+            List<ProductImageDto> productImage = productImageService.findById(foundProduct.getId()).stream().map(ProductImageMapper::toProductImageDto).collect(Collectors.toList());
             int i = 0;
             for (MultipartFile m : multipartFile
                  ) {
@@ -288,12 +289,12 @@ public class AdProductController {
                 i++;
             }
 
-            ProductCategory productCategory = productCategoryService.findCategoryByProductId(foundProduct.getId());
-            Category foundCategory = categoryService.findByName(category.getName());
-            productCategory.setCategory(foundCategory);
+            ProductCategoryDto productCategory = ProductCategoryMapper.toProductCategoryDto(productCategoryService.findCategoryByProductId(foundProduct.getId()));
+            CategoryDto foundCategory = CategoryMapper.toCategoryDto(categoryService.findByName(category.getName()));
+            productCategory.setCategory(foundCategory.toCategory());
             productCategory.setUpdatedBy(loggerUser.getUsername());
             productCategory.setUpdatedDate(LocalDateTime.now());
-            productCategoryService.save(productCategory);
+            productCategoryService.save(productCategory.toProductCategory());
 
             product.setProductSearch(foundProduct.getProductSearch());
             product.setCreatedBy(foundProduct.getCreatedBy());
@@ -302,7 +303,7 @@ public class AdProductController {
             product.setUpdatedBy(loggerUser.getUsername());
             product.setDeletedFlag(foundProduct.getDeletedFlag());
 
-            productService.save(product);
+            productService.save(product.toProduct());
             String uploadDir = "product";
 
             for (MultipartFile m : multipartFile
@@ -333,21 +334,21 @@ public class AdProductController {
         }
 
         try {
-            Product foundProduct = productService.findById(id);
-            List<ProductImage> productImage = productImageService.findById(foundProduct.getId());
-            ProductCategory productCategory = productCategoryService.findById(foundProduct.getId());
-            List<ProductComment> productComments = productCommentService.findByProductId(foundProduct.getId());
+            ProductDto foundProduct = ProductMapper.toProductDto(productService.findById(id));
+            List<ProductImageDto> productImage = productImageService.findById(foundProduct.getId()).stream().map(ProductImageMapper::toProductImageDto).collect(Collectors.toList());
+            ProductCategoryDto productCategory = ProductCategoryMapper.toProductCategoryDto(productCategoryService.findById(foundProduct.getId()));
+            List<ProductCommentDto> productComments = productCommentService.findByProductId(foundProduct.getId()).stream().map(ProductCommentMapper::toProductCommentDto).collect(Collectors.toList());
 
-            productCategoryService.deleteProductCategory(productCategory, loggerUser.getUsername());
-            for (ProductImage pi : productImage
+            productCategoryService.deleteProductCategory(productCategory.toProductCategory(), loggerUser.getUsername());
+            for (ProductImageDto pi : productImage
                  ) {
-                productImageService.deleteProductImage(pi, loggerUser.getUsername());
+                productImageService.deleteProductImage(pi.toProductImage(), loggerUser.getUsername());
             }
-            for (ProductComment pc : productComments
+            for (ProductCommentDto pc : productComments
             ) {
-                productCommentService.deleteProductComment(pc, loggerUser.getUsername());
+                productCommentService.deleteProductComment(pc.toProductComment(), loggerUser.getUsername());
             }
-            productService.deleteProduct(foundProduct, loggerUser.getUsername());
+            productService.deleteProduct(foundProduct.toProduct(), loggerUser.getUsername());
 
             redirectAttributes.addFlashAttribute(MESSAGE, "Đã xóa.");
 

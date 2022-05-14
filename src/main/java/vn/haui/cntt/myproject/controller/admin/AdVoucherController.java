@@ -14,8 +14,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import vn.haui.cntt.myproject.entity.User;
-import vn.haui.cntt.myproject.entity.Voucher;
+import vn.haui.cntt.myproject.dto.UserDto;
+import vn.haui.cntt.myproject.dto.VoucherDto;
+import vn.haui.cntt.myproject.mapper.UserMapper;
+import vn.haui.cntt.myproject.mapper.VoucherMapper;
 import vn.haui.cntt.myproject.service.UserService;
 import vn.haui.cntt.myproject.service.VoucherService;
 import vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl;
@@ -51,13 +53,13 @@ public class AdVoucherController {
 
         try {
             String email = loggedUser.getEmail();
-            User user = mUserService.getByEmail(email);
+            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
 
             String pageStr = String.valueOf(page);
-            Page<Voucher> pages = voucherService.listAll(pageStr, sortField, sortDir);
+            Page<VoucherDto> pages = voucherService.listAll(pageStr, sortField, sortDir).map(VoucherMapper::toVoucherDto);
             long totalItems = pages.getTotalElements();
             int totalPages = pages.getTotalPages();
-            List<Voucher> vouchers = pages.getContent();
+            List<VoucherDto> vouchers = pages.getContent();
 
             model.addAttribute("user", user);
             model.addAttribute("page", page);
@@ -85,9 +87,9 @@ public class AdVoucherController {
 
         try {
             String email = loggerUser.getEmail();
-            User loggedUser = mUserService.getByEmail(email);
+            UserDto loggedUser = UserMapper.toUserDto(mUserService.getByEmail(email));
 
-            Voucher voucher = new Voucher();
+            VoucherDto voucher = new VoucherDto();
 
 
             model.addAttribute("user", loggedUser);
@@ -100,7 +102,7 @@ public class AdVoucherController {
     }
 
     @PostMapping("/admin/voucher/save")
-    public String saveCategory(@ModelAttribute(name = "newVoucher") Voucher voucher, RedirectAttributes redirectAttributes,
+    public String saveCategory(@ModelAttribute(name = "newVoucher") VoucherDto voucher, RedirectAttributes redirectAttributes,
                                @AuthenticationPrincipal CustomUserDetailImpl loggerUser,
                                @RequestParam("fileImage") MultipartFile multipartFile) throws IOException {
 
@@ -127,7 +129,7 @@ public class AdVoucherController {
             voucher.setImage("blank_image.png");
         }
 
-        voucherService.save(voucher);
+        voucherService.save(voucher.toVoucher());
 
         redirectAttributes.addFlashAttribute(MESSAGE, "Voucher đã được tạo.");
 
@@ -149,9 +151,9 @@ public class AdVoucherController {
 
         try {
             String email = loggerUser.getEmail();
-            User loggedUser = mUserService.getByEmail(email);
+            UserDto loggedUser = UserMapper.toUserDto(mUserService.getByEmail(email));
 
-            Voucher voucher = voucherService.findByIdAndDeletedFlag(id);
+            VoucherDto voucher = VoucherMapper.toVoucherDto(voucherService.findByIdAndDeletedFlag(id));
 
 
             model.addAttribute("user", loggedUser);
@@ -164,7 +166,7 @@ public class AdVoucherController {
     }
 
     @PostMapping("/admin/voucher/update/{id}")
-    public String updateUser(@ModelAttribute(name = "foundVoucher") Voucher voucher, RedirectAttributes redirectAttributes,
+    public String updateUser(@ModelAttribute(name = "foundVoucher") VoucherDto voucher, RedirectAttributes redirectAttributes,
                              @AuthenticationPrincipal CustomUserDetailImpl loggerUser,
                              @RequestParam("fileImage") MultipartFile multipartFile,
                              @PathVariable(value = "id") Long id) throws IOException {
@@ -176,7 +178,7 @@ public class AdVoucherController {
         }
 
         try {
-        Voucher foundVoucher = voucherService.findByIdAndDeletedFlag(id);
+        VoucherDto foundVoucher = VoucherMapper.toVoucherDto(voucherService.findByIdAndDeletedFlag(id));
         voucher.setId(foundVoucher.getId());
         voucher.setTimesOfUse(foundVoucher.getTimesOfUse());
         voucher.setTitle(foundVoucher.getTitle());
@@ -196,7 +198,7 @@ public class AdVoucherController {
             voucher.setImage(foundVoucher.getImage());
         }
 
-        voucherService.save(voucher);
+        voucherService.save(voucher.toVoucher());
 
         redirectAttributes.addFlashAttribute(MESSAGE, "Thông tin voucher đã được cập nhật.");
 
@@ -218,9 +220,9 @@ public class AdVoucherController {
         }
 
         try {
-        Voucher voucher = voucherService.findByIdAndDeletedFlag(id);
+        VoucherDto voucher = VoucherMapper.toVoucherDto(voucherService.findByIdAndDeletedFlag(id));
 
-        voucherService.delete(voucher);
+        voucherService.delete(voucher.toVoucher());
 
         redirectAttributes.addFlashAttribute(MESSAGE, "Đã xóa.");
         return "redirect:/admin/vouchers?page=1&sortField=id&sortDir=des";

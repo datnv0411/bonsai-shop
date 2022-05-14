@@ -10,12 +10,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
-import vn.haui.cntt.myproject.entity.*;
+import vn.haui.cntt.myproject.dto.*;
+import vn.haui.cntt.myproject.entity.Order;
+import vn.haui.cntt.myproject.mapper.*;
 import vn.haui.cntt.myproject.service.*;
 import vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl;
-
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -47,37 +49,35 @@ public class PaymentController {
             return "admin/auth-login-basic";
         }
 
-        try {
+//        try {
             String email = loggedUser.getEmail();
-            User user = mUserService.getByEmail(email);
+            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
 
-            List<Cart> carts = cartService.listCart(user);
-            List<OrderDetail> orderDetail = orderDetailService.addFromCart(carts, user.getUsername());
-            Voucher voucher = new Voucher();
+            OrderDto newOrder = new OrderDto();
+            OrderDto order = OrderMapper.toOrderDto(orderService.save(newOrder.toOrder()));
+
+            List<CartDto> carts = cartService.listCart(user.toUser()).stream().map(CartMapper::toCartDto).collect(Collectors.toList());
+            VoucherDto voucher = new VoucherDto();
 
             if(voucherCode != null && !voucherCode.equals("")){
-                voucher = voucherService.findByVoucherCode(voucherCode);
-                voucherService.decreaseVoucher(voucher, user.getUsername());
+                voucher = VoucherMapper.toVoucherDto(voucherService.findByVoucherCode(voucherCode));
+                voucherService.decreaseVoucher(voucher.toVoucher(), user.getUsername());
             }
 
-            Payment foundPayment = paymentService.findByPaymentName(paymentName);
+            PaymentDto foundPayment = PaymentMapper.toPaymentDto(paymentService.findByPaymentName(paymentName));
 
-            Address checkAddress = addressService.findByAddressId(addressId);
+            AddressDto checkAddress = AddressMapper.toAddressDto(addressService.findByAddressId(addressId));
 
-            Order order = new Order();
+            orderService.save(order.toOrder(), user.toUser(), voucher.toVoucher(), checkAddress.toAddress(), foundPayment.toPayment(), totalPrice);
 
-            orderService.save(order, user, orderDetail, voucher, checkAddress, foundPayment, totalPrice);
+            List<OrderDetailDto> orderDetail = orderDetailService.addFromCart(order.toOrder(), CartMapper.toListCart(carts), user.getUsername()).stream().map(OrderDetailMapper::toOrderDetailDto).collect(Collectors.toList());
 
-            for (OrderDetail od : orderDetail
-            ) {
-                od.setOrder(order);
-                orderDetailService.save(od, user.getUsername());
-            }
+            order.setOrderDetails(OrderDetailMapper.toListOrderDetail(orderDetail));
 
             if(foundPayment.getPaymentName().equals("Truc Tiep")){
-                for (Cart c : carts
+                for (CartDto c : carts
                      ) {
-                    cartService.deleteCart(c);
+                    cartService.deleteCart(c.toCart());
                 }
                 return "order-detail?orderId=" + order.getId();
             } else {
@@ -85,8 +85,8 @@ public class PaymentController {
                         MvcUriComponentsBuilder.fromController(OrderController.class).toUriString() +"vnpay");
             }
 
-        } catch (Exception e){
-            return "404";
-        }
+//        } catch (Exception e){
+//            return "404";
+//        }
     }
 }

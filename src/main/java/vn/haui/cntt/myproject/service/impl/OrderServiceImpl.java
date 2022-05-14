@@ -54,7 +54,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void save(Order order, User user, List<OrderDetail> orderDetail, Voucher voucher, Address checkAddress, Payment foundPayment, Long totalPrice) {
+    public void save(Order order, User user, Voucher voucher, Address checkAddress, Payment foundPayment, Long totalPrice) {
         if(voucher.getCodeVoucher() != null && !voucher.getCodeVoucher().equals("")){
             order.setVoucher(voucher);
         }
@@ -62,7 +62,6 @@ public class OrderServiceImpl implements OrderService {
         order.setUser(user);
         order.setOrderStatus(OrderStatusEnum.Chờ);
         order.setOrderCode(RandomOrderCode.main());
-        order.setOrderDetails(orderDetail);
         order.setDeliveryAddress(checkAddress);
         order.setDeletedFlag(false);
         order.setCreatedBy(user.getUsername());
@@ -116,8 +115,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void save(Order foundOrder) {
-        orderRepository.save(foundOrder);
+    public Order save(Order foundOrder) {
+        return orderRepository.save(foundOrder);
     }
 
     @Override

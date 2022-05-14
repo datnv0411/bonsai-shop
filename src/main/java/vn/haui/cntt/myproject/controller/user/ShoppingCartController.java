@@ -10,7 +10,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-import vn.haui.cntt.myproject.entity.User;
+
+import vn.haui.cntt.myproject.dto.UserDto;
+import vn.haui.cntt.myproject.mapper.UserMapper;
 import vn.haui.cntt.myproject.service.CartService;
 import vn.haui.cntt.myproject.service.UserService;
 import vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl;
@@ -35,9 +37,9 @@ public class ShoppingCartController {
         }
 
         String email = loggedUser.getEmail();
-        User user = mUserService.getByEmail(email);
+        UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
 
-        Integer addedQuantity = cartService.addProductToCart(productId, quantity, user);
+        Integer addedQuantity = cartService.addProductToCart(productId, quantity, user.toUser());
 
         return String.valueOf(addedQuantity);
     }
@@ -52,9 +54,9 @@ public class ShoppingCartController {
         }
 
         String email = loggedUser.getEmail();
-        User user = mUserService.getByEmail(email);
+        UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
 
-        Long subtotal = cartService.updateQuantity(quantity, productId, user);
+        Long subtotal = cartService.updateQuantity(quantity, productId, user.toUser());
 
         return String.valueOf(subtotal);
     }
@@ -69,9 +71,9 @@ public class ShoppingCartController {
 
         try {
             String email = loggedUser.getEmail();
-            User user = mUserService.getByEmail(email);
+            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
 
-            Integer count = cartService.countCart(user);
+            Integer count = cartService.countCart(user.toUser());
 
             return String.valueOf(count);
         } catch (Exception e){

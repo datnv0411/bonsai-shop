@@ -10,7 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import vn.haui.cntt.myproject.entity.User;
+import vn.haui.cntt.myproject.dto.UserDto;
+import vn.haui.cntt.myproject.mapper.UserMapper;
 import vn.haui.cntt.myproject.service.UserService;
 import vn.haui.cntt.myproject.util.Utility;
 
@@ -65,13 +66,13 @@ public class ForgotPasswordController {
         helper.setFrom("contact@bonsaishop.com","BonsaiShop Support");
         helper.setTo(email);
 
-        String subject = "Đây là link để reset mật khẩu của bạn";
+        String subject = "RESET YOUR PASSWORD";
 
-        String content = "<p>Xin chào,</p>"
-                + "<p>Bạn đã yêu cầu để reset mật khẩu của bạn.</p>"
-                + "<p>Bấm vào link bên dưới để thay đổi mật khẩu: </p>"
-                + "<p><b><a href =\"" + resetPasswordLink + "\">Thay đổi mật khẩu</a></b></p>"
-                + "<p>Từ chối email nếu như bạn không yêu cầu reset mật khẩu.</p>";
+        String content = "<p>Hi,</p>"
+                + "<p>We have just received a request to renew the password from you.</p>"
+                + "<p>To refresh your password, click the link below.</p>"
+                + "<p><b><a href =\"" + resetPasswordLink + "\">Change your password</a></b></p>"
+                + "<p>Please ignore the email if you have not requested to take this action</p>";
 
         helper.setSubject(subject);
         helper.setText(content, true);
@@ -81,7 +82,7 @@ public class ForgotPasswordController {
 
     @GetMapping("/reset-password")
     public String viewResetPassword(@Param(value = "token") String token, Model model){
-        User user = userService.get(token);
+        UserDto user = UserMapper.toUserDto(userService.get(token));
 
         if(user == null){
             model.addAttribute(MESSAGE, "Không khả dụng.");
@@ -97,12 +98,12 @@ public class ForgotPasswordController {
         String token = request.getParameter("token");
         String password = request.getParameter("password");
 
-        User user = userService.get(token);
+        UserDto user = UserMapper.toUserDto(userService.get(token));
 
         if(user == null){
             model.addAttribute(MESSAGE, "Không khả dụng.");
         } else {
-            userService.updatePassword(user, password);
+            userService.updatePassword(user.toUser(), password);
             model.addAttribute(MESSAGE, "Thay đổi mật khẩu thành công.");
         }
 

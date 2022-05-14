@@ -12,13 +12,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import vn.haui.cntt.myproject.entity.*;
+import vn.haui.cntt.myproject.dto.AddressDto;
+import vn.haui.cntt.myproject.dto.UserDto;
+import vn.haui.cntt.myproject.mapper.AddressMapper;
+import vn.haui.cntt.myproject.mapper.UserMapper;
 import vn.haui.cntt.myproject.service.AddressService;
 import vn.haui.cntt.myproject.service.UserService;
 import vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -47,10 +51,10 @@ public class AddressController {
             String email = loggedUser.getEmail();
 
             String pageStr = String.valueOf(page);
-            Page<Address> pages = addressService.listAll(pageStr, sortField, sortDir, email);
+            Page<AddressDto> pages = addressService.listAll(pageStr, sortField, sortDir, email).map(AddressMapper::toAddressDto);
             long totalItems = pages.getTotalElements();
             int totalPages = pages.getTotalPages();
-            List<Address> list = pages.getContent();
+            List<AddressDto> list = pages.getContent();
 
             model.addAttribute("page", page);
             model.addAttribute("totalItems", totalItems);
@@ -74,7 +78,7 @@ public class AddressController {
         }
 
         try {
-            Address address = new Address();
+            AddressDto address = new AddressDto();
 
             model.addAttribute("newAddress", address);
 
@@ -85,7 +89,7 @@ public class AddressController {
     }
 
     @PostMapping("/address/save")
-    public String createAddressSuccess(@ModelAttribute(name = "address") Address address,
+    public String createAddressSuccess(@ModelAttribute(name = "address") AddressDto address,
                                        @AuthenticationPrincipal CustomUserDetailImpl loggerUser,
                                        RedirectAttributes redirectAttributes){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -96,17 +100,17 @@ public class AddressController {
 
         try {
             String email = loggerUser.getEmail();
-            User user = mUserService.getByEmail(email);
+            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
 
-            List<Address> addressList = addressService.findByUserId(user.getId());
+            List<AddressDto> addressList = addressService.findByUserId(user.getId()).stream().map(AddressMapper::toAddressDto).collect(Collectors.toList());
             address.setDefault(addressList.isEmpty());
 
-            address.setUser(user);
+            address.setUser(user.toUser());
             address.setCreatedBy(loggerUser.getUsername());
             address.setCreatedDate(LocalDateTime.now());
             address.setDeletedFlag(false);
 
-            addressService.save(address);
+            addressService.save(address.toAddress());
 
             redirectAttributes.addFlashAttribute(MESSAGE, "Thêm mới địa chỉ thành công.");
 
@@ -127,8 +131,8 @@ public class AddressController {
 
        try {
            String email = loggerUser.getEmail();
-           User user = mUserService.getByEmail(email);
-           Address address = addressService.findByUserIdAndAddressId(user.getId(), addressId);
+           UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
+           AddressDto address = AddressMapper.toAddressDto(addressService.findByUserIdAndAddressId(user.getId(), addressId));
 
            model.addAttribute("address", address);
 
@@ -139,7 +143,7 @@ public class AddressController {
     }
 
     @PostMapping("/update-address/save")
-    public String updateAddressSuccess(@ModelAttribute(name = "address") Address address,
+    public String updateAddressSuccess(@ModelAttribute(name = "address") AddressDto address,
                                 @AuthenticationPrincipal CustomUserDetailImpl loggedUser,
                                 RedirectAttributes redirectAttributes,
                                 @Param("addressId") Long addressId){
@@ -153,9 +157,9 @@ public class AddressController {
             address.setId(addressId);
 
             String email = loggedUser.getEmail();
-            User user = mUserService.getByEmail(email);
+            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
 
-            addressService.updateAddress(address, user);
+            addressService.updateAddress(address.toAddress(), user.toUser());
 
             redirectAttributes.addFlashAttribute(MESSAGE, "Thông tin địa chỉ đã được cập nhật.");
 
@@ -177,9 +181,9 @@ public class AddressController {
 
         try {
             String email = loggedUser.getEmail();
-            User user = mUserService.getByEmail(email);
+            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
 
-            addressService.deleteAddress(addressId, user);
+            addressService.deleteAddress(addressId, user.toUser());
 
             redirectAttributes.addFlashAttribute(MESSAGE, "Đã xóa địa chỉ thành công.");
 
@@ -201,7 +205,7 @@ public class AddressController {
 
         try {
             String email = loggedUser.getEmail();
-            User user = mUserService.getByEmail(email);
+            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
 
             addressService.setDefaultAddress(addressId, user.getId());
 

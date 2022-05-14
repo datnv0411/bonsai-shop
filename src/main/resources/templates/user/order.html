@@ -91,6 +91,7 @@
                             <h3>Không tìm thấy kết quả nào.</h3>
                         </div>
                     </div>
+                    <div style="margin-top:5px;" th:if="${message != null}" class="alert alert-success text-center">[[${message}]]</div>
                     <nav aria-label="Page navigation example">
                         <ul class="pagination">
                             <li th:class="${page>1} ? 'page-item' : 'page-item disabled'">

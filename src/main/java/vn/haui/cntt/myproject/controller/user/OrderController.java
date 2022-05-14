@@ -12,11 +12,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import vn.haui.cntt.myproject.entity.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import vn.haui.cntt.myproject.dto.*;
+import vn.haui.cntt.myproject.enums.OrderStatusEnum;
+import vn.haui.cntt.myproject.mapper.*;
 import vn.haui.cntt.myproject.service.*;
 import vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -35,6 +39,8 @@ public class OrderController {
     private final PaymentService paymentService;
     @Autowired
     private final OrderDetailService orderDetailService;
+    @Autowired
+    private final ProductService productService;
 
     @GetMapping("/order")
     public String getUserDetailInformation(@Param("page") int page, @Param("sortField") String sortField,
@@ -49,13 +55,13 @@ public class OrderController {
 
         try {
             String email = loggedUser.getEmail();
-            User user = mUserService.getByEmail(email);
+            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
 
             String pageStr = String.valueOf(page);
-            Page<Order> pages = orderService.listAll(pageStr, sortField, sortDir, user.getId());
+            Page<OrderDto> pages = orderService.listAll(pageStr, sortField, sortDir, user.getId()).map(OrderMapper::toOrderDto);
             long totalItems = pages.getTotalElements();
             int totalPages = pages.getTotalPages();
-            List<Order> list = pages.getContent();
+            List<OrderDto> list = pages.getContent();
 
             model.addAttribute("orders", list);
             model.addAttribute("page", page);
@@ -80,7 +86,7 @@ public class OrderController {
         }
 
         try {
-            List<OrderDetail> list = orderDetailService.findByOrderId(orderId);
+            List<OrderDetailDto> list = orderDetailService.findByOrderId(orderId).stream().map(OrderDetailMapper::toOrderDetailDto).collect(Collectors.toList());
 
             model.addAttribute("listOrderDetails", list);
 
@@ -100,10 +106,10 @@ public class OrderController {
 
         try {
             String email = loggedUser.getEmail();
-            User user = mUserService.getByEmail(email);
+            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
 
-            List<Cart> carts = cartService.listCart(user);
-            List<Address> addresses = addressService.findByUserId(user.getId());
+            List<CartDto> carts = cartService.listCart(user.toUser()).stream().map(CartMapper::toCartDto).collect(Collectors.toList());
+            List<AddressDto> addresses = addressService.findByUserId(user.getId()).stream().map(AddressMapper::toAddressDto).collect(Collectors.toList());
 
             model.addAttribute("addresses", addresses);
             model.addAttribute("cartItems", carts);
@@ -116,7 +122,8 @@ public class OrderController {
 
     @GetMapping("/order/cancel")
     public String cancelOrder(@Param(value = "orderId") Long orderId,
-                              @AuthenticationPrincipal CustomUserDetailImpl loggedUser){
+                              @AuthenticationPrincipal CustomUserDetailImpl loggedUser,
+                              RedirectAttributes redirectAttributes){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
@@ -125,9 +132,22 @@ public class OrderController {
 
         try {
             String email = loggedUser.getEmail();
-            User user = mUserService.getByEmail(email);
+            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
+            orderService.cancelOrder(user.toUser(), orderId);
 
-            orderService.cancelOrder(user, orderId);
+            OrderDto orderDto = OrderMapper.toOrderDto(orderService.findById(orderId));
+            if (orderDto.getOrderStatus().equals(OrderStatusEnum.Đã_hủy)){
+                List<OrderDetailDto> orderDetailDto = orderDetailService.findByOrderId(orderId).stream().map(OrderDetailMapper::toOrderDetailDto).collect(Collectors.toList());
+                for (OrderDetailDto odd : orderDetailDto
+                     ) {
+                    ProductDto productDto = ProductMapper.toProductDto(productService.findById(odd.getProduct().getId()));
+                    productDto.setQuantity(productDto.getQuantity() + odd.getQuantity());
+                    productService.save(productDto.toProduct());
+                }
+            }
+
+            redirectAttributes.addFlashAttribute("message", "Đơn hàng đã được hủy.");
+
             return "redirect:/order?page=1&sortField=id&sortDir=des";
         } catch (Exception e){
             return "404";
@@ -147,12 +167,12 @@ public class OrderController {
         }
         try {
             String email = loggedUser.getEmail();
-            User user = mUserService.getByEmail(email);
+            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
             paymentService.checkResultPaid(vnpResponseCode, vnpTxnRef , vnpAmount);
-            List<Cart> carts = cartService.listCart(user);
-            for (Cart c : carts
+            List<CartDto> carts = cartService.listCart(user.toUser()).stream().map(CartMapper::toCartDto).collect(Collectors.toList());
+            for (CartDto c : carts
             ) {
-                cartService.deleteCart(c);
+                cartService.deleteCart(c.toCart());
             }
 
             long orderId = Long.parseLong(vnpTxnRef);

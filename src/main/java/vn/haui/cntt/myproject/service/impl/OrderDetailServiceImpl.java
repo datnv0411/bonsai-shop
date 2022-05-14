@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.haui.cntt.myproject.entity.Cart;
+import vn.haui.cntt.myproject.entity.Order;
 import vn.haui.cntt.myproject.entity.OrderDetail;
 import vn.haui.cntt.myproject.repository.OrderDetailRepository;
 import vn.haui.cntt.myproject.service.OrderDetailService;
@@ -21,15 +22,7 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     private OrderDetailRepository orderDetailRepository;
 
     @Override
-    public void save(OrderDetail orderDetail, String username) {
-        orderDetail.setDeletedFlag(false);
-        orderDetail.setCreatedDate(LocalDateTime.now());
-        orderDetail.setCreatedBy(username);
-        orderDetailRepository.save(orderDetail);
-    }
-
-    @Override
-    public List<OrderDetail> addFromCart(List<Cart> carts, String username) {
+    public List<OrderDetail> addFromCart(Order order, List<Cart> carts, String username) {
         List<OrderDetail> list = new ArrayList<>();
 
         int i=0;
@@ -40,9 +33,14 @@ public class OrderDetailServiceImpl implements OrderDetailService {
             orderDetail.setQuantity(c.getQuantity());
             orderDetail.setPrice(c.getQuantity() * c.getProduct().getPriceSale());
             orderDetail.setDiscount(c.getQuantity() * c.getProduct().getPriceSale() * 5 / 100);
+            orderDetail.setOrder(order);
             orderDetail.setDeletedFlag(false);
             orderDetail.setCreatedBy(username);
             orderDetail.setCreatedDate(LocalDateTime.now());
+            orderDetail.setDeletedFlag(false);
+            orderDetail.setCreatedDate(LocalDateTime.now());
+            orderDetail.setCreatedBy(username);
+            orderDetailRepository.save(orderDetail);
             list.add(i, orderDetail);
 
             i++;

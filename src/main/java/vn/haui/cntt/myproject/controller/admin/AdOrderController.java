@@ -15,23 +15,28 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import vn.haui.cntt.myproject.entity.Order;
-import vn.haui.cntt.myproject.entity.OrderDetail;
-import vn.haui.cntt.myproject.entity.PaymentOrder;
-import vn.haui.cntt.myproject.entity.User;
+import vn.haui.cntt.myproject.dto.OrderDetailDto;
+import vn.haui.cntt.myproject.dto.OrderDto;
+import vn.haui.cntt.myproject.dto.PaymentOrderDto;
+import vn.haui.cntt.myproject.dto.UserDto;
+import vn.haui.cntt.myproject.mapper.OrderDetailMapper;
+import vn.haui.cntt.myproject.mapper.OrderMapper;
+import vn.haui.cntt.myproject.mapper.PaymentOrderMapper;
+import vn.haui.cntt.myproject.mapper.UserMapper;
 import vn.haui.cntt.myproject.service.OrderDetailService;
 import vn.haui.cntt.myproject.service.OrderService;
 import vn.haui.cntt.myproject.service.PaymentOrderService;
 import vn.haui.cntt.myproject.service.UserService;
 import vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl;
-
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
 public class AdOrderController {
+    private static final String LOGIN = "admin/auth-login-basic";
+
     @Autowired
     private final UserService mUserService;
     @Autowired
@@ -49,17 +54,17 @@ public class AdOrderController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
         try {
         String email = loggedUser.getEmail();
-        User user = mUserService.getByEmail(email);
+            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
 
         String pageStr = String.valueOf(page);
-        Page<Order> pages = orderService.listAll(pageStr, sortField, sortDir);
+        Page<OrderDto> pages = orderService.listAll(pageStr, sortField, sortDir).map(OrderMapper::toOrderDto);
         long totalItems = pages.getTotalElements();
         int totalPages = pages.getTotalPages();
-        List<Order> orderList = pages.getContent();
+        List<OrderDto> orderList = pages.getContent();
 
         model.addAttribute("user", user);
         model.addAttribute("page", page);
@@ -83,14 +88,14 @@ public class AdOrderController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
             String email = loggerUser.getEmail();
-            User user = mUserService.getByEmail(email);
+            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
 
-            List<OrderDetail> list = orderDetailService.findByOrderId(id);
+            List<OrderDetailDto> list = orderDetailService.findByOrderId(id).stream().map(OrderDetailMapper::toOrderDetailDto).collect(Collectors.toList());
 
             model.addAttribute("user", user);
             model.addAttribute("listOrderDetails", list);
@@ -108,18 +113,18 @@ public class AdOrderController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
             String email = loggerUser.getEmail();
-            User loggedUser = mUserService.getByEmail(email);
+            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
 
-            Order order = orderService.findById(id);
+            OrderDto order = OrderMapper.toOrderDto(orderService.findById(id));
 
-            PaymentOrder paymentOrder = paymentOrderService.findByOrderId(id);
+            PaymentOrderDto paymentOrder = PaymentOrderMapper.toPaymentOrderDto(paymentOrderService.findByOrderId(id));
 
-            model.addAttribute("user", loggedUser);
+            model.addAttribute("user", user);
             model.addAttribute("foundOrder", order);
             model.addAttribute("paymentStatus", paymentOrder);
 
@@ -130,32 +135,32 @@ public class AdOrderController {
     }
 
     @PostMapping("/admin/order/update/{id}")
-    public String updateUser(@ModelAttribute(name = "foundOrder") Order order, RedirectAttributes redirectAttributes,
-                             @ModelAttribute(name = "paymentStatus") PaymentOrder paymentOrder,
+    public String updateUser(@ModelAttribute(name = "foundOrder") OrderDto order, RedirectAttributes redirectAttributes,
+                             @ModelAttribute(name = "paymentStatus") PaymentOrderDto paymentOrder,
                              @AuthenticationPrincipal CustomUserDetailImpl loggerUser,
-                             @PathVariable(value = "id") Long id) throws IOException {
+                             @PathVariable(value = "id") Long id) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
-        Order foundOrder = orderService.findById(id);
+        OrderDto foundOrder = OrderMapper.toOrderDto(orderService.findById(id));
 
         foundOrder.setOrderStatus(order.getOrderStatus());
         foundOrder.setUpdatedBy(loggerUser.getUsername());
         foundOrder.setUpdatedDate(LocalDateTime.now());
 
-        orderService.save(foundOrder);
+        orderService.save(foundOrder.toOrder());
 
-        PaymentOrder foundPaymentOrder = paymentOrderService.findByOrderId(id);
+        PaymentOrderDto foundPaymentOrder = PaymentOrderMapper.toPaymentOrderDto(paymentOrderService.findByOrderId(id));
         foundPaymentOrder.setStatus(paymentOrder.getStatus());
         foundPaymentOrder.setUpdatedBy(loggerUser.getUsername());
         foundPaymentOrder.setUpdatedDate(LocalDateTime.now());
 
-        paymentOrderService.save(foundPaymentOrder);
+        paymentOrderService.save(foundPaymentOrder.toPaymentOrder());
 
         redirectAttributes.addFlashAttribute("message", "Thông tin đơn hàng đã được cập nhật.");
 
@@ -168,38 +173,38 @@ public class AdOrderController {
     @GetMapping("/admin/delete/order/{id}")
     public String deleteUser(RedirectAttributes redirectAttributes,
                              @AuthenticationPrincipal CustomUserDetailImpl loggerUser,
-                             @PathVariable(value = "id") Long id) throws IOException {
+                             @PathVariable(value = "id") Long id) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
-            PaymentOrder foundPaymentOrder = paymentOrderService.findByOrderId(id);
+            PaymentOrderDto foundPaymentOrder = PaymentOrderMapper.toPaymentOrderDto(paymentOrderService.findByOrderId(id));
             foundPaymentOrder.setDeletedFlag(true);
             foundPaymentOrder.setUpdatedBy(loggerUser.getUsername());
             foundPaymentOrder.setUpdatedDate(LocalDateTime.now());
 
-            paymentOrderService.save(foundPaymentOrder);
+            paymentOrderService.save(foundPaymentOrder.toPaymentOrder());
 
-            List<OrderDetail> orderDetail = orderDetailService.findByOrderId(id);
-            for (OrderDetail od : orderDetail
+            List<OrderDetailDto> orderDetail = orderDetailService.findByOrderId(id).stream().map(OrderDetailMapper::toOrderDetailDto).collect(Collectors.toList());
+            for (OrderDetailDto od : orderDetail
                  ) {
                 od.setDeletedFlag(true);
                 od.setUpdatedBy(loggerUser.getUsername());
                 od.setUpdatedDate(LocalDateTime.now());
-                orderDetailService.save(od);
+                orderDetailService.save(od.toOrderDetail());
             }
 
-            Order foundOrder = orderService.findById(id);
+            OrderDto foundOrder = OrderMapper.toOrderDto(orderService.findById(id));
 
             foundOrder.setDeletedFlag(true);
             foundOrder.setUpdatedBy(loggerUser.getUsername());
             foundOrder.setUpdatedDate(LocalDateTime.now());
 
-            orderService.save(foundOrder);
+            orderService.save(foundOrder.toOrder());
 
             redirectAttributes.addFlashAttribute("message", "Đã xóa.");
 

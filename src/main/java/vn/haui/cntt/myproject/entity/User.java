@@ -45,6 +45,9 @@ public class User extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String cellphone;
 
+    @Column(name = "reset_password_token", unique = true, length = 45)
+    private String resetPasswordToken;
+
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Collection<Role> role = new LinkedHashSet<Role>();

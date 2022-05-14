@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.haui.cntt.myproject.entity.ProductComment;
-import vn.haui.cntt.myproject.entity.User;
 import vn.haui.cntt.myproject.repository.ProductCommentRepository;
 import vn.haui.cntt.myproject.service.ProductCommentService;
 

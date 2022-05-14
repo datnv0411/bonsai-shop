@@ -12,7 +12,7 @@ import java.util.List;
 
 @Repository
 public interface ProductCategoryRepository extends JpaRepository<ProductCategory, Long> {
-    ProductCategory findByIdAndDeletedFlag(Long productId, boolean b);
+    ProductCategory findByProductIdAndDeletedFlag(Long productId, boolean b);
 
     @Query(value = "select * from product_category where category_id = :categoryId and deleted_flag = :deletedFlag", nativeQuery = true)
     List<ProductCategory> findByCategoryId(@Param(value = "categoryId") Long id, @Param(value = "deletedFlag") int i);

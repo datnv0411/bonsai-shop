@@ -77,13 +77,12 @@
                             </select>
                           </div>
                           <div class="mb-3 col-md-6" th:object="${paymentStatus}">
-                            <label for="email" class="form-label">Trạng thái thanh toán</label>
-                            <input th:field="*{status}"
-                              class="form-control"
-                              type="text"
-                              id="email"
-                              name="email"
-                            />
+                            <label class="form-label">Trạng thái thanh toán</label>
+                            <select class="btn btn-primary dropdown-toggle" th:field="*{status}">
+                              <option id="stt0" th:value="${paymentStatus.status}" th:text="${paymentStatus.status}"></option>
+                              <option id="dtt" value="Đã thanh toán">Đã thanh toán</option>
+                              <option id="ctt" value="Chưa thanh toán">Chưa thanh toán</option>
+                            </select>
                           </div>
                         <div class="mt-2">
                           <button type="submit" class="btn btn-primary me-2">Lưu</button>
@@ -152,6 +151,15 @@
           showImageThumbnail(this, index);
         });
       });
+
+      var s = "[[${paymentStatus.status}]]";
+      if(s=="Đã thanh toán"){
+        $("#dtt").hide();
+      } else {
+        if(s=="Chưa thanh toán"){
+          $("#ctt").hide();
+        }
+      }
     });
 
     function showImageThumbnail(fileInput, index){

@@ -8,10 +8,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-import vn.haui.cntt.myproject.entity.User;
+
+import vn.haui.cntt.myproject.dto.UserDto;
+import vn.haui.cntt.myproject.mapper.UserMapper;
 import vn.haui.cntt.myproject.service.CartService;
 import vn.haui.cntt.myproject.service.UserService;
 import vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl;
@@ -19,6 +20,8 @@ import vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl;
 @RestController
 @RequiredArgsConstructor
 public class ShoppingCartController {
+    private static final String LOGIN = "admin/auth-login-basic";
+
     @Autowired
     private final CartService cartService;
     @Autowired
@@ -30,13 +33,13 @@ public class ShoppingCartController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return LOGIN;
         }
 
         String email = loggedUser.getEmail();
-        User user = mUserService.getByEmail(email);
+        UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
 
-        Integer addedQuantity = cartService.addProductToCart(productId, quantity, user);
+        Integer addedQuantity = cartService.addProductToCart(productId, quantity, user.toUser());
 
         return String.valueOf(addedQuantity);
     }
@@ -47,13 +50,13 @@ public class ShoppingCartController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return LOGIN;
         }
 
         String email = loggedUser.getEmail();
-        User user = mUserService.getByEmail(email);
+        UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
 
-        Long subtotal = cartService.updateQuantity(quantity, productId, user);
+        Long subtotal = cartService.updateQuantity(quantity, productId, user.toUser());
 
         return String.valueOf(subtotal);
     }
@@ -63,14 +66,14 @@ public class ShoppingCartController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return LOGIN;
         }
 
         try {
             String email = loggedUser.getEmail();
-            User user = mUserService.getByEmail(email);
+            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
 
-            Integer count = cartService.countCart(user);
+            Integer count = cartService.countCart(user.toUser());
 
             return String.valueOf(count);
         } catch (Exception e){

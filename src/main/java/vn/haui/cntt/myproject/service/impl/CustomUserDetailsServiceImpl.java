@@ -6,7 +6,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import vn.haui.cntt.myproject.entity.User;
 import vn.haui.cntt.myproject.repository.UserRepository;
-import vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl;
 
 public class CustomUserDetailsServiceImpl implements UserDetailsService {
 

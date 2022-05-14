@@ -1,29 +1,11 @@
 
-t
-java:S37760"RRefactor this method to reduce its Cognitive Complexity from 21 to the 15 allowed.(ÌÌ½™ıÿÿÿÿ8†ì·ï‰0
-c
-java:S4684“"@Replace this persistent entity with a simple POJO or DTO object.( Èìıÿÿÿÿ8Ùè¸ï‰0
-c
-java:S4684”"@Replace this persistent entity with a simple POJO or DTO object.(¯ª›¥ûÿÿÿÿ8ªÒ¸ï‰0
-c
-java:S4684ƒ"@Replace this persistent entity with a simple POJO or DTO object.(ÊÀö¡øÿÿÿÿ8çè¸ï‰0
-c
-java:S4684„"@Replace this persistent entity with a simple POJO or DTO object.(¯ª›¥ûÿÿÿÿ8ºÒ¸ï‰0
-f
-java:S1192Õ"HDefine a constant instead of duplicating this literal "message" 3 times.(ïóÿï8¬ì·ï‰0
-y
-java:S11927"WDefine a constant instead of duplicating this literal "admin/auth-login-basic" 5 times.(­—”Ìÿÿÿÿÿ8¾Ùºï‰0
-Y
-java:S4973K"<Strings and Boxed types should be compared using "equals()".(×€ÂÄ8£¶¹ï‰0
-^
-java:S4973U"<Strings and Boxed types should be compared using "equals()".(…ŒŠÿÿÿÿÿ8£¶¹ï‰0
-^
-java:S4973_"<Strings and Boxed types should be compared using "equals()".(‹ö«Îÿÿÿÿÿ8£¶¹ï‰0
-­
-java:S4449¯"Annotate the parameter with @javax.annotation.Nullable in method 'cleanPath' declaration, or make sure that null can not be passed as argument.(¶ƒÍ 8å¹¹ï‰0
-­
-java:S4449–"Annotate the parameter with @javax.annotation.Nullable in method 'cleanPath' declaration, or make sure that null can not be passed as argument.(¶ƒÍ 8å¹¹ï‰0
-³
-java:S4449Ğ"Annotate the parameter with @javax.annotation.Nullable in method 'cleanPath' declaration, or make sure that null can not be passed as argument.(ÃÓÜûùÿÿÿÿ8ë¹¹ï‰0
-³
-java:S4449´"Annotate the parameter with @javax.annotation.Nullable in method 'cleanPath' declaration, or make sure that null can not be passed as argument.(ÃÓÜûùÿÿÿÿ8ä¹¹ï‰0
+m
+java:S37765"RRefactor this method to reduce its Cognitive Complexity from 21 to the 15 allowed.(ÌÌ½™ıÿÿÿÿ
+¬
+java:S4449Õ"Annotate the parameter with @javax.annotation.Nullable in method 'cleanPath' declaration, or make sure that null can not be passed as argument.(ÃÓÜûùÿÿÿÿ
+¦
+java:S4449š"Annotate the parameter with @javax.annotation.Nullable in method 'cleanPath' declaration, or make sure that null can not be passed as argument.(¶ƒÍ 
+¬
+java:S4449¸"Annotate the parameter with @javax.annotation.Nullable in method 'cleanPath' declaration, or make sure that null can not be passed as argument.(ÃÓÜûùÿÿÿÿ
+¦
+java:S4449´"Annotate the parameter with @javax.annotation.Nullable in method 'cleanPath' declaration, or make sure that null can not be passed as argument.(¶ƒÍ 

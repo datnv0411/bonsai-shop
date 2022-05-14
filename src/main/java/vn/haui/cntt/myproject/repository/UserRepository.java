@@ -31,4 +31,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "select * from user u inner join users_roles ur on u.id = ur.user_id " +
             "where ur.role_id = 2 and u.id = :userId and u.deleted_flag = :deletedFlag", nativeQuery = true)
     User findByUserId(@Param(value = "userId") Long id, @Param(value = "deletedFlag") int i);
+
+    public User findByResetPasswordToken(String rpt);
 }

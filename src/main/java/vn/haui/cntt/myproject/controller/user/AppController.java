@@ -2,20 +2,14 @@ package vn.haui.cntt.myproject.controller.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import vn.haui.cntt.myproject.entity.Role;
-import vn.haui.cntt.myproject.entity.User;
-import vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl;
-import vn.haui.cntt.myproject.service.impl.UserServiceImpl;
 
-import java.util.List;
+import vn.haui.cntt.myproject.dto.UserDto;
+import vn.haui.cntt.myproject.service.impl.UserServiceImpl;
 
 @Controller
 @RequiredArgsConstructor
@@ -32,18 +26,18 @@ public class AppController {
 
     @GetMapping("/register")
     public String showSignUpForm(Model model){
-        User newUser = new User();
+        UserDto newUser = new UserDto();
 
         model.addAttribute("user", newUser);
         return "admin/auth-register-basic";
     }
-
+ 
     @PostMapping("/process-register")
-    public String processRegistration(User user){
+    public String processRegistration(@ModelAttribute(name = "user") UserDto user){
         try{
-            userService.encodePassword(user);
-            userService.isRoleUser(user);
-            userService.setAvatarDefault(user);
+            userService.isRoleUser(user.toUser());
+            userService.encodePassword(user.toUser());
+            userService.setAvatarDefault(user.toUser());
 
             return "redirect:/login";
         } catch (Exception e) {

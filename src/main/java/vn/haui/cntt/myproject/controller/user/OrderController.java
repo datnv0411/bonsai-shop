@@ -11,23 +11,22 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
-import vn.haui.cntt.myproject.entity.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import vn.haui.cntt.myproject.dto.*;
 import vn.haui.cntt.myproject.enums.OrderStatusEnum;
+import vn.haui.cntt.myproject.mapper.*;
 import vn.haui.cntt.myproject.service.*;
 import vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl;
-import vn.haui.cntt.myproject.util.RandomOrderCode;
 
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
 public class OrderController {
+    private static final String LOGIN = "admin/auth-login-basic";
+
     @Autowired
     private final OrderService orderService;
     @Autowired
@@ -40,6 +39,8 @@ public class OrderController {
     private final PaymentService paymentService;
     @Autowired
     private final OrderDetailService orderDetailService;
+    @Autowired
+    private final ProductService productService;
 
     @GetMapping("/order")
     public String getUserDetailInformation(@Param("page") int page, @Param("sortField") String sortField,
@@ -49,18 +50,18 @@ public class OrderController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return LOGIN;
         }
 
         try {
             String email = loggedUser.getEmail();
-            User user = mUserService.getByEmail(email);
+            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
 
             String pageStr = String.valueOf(page);
-            Page<Order> pages = orderService.listAll(pageStr, sortField, sortDir, user.getId());
+            Page<OrderDto> pages = orderService.listAll(pageStr, sortField, sortDir, user.getId()).map(OrderMapper::toOrderDto);
             long totalItems = pages.getTotalElements();
             int totalPages = pages.getTotalPages();
-            List<Order> list = pages.getContent();
+            List<OrderDto> list = pages.getContent();
 
             model.addAttribute("orders", list);
             model.addAttribute("page", page);
@@ -76,19 +77,16 @@ public class OrderController {
     }
 
     @GetMapping("/order-detail")
-    public String viewOrderDetail(@AuthenticationPrincipal CustomUserDetailImpl loggedUser, Model model,
+    public String viewOrderDetail(Model model,
                                   @Param(value = "orderId") Long orderId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return LOGIN;
         }
 
         try {
-            String email = loggedUser.getEmail();
-            User user = mUserService.getByEmail(email);
-
-            List<OrderDetail> list = orderDetailService.findByOrderId(orderId);
+            List<OrderDetailDto> list = orderDetailService.findByOrderId(orderId).stream().map(OrderDetailMapper::toOrderDetailDto).collect(Collectors.toList());
 
             model.addAttribute("listOrderDetails", list);
 
@@ -103,15 +101,15 @@ public class OrderController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return LOGIN;
         }
 
         try {
             String email = loggedUser.getEmail();
-            User user = mUserService.getByEmail(email);
+            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
 
-            List<Cart> carts = cartService.listCart(user);
-            List<Address> addresses = addressService.findByUserId(user.getId());
+            List<CartDto> carts = cartService.listCart(user.toUser()).stream().map(CartMapper::toCartDto).collect(Collectors.toList());
+            List<AddressDto> addresses = addressService.findByUserId(user.getId()).stream().map(AddressMapper::toAddressDto).collect(Collectors.toList());
 
             model.addAttribute("addresses", addresses);
             model.addAttribute("cartItems", carts);
@@ -124,18 +122,32 @@ public class OrderController {
 
     @GetMapping("/order/cancel")
     public String cancelOrder(@Param(value = "orderId") Long orderId,
-                              @AuthenticationPrincipal CustomUserDetailImpl loggedUser){
+                              @AuthenticationPrincipal CustomUserDetailImpl loggedUser,
+                              RedirectAttributes redirectAttributes){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return LOGIN;
         }
 
         try {
             String email = loggedUser.getEmail();
-            User user = mUserService.getByEmail(email);
+            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
+            orderService.cancelOrder(user.toUser(), orderId);
 
-            orderService.cancelOrder(user, orderId);
+            OrderDto orderDto = OrderMapper.toOrderDto(orderService.findById(orderId));
+            if (orderDto.getOrderStatus().equals(OrderStatusEnum.Đã_hủy)){
+                List<OrderDetailDto> orderDetailDto = orderDetailService.findByOrderId(orderId).stream().map(OrderDetailMapper::toOrderDetailDto).collect(Collectors.toList());
+                for (OrderDetailDto odd : orderDetailDto
+                     ) {
+                    ProductDto productDto = ProductMapper.toProductDto(productService.findById(odd.getProduct().getId()));
+                    productDto.setQuantity(productDto.getQuantity() + odd.getQuantity());
+                    productService.save(productDto.toProduct());
+                }
+            }
+
+            redirectAttributes.addFlashAttribute("message", "Đơn hàng đã được hủy.");
+
             return "redirect:/order?page=1&sortField=id&sortDir=des";
         } catch (Exception e){
             return "404";
@@ -143,20 +155,27 @@ public class OrderController {
     }
 
     @GetMapping(value = "vnpay", name = "responsePaymentVnpay")
-    public String checkPaymentVnPay(@RequestParam(name = "vnp_ResponseCode") String vnp_ResponseCode,
-                                    @RequestParam(name = "vnp_TxnRef") String vnp_TxnRef,
-                                    @RequestParam(name = "vnp_Amount") String vnp_Amount,
-                                    @AuthenticationPrincipal CustomUserDetailImpl loggedUser, Model model){
+    public String checkPaymentVnPay(@RequestParam(name = "vnp_ResponseCode") String vnpResponseCode,
+                                    @RequestParam(name = "vnp_TxnRef") String vnpTxnRef,
+                                    @RequestParam(name = "vnp_Amount") String vnpAmount,
+                                    @AuthenticationPrincipal CustomUserDetailImpl loggedUser){
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return LOGIN;
         }
         try {
-            paymentService.checkResultPaid(vnp_ResponseCode, vnp_TxnRef , vnp_Amount);
+            String email = loggedUser.getEmail();
+            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
+            paymentService.checkResultPaid(vnpResponseCode, vnpTxnRef , vnpAmount);
+            List<CartDto> carts = cartService.listCart(user.toUser()).stream().map(CartMapper::toCartDto).collect(Collectors.toList());
+            for (CartDto c : carts
+            ) {
+                cartService.deleteCart(c.toCart());
+            }
 
-            long orderId = Long.parseLong(vnp_TxnRef);
+            long orderId = Long.parseLong(vnpTxnRef);
 
             return "redirect:/order-detail?orderId=" + orderId;
         } catch (Exception e){

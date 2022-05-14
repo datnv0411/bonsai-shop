@@ -12,13 +12,10 @@ import vn.haui.cntt.myproject.entity.*;
 import vn.haui.cntt.myproject.enums.OrderStatusEnum;
 import vn.haui.cntt.myproject.repository.OrderRepository;
 import vn.haui.cntt.myproject.repository.PaymentOrderRepository;
-import vn.haui.cntt.myproject.repository.ProductRepository;
 import vn.haui.cntt.myproject.service.OrderService;
 import vn.haui.cntt.myproject.util.RandomOrderCode;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -57,7 +54,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void save(Order order, User user, List<OrderDetail> orderDetail, Voucher voucher, Address checkAddress, Payment foundPayment, Long totalPrice) {
+    public void save(Order order, User user, Voucher voucher, Address checkAddress, Payment foundPayment, Long totalPrice) {
         if(voucher.getCodeVoucher() != null && !voucher.getCodeVoucher().equals("")){
             order.setVoucher(voucher);
         }
@@ -65,7 +62,6 @@ public class OrderServiceImpl implements OrderService {
         order.setUser(user);
         order.setOrderStatus(OrderStatusEnum.Chờ);
         order.setOrderCode(RandomOrderCode.main());
-        order.setOrderDetails(orderDetail);
         order.setDeliveryAddress(checkAddress);
         order.setDeletedFlag(false);
         order.setCreatedBy(user.getUsername());
@@ -110,7 +106,7 @@ public class OrderServiceImpl implements OrderService {
 
         Pageable pageable = PageRequest.of(pageNumberInt - 1,9, sort);
 
-        return orderRepository.findAllByDeletedFlag(0, pageable);
+        return orderRepository.findByDeletedFlag(pageable);
     }
 
     @Override
@@ -119,13 +115,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void save(Order foundOrder) {
-        orderRepository.save(foundOrder);
+    public Order save(Order foundOrder) {
+        return orderRepository.save(foundOrder);
     }
 
     @Override
     public List<Order> findAll() {
-        return orderRepository.findAllByDeletedFlag(false);
+        return orderRepository.findByDeletedFlag(false);
     }
 
     @Override

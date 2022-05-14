@@ -1,26 +1,5 @@
 
-k	java:S116 "VRename this field "VNP_TMNCODE" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¶ğÒ®
-l	java:S116""RRename this field "VNP_URL" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(º¥ãºúÿÿÿÿ
-p	java:S116#"VRename this field "VNP_VERSION" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¹Çòøùÿÿÿÿ
-j	java:S116$"VRename this field "VNP_COMMAND" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¹Â¢
-o	java:S116%"URename this field "ORDER_TYPE" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÓÊË§üÿÿÿÿ
-7
-java:S1170 "!Make this final field static too.(¶ğÒ®
-<
-java:S1170""!Make this final field static too.(º¥ãºúÿÿÿÿ
-<
-java:S1170#"!Make this final field static too.(¹Çòøùÿÿÿÿ
-6
-java:S1170$"!Make this final field static too.(¹Â¢
-<
-java:S1170%"!Make this final field static too.(ÓÊË§üÿÿÿÿ
-Z
-java:S1124!"EReorder the modifiers to comply with the Java Language Specification.(ãå±f
 Q	java:S125D"<This block of commented-out lines of code should be removed.(¨÷·ù
-S
-java:S1854c"=Remove this useless assignment to local variable "totalPaid".(Ê¼ªõ
-D
-java:S1481c".Remove this unused "totalPaid" local variable.(Ê¼ªõ
 f	java:S117="QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(±¡Ş
 f	java:S117>"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ê–Òƒ
 k	java:S117?"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(š»‰µşÿÿÿÿ
@@ -34,8 +13,6 @@ k	java:S117G"QRename this local variable to match the regular expression '^[a-
 f	java:S117H"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(˜®¶¨
 f	java:S117I"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ú±ı
 f	java:S117Y"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(€ÿèê
-k	java:S117`"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¹İ«¥ùÿÿÿÿ
-k	java:S117`"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¹İ«¥ùÿÿÿÿ
-k	java:S117`"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¹İ«¥ùÿÿÿÿ
-w
-java:S1488["aImmediately return this expression instead of assigning it to the temporary variable "urlResult".(¾ÚàÉ
+k	java:S117_"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¹İ«¥ùÿÿÿÿ
+k	java:S117_"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¹İ«¥ùÿÿÿÿ
+k	java:S117_"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¹İ«¥ùÿÿÿÿ

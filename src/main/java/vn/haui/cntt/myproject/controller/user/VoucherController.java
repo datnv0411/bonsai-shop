@@ -5,18 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-import vn.haui.cntt.myproject.entity.User;
-import vn.haui.cntt.myproject.entity.Voucher;
 import vn.haui.cntt.myproject.service.UserService;
 import vn.haui.cntt.myproject.service.VoucherService;
-import vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,7 +27,7 @@ public class VoucherController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return "admin/auth-login-basic";
         }
 
         Integer discount = voucherService.applyVoucher(voucherCode, subTotal);

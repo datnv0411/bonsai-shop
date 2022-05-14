@@ -51,6 +51,9 @@ public class ImageServiceImpl {
             Files.createDirectories(uploadPath);
         }
         try{
+            if(Files.exists(Paths.get("src/main/resources/static/images/" + uploadDir+"/"+fileName))){
+                return;
+            }
             InputStream inputStream = multipartFile.getInputStream();
             Path filePath = uploadPath.resolve(fileName);
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);

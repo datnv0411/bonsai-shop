@@ -59,7 +59,7 @@
                         <div class="d-flex align-items-start align-items-sm-center gap-4">
                           <img
                             src=""
-                            alt="user-avatar"
+                            alt="Ảnh đại diện"
                             class="d-block rounded"
                             height="100"
                             width="100"
@@ -85,7 +85,7 @@
                               type="text"
                               id="firstName"
                               name="firstName"
-                              autofocus
+                              autofocus required
                             />
                           </div>
                           <div class="mb-3 col-md-6">
@@ -98,7 +98,7 @@
                               class="form-control"
                               type="text"
                               id="email"
-                              name="email"
+                              name="email" required
                             />
                           </div>
                           <div class="mb-3 col-md-6">
@@ -107,7 +107,7 @@
                               type="text"
                               class="form-control"
                               id="username"
-                              name="username"
+                              name="username" required
                             />
                           </div>
                           <div class="mb-3 col-md-6">
@@ -118,18 +118,18 @@
                                 type="text"
                                 id="cellphone"
                                 name="cellphone"
-                                class="form-control"
+                                class="form-control" required
                               />
                             </div>
                           </div>
                           <div class="mb-3 col-md-6">
                             <label class="form-label">Giới tính</label>
-                            <input type="radio" checked value="Nam" th:field="*{gender}">Nam</input>
+                            <input required type="radio" checked value="Nam" th:field="*{gender}">Nam</input>
                             <input type="radio" value="Nữ" th:field="*{gender}">Nữ</input>
                           </div>
                           <div class="mb-3 col-md-6">
                             <label class="form-label">Mật khẩu</label>
-                            <input type="password" class="form-control" th:field="*{password}"/>
+                            <input required type="password" class="form-control" th:field="*{password}"/>
                           </div>
                           <div class="mb-3 col-md-6" th:object="${role}">
                             <label class="form-label">Phân quyền</label>

@@ -23,7 +23,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     private ProductCategoryRepository productCategoryRepository;
 
     public ProductCategory findCategoryByProductId(Long productId){
-        return productCategoryRepository.findByIdAndDeletedFlag(productId, false);
+        return productCategoryRepository.findByProductIdAndDeletedFlag(productId, false);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
 
     @Override
     public ProductCategory findById(Long id) {
-        return productCategoryRepository.findById(id).orElse(null);
+        return productCategoryRepository.findByProductIdAndDeletedFlag(id, false);
     }
 
     @Override

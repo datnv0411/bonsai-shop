@@ -11,12 +11,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import vn.haui.cntt.myproject.entity.*;
+
+import vn.haui.cntt.myproject.dto.*;
+import vn.haui.cntt.myproject.mapper.*;
 import vn.haui.cntt.myproject.service.*;
 import vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -48,22 +51,24 @@ public class ProductController {
 
         try {
             String pageStr = String.valueOf(page);
-            Page<Product> pages = productService.listAll(pageStr, sortField, sortDir, categoryId);
+            Page<ProductDto> pages = productService.listAll(pageStr, sortField, sortDir, categoryId).map(ProductMapper::toProductDto);
             long totalItems = pages.getTotalElements();
             int totalPages = pages.getTotalPages();
-            List<Product> list = pages.getContent();
-            List<Category> categories = categoryService.findAll();
-            List<ProductImage> productImages = productImageService.listProductImage();
+            List<ProductDto> list = pages.getContent();
+            List<CategoryDto> categories = categoryService.findAll().stream().map(CategoryMapper::toCategoryDto).collect(Collectors.toList());
+            List<ProductImageDto> productImages = productImageService.listProductImage().stream().map(ProductImageMapper::toProductImageDto).collect(Collectors.toList());
 
-            for (Product pr: list
+            for (ProductDto pr: list
             ) {
-                for (ProductImage pi: productImages
+                for (ProductImageDto pi: productImages
                 ) {
-                    if(pi.getProduct().getId()==pr.getId()){
-                        pi.setProduct(pr);
+                    if(pi.getProduct().getId().equals(pr.getId())){
+                        pi.setProduct(pr.toProduct());
                     }
                 }
             }
+
+
 
             model.addAttribute("page", page);
             model.addAttribute("totalItems", totalItems);
@@ -87,11 +92,11 @@ public class ProductController {
 
         try {
             String pageStr = String.valueOf(page);
-            List<Category> categories = categoryService.findAll();
-            Page<Product> pages = productService.getProductByProductSearch(nameSearch, pageStr, sortField, sortDir, categoryId);
+            List<CategoryDto> categories = categoryService.findAll().stream().map(CategoryMapper::toCategoryDto).collect(Collectors.toList());
+            Page<ProductDto> pages = productService.getProductByProductSearch(nameSearch, pageStr, sortField, sortDir, categoryId).map(ProductMapper::toProductDto);
             long totalItems = pages.getTotalElements();
             int totalPages = pages.getTotalPages();
-            List<Product> list = pages.getContent();
+            List<ProductDto> list = pages.getContent();
 
             model.addAttribute("nameSearch", nameSearch);
             model.addAttribute("page", page);
@@ -113,21 +118,21 @@ public class ProductController {
     public String viewDetailProduct(Model model, @Param(value = "productId") Long productId,
                                     @AuthenticationPrincipal CustomUserDetailImpl loggedUser){
         try {
-            Product product = productService.findById(productId);
+            ProductDto product = ProductMapper.toProductDto(productService.findById(productId));
 
             Long categoryId = productCategoryService.findCategoryByProductId(productId).getCategory().getId();
 
-            List<Product> list = productService.findByCategoryId(categoryId);
+            List<ProductDto> list = productService.findByCategoryId(categoryId).stream().map(ProductMapper::toProductDto).collect(Collectors.toList());
 
-            List<ProductComment> productComments = productCommentService.findAll(productId);
+            List<ProductCommentDto> productComments = productCommentService.findAll(productId).stream().map(ProductCommentMapper::toProductCommentDto).collect(Collectors.toList());
 
-            ProductComment newProductComment = new ProductComment();
+            ProductCommentDto newProductComment = new ProductCommentDto();
 
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if(authentication != null && !(authentication instanceof AnonymousAuthenticationToken)){
                 String email = loggedUser.getEmail();
-                User user = mUserService.getByEmail(email);
+                UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
 
                 boolean isBought = orderService.isBought(user.getId(), productId, "Đã_giao");
 
@@ -149,27 +154,27 @@ public class ProductController {
     @RequestMapping("/product/comment")
     public String commentProduct(@Param(value = "productId") Long productId,
                                  @AuthenticationPrincipal CustomUserDetailImpl loggedUser,
-                                 @ModelAttribute(name = "newComment") ProductComment productComment){
+                                 @ModelAttribute(name = "newComment") ProductCommentDto productComment){
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return "admin/auth-login-basic";
         }
 
         try {
             String email = loggedUser.getEmail();
-            User user = mUserService.getByEmail(email);
+            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
 
-            Product product = productService.findById(productId);
+            ProductDto product = ProductMapper.toProductDto(productService.findById(productId));
 
-            productComment.setProduct(product);
-            productComment.setUser(user);
+            productComment.setProduct(product.toProduct());
+            productComment.setUser(user.toUser());
             productComment.setDeletedFlag(false);
             productComment.setCreatedBy(user.getUsername());
             productComment.setCreatedDate(LocalDateTime.now());
 
-            productCommentService.save(productComment);
+            productCommentService.save(productComment.toProductComment());
 
             return "redirect:/product-detail?productId=" + productId;
         } catch (Exception e){
@@ -184,19 +189,16 @@ public class ProductController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "user/login";
+            return "admin/auth-login-basic";
         }
 
         try {
-            String email = loggedUser.getEmail();
-            User user = mUserService.getByEmail(email);
-
-            ProductComment productComment = productCommentService.findById(id);
+            ProductCommentDto productComment = ProductCommentMapper.toProductCommentDto(productCommentService.findById(id));
             Long productId = productComment.getProduct().getId();
             productComment.setDeletedFlag(true);
             productComment.setUpdatedDate(LocalDateTime.now());
             productComment.setUpdatedBy(loggedUser.getUsername());
-            productCommentService.save(productComment);
+            productCommentService.save(productComment.toProductComment());
 
             return "redirect:/product-detail?productId=" + productId;
         } catch (Exception e){

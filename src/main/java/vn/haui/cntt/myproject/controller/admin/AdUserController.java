@@ -14,8 +14,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import vn.haui.cntt.myproject.entity.Role;
-import vn.haui.cntt.myproject.entity.User;
+import vn.haui.cntt.myproject.dto.RoleDto;
+import vn.haui.cntt.myproject.dto.UserDto;
+import vn.haui.cntt.myproject.mapper.RoleMapper;
+import vn.haui.cntt.myproject.mapper.UserMapper;
 import vn.haui.cntt.myproject.service.RoleService;
 import vn.haui.cntt.myproject.service.UserService;
 import vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl;
@@ -27,6 +29,10 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class AdUserController {
+    private static final String LOGIN = "admin/auth-login-basic";
+    private static final String MESSAGE = "message";
+    private static final String RETURN_URL = "redirect:/admin/users?page=1&sortField=id&sortDir=asc";
+
     @Autowired
     private final UserService mUserService;
     @Autowired
@@ -37,22 +43,22 @@ public class AdUserController {
     @GetMapping("/admin/users")
     public String viewListUsers(@AuthenticationPrincipal CustomUserDetailImpl loggedUser,
                                 Model model, @Param("page") int page,
-                                @Param("sortField") String sortField, @Param("sortDir") String sortDir) throws IOException {
+                                @Param("sortField") String sortField, @Param("sortDir") String sortDir) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
             String email = loggedUser.getEmail();
-            User user = mUserService.getByEmail(email);
+            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
 
             String pageStr = String.valueOf(page);
-            Page<User> pages = mUserService.listAll(pageStr, sortField, sortDir);
+            Page<UserDto> pages = mUserService.listAll(pageStr, sortField, sortDir).map(UserMapper::toUserDto);
             long totalItems = pages.getTotalElements();
             int totalPages = pages.getTotalPages();
-            List<User> list = pages.getContent();
+            List<UserDto> list = pages.getContent();
 
             model.addAttribute("user", user);
             model.addAttribute("page", page);
@@ -75,15 +81,15 @@ public class AdUserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
             String email = loggerUser.getEmail();
-            User loggedUser = mUserService.getByEmail(email);
+            UserDto loggedUser = UserMapper.toUserDto(mUserService.getByEmail(email));
 
-            User user = new User();
-            Role role = new Role();
+            UserDto user = new UserDto();
+            RoleDto role = new RoleDto();
 
             model.addAttribute("user", loggedUser);
             model.addAttribute("newUser", user);
@@ -96,21 +102,21 @@ public class AdUserController {
     }
 
     @PostMapping("/admin/save")
-    public String saveUser(@ModelAttribute(name = "newUser") User user, RedirectAttributes redirectAttributes,
+    public String saveUser(@ModelAttribute(name = "newUser") UserDto user, RedirectAttributes redirectAttributes,
                              @AuthenticationPrincipal CustomUserDetailImpl loggerUser,
-                             @ModelAttribute(name = "role") Role role,
+                             @ModelAttribute(name = "role") RoleDto role,
                              @RequestParam("fileImage") MultipartFile multipartFile) throws IOException {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
-        Role foundRole = roleService.findByName(role.getName());
-        mUserService.encodePassword(user);
-        mUserService.save(user, foundRole, loggerUser.getUsername());
+        RoleDto foundRole = RoleMapper.toRoleDto(roleService.findByName(role.getName()));
+        mUserService.encodePassword(user.toUser());
+        mUserService.save(user.toUser(), foundRole.toRole(), loggerUser.getUsername());
 
         if(!multipartFile.isEmpty()){
             String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
@@ -120,11 +126,11 @@ public class AdUserController {
         }
         String uploadDir = "user/" + user.getId();
         imageService.uploadFile(uploadDir, multipartFile, user.getAvatar());
-        mUserService.saveUser(user);
+        mUserService.saveUser(user.toUser());
 
-        redirectAttributes.addFlashAttribute("message", "Thông tin người dùng đã được cập nhật.");
+        redirectAttributes.addFlashAttribute(MESSAGE, "Thông tin người dùng đã được cập nhật.");
 
-        return "redirect:/admin/users?page=1&sortField=id&sortDir=asc";
+        return RETURN_URL;
         } catch (Exception e){
             return "404";
         }
@@ -142,10 +148,10 @@ public class AdUserController {
 
         try {
             String email = loggerUser.getEmail();
-            User loggedUser = mUserService.getByEmail(email);
+            UserDto loggedUser = UserMapper.toUserDto(mUserService.getByEmail(email));
 
-            User foundUser = mUserService.findById(id);
-            Role role = roleService.findByUserId(id);
+            UserDto foundUser = UserMapper.toUserDto(mUserService.findById(id));
+            RoleDto role = RoleMapper.toRoleDto(roleService.findByUserId(id));
 
             model.addAttribute("user", loggedUser);
             model.addAttribute("role", role);
@@ -158,22 +164,22 @@ public class AdUserController {
     }
 
     @PostMapping("/admin/update/{id}")
-    public String updateUser(@ModelAttribute(name = "foundUser") User user, RedirectAttributes redirectAttributes,
+    public String updateUser(@ModelAttribute(name = "foundUser") UserDto user, RedirectAttributes redirectAttributes,
                              @AuthenticationPrincipal CustomUserDetailImpl loggerUser,
-                             @ModelAttribute(name = "role") Role role,
+                             @ModelAttribute(name = "role") RoleDto role,
                              @RequestParam("fileImage") MultipartFile multipartFile,
                              @PathVariable(value = "id") Long id) throws IOException {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
-            User foundUser = mUserService.findById(id);
-            Role foundRole = roleService.findByName(role.getName());
-            user.addRole(foundRole);
+            UserDto foundUser = UserMapper.toUserDto(mUserService.findById(id));
+            RoleDto foundRole = RoleMapper.toRoleDto(roleService.findByName(role.getName()));
+            user.addRole(foundRole.toRole());
 
             if(!multipartFile.isEmpty()){
                 String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
@@ -186,14 +192,14 @@ public class AdUserController {
             }
 
             if (user.getPassword() == null || user.getPassword().equals("")){
-                mUserService.updateAccountWithoutPassword(user, loggerUser.getUsername());
+                mUserService.updateAccountWithoutPassword(user.toUser(), loggerUser.getUsername());
             } else {
-                mUserService.updateAccount(user, loggerUser.getUsername());
+                mUserService.updateAccount(user.toUser(), loggerUser.getUsername());
             }
 
-            redirectAttributes.addFlashAttribute("message", "Thông tin người dùng đã được cập nhật.");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Thông tin người dùng đã được cập nhật.");
 
-            return "redirect:/admin/users?page=1&sortField=id&sortDir=asc";
+            return RETURN_URL;
         } catch (Exception e){
             return "404";
         }
@@ -202,22 +208,22 @@ public class AdUserController {
     @GetMapping("/admin/delete/{id}")
     public String deleteUser(RedirectAttributes redirectAttributes,
                              @AuthenticationPrincipal CustomUserDetailImpl loggerUser,
-                             @PathVariable(value = "id") Long id) throws IOException {
+                             @PathVariable(value = "id") Long id) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "admin/auth-login-basic";
+            return LOGIN;
         }
 
         try {
-            User foundUser = mUserService.findById(id);
+            UserDto foundUser = UserMapper.toUserDto(mUserService.findById(id));
 
-            mUserService.deleteUser(foundUser, loggerUser.getUsername());
+            mUserService.deleteUser(foundUser.toUser(), loggerUser.getUsername());
 
-            redirectAttributes.addFlashAttribute("message", "Đã xóa.");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Đã xóa.");
 
-            return "redirect:/admin/users?page=1&sortField=id&sortDir=asc";
+            return RETURN_URL;
         } catch (Exception e){
             return "404";
         }

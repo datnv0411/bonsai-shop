@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create New Product Form</title>
+    <link rel="stylesheet" href="css/custom.css">
+</head>
+<body>
+    <div align="center">
+        <h2>Kết quả giao dịch</h2>
+        <table class="styled-table" border="1">
+            <thead>
+                <tr>
+                    <th>Mã đơn hàng</th>
+                    <th>Tổng tiền</th>
+                    <th>Trạng thái</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td th:text="${paymentOrder.order.orderCode}"></td>
+                    <td th:text="${paymentOrder.totalPaid}"></td>
+                    <td th:text="${paymentOrder.status}"></td>
+                </tr>
+            </tbody>
+        </table>
+        &nbsp; &nbsp;
+        <a class="btn hvr-hover" href="home">Trở về trang chủ</a>
+    </div>
+</body>
+</html>

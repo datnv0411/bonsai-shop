@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+
+<!-- =========================================================
+* Sneat - Bootstrap 5 HTML Admin Template - Pro | v1.0.0
+==============================================================
+
+* Product Page: https://themeselection.com/products/sneat-bootstrap-html-admin-template/
+* Created by: ThemeSelection
+* License: You must have a valid license purchased in order to legally use the theme for your project.
+* Copyright ThemeSelection (https://themeselection.com)
+
+=========================================================
+ -->
+<!-- beautify ignore:start -->
+<html
+        lang="en"
+        class="light-style customizer-hide"
+        dir="ltr"
+        data-theme="theme-default"
+        data-assets-path="../assets/"
+        data-template="vertical-menu-template-free"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+>
+<div th:replace="a-fragment :: head" th:remove="tag"></div>
+
+  <body>
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar">
+      <div class="layout-container">
+        <div th:replace="a-fragment :: menu" th:remove="tag"></div>
+
+        <!-- Layout container -->
+        <div class="layout-page">
+          <div th:replace="a-fragment :: navbar" th:remove="tag"></div>
+
+          <!-- Content wrapper -->
+          <div class="content-wrapper">
+            <!-- Content -->
+
+            <div class="container-xxl flex-grow-1 container-p-y">
+              <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Quản lý /</span> Danh mục</h4>
+
+              <!-- Basic Bootstrap Table -->
+              <div class="card">
+                <h5 class="card-header">Danh sách danh mục</h5>
+                <h6 class="card-header" th:if="${message != null}">[[${message}]]</h6>
+                <a style="width:100px; margin-left:20px;" class="btn btn-primary" href="category-create"> Thêm</a>
+                <div class="table-responsive text-nowrap">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Tên danh mục</th>
+                      </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0" th:each="c : ${listCategories}">
+                      <tr>
+                        <td th:text="${c.name}"><i class="fab fa-angular fa-lg text-danger me-3"></i></td>
+                        <td>
+                          <div class="dropdown">
+                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                              <i class="bx bx-dots-vertical-rounded"></i>
+                            </button>
+                            <div class="dropdown-menu">
+                              <a class="dropdown-item" th:href="@{'category?id=' + ${c.id}}"
+                                ><i class="bx bx-edit-alt me-1"></i> Sửa</a
+                              >
+                              <a class="dropdown-item" th:href="@{'/admin/delete/category/'+ ${c.id}}"
+                                ><i class="bx bx-trash me-1"></i> Xóa</a
+                              >
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                  <li th:class="${page>1} ? 'page-item' : 'page-item disabled'">
+                    <a class="page-link" th:href="${page>1} ? @{'/admin/categories?page=' + ${page - 1} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&categoryId=' + ${categoryId}} : ''" aria-label="Previous">
+                      <span aria-hidden="true">&laquo;</span>
+                      <span class="sr-only">Previous</span>
+                    </a>
+                  </li>
+                  <li th:each="i : ${#numbers.sequence(1, totalPages)}" th:class="${i == page} ? 'page-item active' : 'page-item'">
+                    <a class="page-link" th:href="${i!=page} ? @{'/admin/categories?page=' + ${i} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&categoryId=' + ${categoryId}} : ''">[[${i}]]</a>
+                  </li>
+                  <li th:class="${page<totalPages} ? 'page-item' : 'page-item disabled'">
+                    <a class="page-link" th:href="@{'/admin/categories?page=' + ${page + 1} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&categoryId=' + ${categoryId}}" aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                      <span class="sr-only">Next</span></a>
+                  </li>
+                </ul>
+              </nav>
+              <div th:if="${#lists.isEmpty(listCategories)}">
+                <h3>Không tìm thấy kết quả nào.</h3>
+              </div>
+              <!--/ Basic Bootstrap Table -->
+
+              <hr class="my-5" />
+
+              <!-- Bootstrap Dark Table -->
+
+              <!--/ Responsive Table -->
+            </div>
+            <!-- / Content -->
+
+            <!-- Footer -->
+            <footer class="content-footer footer bg-footer-theme">
+              <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+                <div class="mb-2 mb-md-0">
+                  ©
+                  <script>
+                    document.write(new Date().getFullYear());
+                  </script>
+                  , made with ❤️ by
+                  <a href="https://themeselection.com" target="_blank" class="footer-link fw-bolder">ThemeSelection</a>
+                </div>
+                <div>
+                  <a href="https://themeselection.com/license/" class="footer-link me-4" target="_blank">License</a>
+                  <a href="https://themeselection.com/" target="_blank" class="footer-link me-4">More Themes</a>
+
+                  <a
+                    href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/"
+                    target="_blank"
+                    class="footer-link me-4"
+                    >Documentation</a
+                  >
+
+                  <a
+                    href="https://github.com/themeselection/sneat-html-admin-template-free/issues"
+                    target="_blank"
+                    class="footer-link me-4"
+                    >Support</a
+                  >
+                </div>
+              </div>
+            </footer>
+            <!-- / Footer -->
+
+            <div class="content-backdrop fade"></div>
+          </div>
+          <!-- Content wrapper -->
+        </div>
+        <!-- / Layout page -->
+      </div>
+
+      <!-- Overlay -->
+      <div class="layout-overlay layout-menu-toggle"></div>
+    </div>
+    <!-- / Layout wrapper -->
+
+    <div th:replace="a-fragment :: coreScript" th:remove="tag"></div>
+  </body>
+</html>

@@ -1,0 +1,10 @@
+
+Z
+java:S1128"=Remove this unused import 'lombok.experimental.SuperBuilder'.(àçÄÑ8§×²ë‹0
+W
+java:S1128
+"5Remove this unused import 'javax.persistence.Entity'.(úƒßýûÿÿÿÿ8§×²ë‹0
+M
+java:S1128"+Remove this unused import 'java.util.List'.(Õë±Äøÿÿÿÿ8¨×²ë‹0
+{
+java:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(¸Ä´¡úÿÿÿÿ8Þ»¶ë‹0

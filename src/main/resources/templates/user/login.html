@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Login</title>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/login-page.css">
+</head>
+<body>
+
+<!--Form login-->
+<div class="login-page">
+    <div class="form">
+        <span class="close" title="Close Modal"><a href="home" style="text-decoration: none;">&times;</a></span>
+        <form id="login-form" class="login-form" th:action="@{/login}" method="post">
+            <span class="app-brand-text demo text-body fw-bolder">BonsaiShop</span>
+            <h4 class="mb-2">Đăng nhập 🚀</h4>
+            <p class="mb-4">Đăng nhập ngay để mua sắm!</p>
+            <input type="email" placeholder="Email" name="email" required autofocus>
+            <input type="password" placeholder="Mật khẩu" name="psw" required>
+            <label>
+                <input type="checkbox" name="remember"> Lưu mật khẩu
+            </label>
+            <button type="submit">Đăng nhập</button>
+            <span class="message">Chưa có tài khoản ? </span>
+            <a href="register">Đăng ký ngay</a>
+        </form>
+    </div>
+</div>
+<!-- End Form Login -->
+
+</body>
+</html>

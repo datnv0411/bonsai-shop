@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!-- Basic -->
+
+<head th:replace="fragment :: head">
+
+<body>
+<div th:replace="fragment :: top"></div>
+<!-- Start All Title Box -->
+<div class="all-title-box">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2>Thông tin tài khoản</h2>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="account">Tài khoản</a></li>
+                    <li class="breadcrumb-item active">THÔNG TIN TÀI KHOẢN</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div align="center">
+    <br>
+    <form class="form" th:action="@{/account/update}" method="post" enctype="multipart/form-data" th:object="${user}">
+        <input type="hidden" th:field="*{id}">
+        <div class="text-center">
+            <h2><strong>THÔNG TIN CÁ NHÂN</strong></h2>
+        </div>
+        <div th:if="${message != null}" class="alert alert-success text-center">[[${message}]]</div>
+        <div class="border border-secondary rounded p-3" style="background-color: floralwhite;">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label"><strong>Họ: </strong></label>
+                <div class="col-sm-8">
+                    <input class="form-control" type="text" th:field="*{firstName}" required/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label"><strong>Tên: </strong></label>
+                <div class="col-sm-8">
+                    <input class="form-control" type="text" th:field="*{lastName}" required/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label"><strong>Tên người dùng: </strong></label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" th:field="*{username}" required/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label"><strong>Giới tính: </strong></label>
+                <div class="col-sm-8">
+                    <input required style="margin-left: -300px;" type="radio" value="Nam" th:field="*{gender}">Nam</input>
+                    <input style="margin-left: 100px;" type="radio" value="Nữ" th:field="*{gender}">Nữ</input>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label"><strong>Email: </strong></label>
+                <div class="col-sm-8">
+                    <input required type="email" class="form-control" th:field="*{email}"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label"><strong>Số điện thoại: </strong></label>
+                <div class="col-sm-8">
+                    <input required type="tel" class="form-control" th:field="*{cellphone}"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label"><strong>Mật khẩu: </strong></label>
+                <div class="col-sm-8">
+                    <input type="password" class="form-control" th:field="*{password}"
+                    placeholder="Để trống nếu như bạn không muốn thay đổi mật khẩu"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label"><strong>Ảnh đại diện: </strong></label>
+                <div class="col-sm-8">
+                    <input class="form-control" type="file" name="fileImage" id="fileImage"
+                           accept="image/png, image/jpeg"/>
+                    <img id="thumbnail" alt="Ảnh đại diện" style="max-width:300px; max-height: 300px; float:left;margin-top:5px;"
+                         th:src="${user.avatar == 'avatar-default.png'} ? @{'images/user/0/avatar-default.png'} : @{'images/user/' + ${user.id} + '/' + ${user.avatar}}">
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-12">
+                    <button style="height: 37px; padding: 0px 20px; font-weight: 700; color: #ffffff; border: none;" class="btn hvr-hover" type="submit">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div th:replace="fragment :: instagramFeed" th:remove="tag"></div>
+<footer>
+    <div th:replace="fragment :: footer" th:remove="tag"></div>
+</footer>
+<div th:replace="fragment :: copyright" th:remove="tag"></div>
+<a th:replace="fragment :: backToTop" th:remove="tag"></a>
+<div th:replace="fragment :: finalScript" th:remove="tag"></div>
+</body>
+</html>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#fileImage').change(function(){
+            showImageThumbnail(this);
+        });
+    });
+
+    function showImageThumbnail(fileInput){
+        file = fileInput.files[0];
+        reader = new FileReader();
+
+        reader.onload = function(e){
+            $('#thumbnail').attr('src', e.target.result);
+        };
+
+        reader.readAsDataURL(file);
+    }
+</script>

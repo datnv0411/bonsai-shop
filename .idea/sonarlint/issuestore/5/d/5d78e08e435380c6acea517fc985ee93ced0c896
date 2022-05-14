@@ -1,0 +1,8 @@
+
+a	java:S112½"FDefine and throw a dedicated exception instead of using a generic one.(΄‰φέϋÿÿÿÿ
+V	java:S125"<This block of commented-out lines of code should be removed.(„φΪ†ώÿÿÿÿ
+V	java:S1253"<This block of commented-out lines of code should be removed.(”Κ¦©όÿÿÿÿ
+W
+java:S1126?"AReplace this if-then-else statement by a single return statement.(Ία
+l
+java:S2159I"VRemove this call to "equals"; comparisons between unrelated types always return false.(‚ρΏ¶

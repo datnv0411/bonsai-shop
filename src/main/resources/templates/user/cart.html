@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!-- Basic -->
+
+<head th:replace="fragment :: head">
+
+<body>
+    <div th:replace="fragment :: top"></div>
+    <!-- Start All Title Box -->
+    <div class="all-title-box">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2>Cart</h2>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="list-product">Cửa hàng</a></li>
+                        <li class="breadcrumb-item active">Giỏ hàng</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End All Title Box -->
+
+    <!-- Start Cart  -->
+    <div class="cart-box-main">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="table-main table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Hình ảnh</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Giá</th>
+                                    <th>Số lượng</th>
+                                    <th>Tổng tiền</th>
+                                    <th>Xóa</th>
+                                </tr>
+                            </thead>
+                            <tbody th:each="item, status : ${cartItems}">
+                                <tr th:id="'row'+${status.count}">
+                                    <td class="thumbnail-img">
+                                        <a th:href="@{'product-detail?productId=' + ${item.product.id}}">
+									<img class="img-fluid" th:src="@{'images/product/' + ${item.product.productImages[0].path}}" alt="" />
+								</a>
+                                    </td>
+                                    <td class="name-pr">
+                                        <a class="nav-link" th:href="@{'product-detail?productId=' + ${item.product.id}}"
+                                        th:text="${item.product.nameProduct}" target="_blank">
+									Name Product
+								</a>
+                                    </td>
+                                    <td class="price-pr">
+                                        <p><span th:text="${item.product.price == item.product.priceSale} ? ${item.product.price} : ${item.product.priceSale}"></span><span> VND</span></p>
+                                    </td>
+                                    <td style="display:none;" >
+                                        <p class="gg" th:text="${item.product.price - item.product.priceSale}"></p>
+                                    </td>
+                                    <td class="quantity-box"><div th:replace="quantity_control :: quantity_control(${item.quantity}, ${item.product.id}, ${item.product.quantity})" th:remove="tag"></div></td>
+                                    <td>
+                                        <p><span th:id="'subtotal' + ${item.product.id}"  class="total-pr">[[${item.subtotal}]]</span><span> VND</span></p>
+                                    </td>
+                                    <td id="removePr">
+                                        <a class="remove-pr" th:href="@{'/cart/delete?productId=' + ${item.product.id}}"
+                                        th:rowNumber="${status.count}">
+									<i class="fas fa-times"></i>
+								</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div th:if="${#lists.isEmpty(cartItems)}">
+                            <h3>Chưa có sản phẩm nào.</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row my-5">
+                <div class="col-lg-8 col-sm-12"></div>
+                <div class="col-lg-4 col-sm-12">
+                    <div class="order-box">
+                        <h3>Tổng tiền hóa đơn</h3>
+                        <div class="d-flex">
+                            <h4>Tổng tiền (tạm tính)</h4>
+                            <div class="ml-auto font-weight-bold"><span id="totalPr"></span><span> VND</span></div>
+                        </div>
+                        <hr class="my-1">
+                        <div class="d-flex">
+                            <h4>Chiết khấu</h4>
+                            <div class="ml-auto font-weight-bold"><span id="salePr"></span><span> VND</span></div>
+                        </div>
+                        <div class="d-flex">
+                            <h4>Thuế</h4>
+                            <div class="ml-auto font-weight-bold"><span id="thue"></span><span> VND</span></div>
+                        </div>
+                        <div class="d-flex">
+                            <h4>Chi phí vận chuyển</h4>
+                            <div id="shipPr" class="ml-auto font-weight-bold"> Free </div>
+                        </div>
+                        <hr>
+                        <div class="d-flex gr-total">
+                            <h5>Tổng cộng</h5>
+                            <div class="ml-auto h5 final-total"><span id="finalPr"></span><span> VND</span></div>
+                        </div>
+                        <hr> </div>
+                </div>
+                <div th:if="${#lists.isEmpty(cartItems)}" class="col-12 d-flex shopping-box"><a href="list-product" class="ml-auto btn hvr-hover">Mua sắm</a> </div>
+                <div th:unless="${#lists.isEmpty(cartItems)}" class="col-12 d-flex shopping-box"><a href="create-order" class="ml-auto btn hvr-hover">Mua hàng</a> </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Cart -->
+
+    <div th:replace="fragment :: instagramFeed" th:remove="tag"></div>
+    <footer>
+        <div th:replace="fragment :: footer" th:remove="tag"></div>
+    </footer>
+    <div th:replace="fragment :: copyright" th:remove="tag"></div>
+    <a th:replace="fragment :: backToTop" th:remove="tag"></a>
+    <div th:replace="fragment :: finalScript" th:remove="tag"></div>
+    <script type="text/javascript">
+        contextPath = "[[@{/}]]";
+        var check = "[[${check}]]";
+
+    </script>
+    <script th:src="@{/js/add-to-cart.js}"></script>
+    <script th:src="@{/js/shopping-cart.js}"></script>
+</body>
+
+</html>

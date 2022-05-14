@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!-- Basic -->
+
+<head th:replace="fragment :: head">
+
+<body>
+    <div th:replace="fragment :: top"></div>
+    <!-- Start All Title Box -->
+    <div class="all-title-box">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2>Thanh toán</h2>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="list-product">Cửa hàng</a></li>
+                        <li class="breadcrumb-item active">Thanh toán</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End All Title Box -->
+
+    <!-- Start Cart  -->
+    <div class="cart-box-main">
+        <div class="container">
+            <div class="row new-account-login">
+            <div class="row">
+                <div class="col-sm-6 col-lg-6 mb-3">
+                    <div class="checkout-address">
+                        <div class="title-left">
+                            <h3>Địa chỉ thanh toán</h3>
+                        </div>
+                        <form class="needs-validation" novalidate>
+                            <div class="mb-3">
+                                <label>Địa chỉ</label>
+                                <div class="custom-control custom-radio addressCl" th:each="ads : ${addresses}">
+                                    <input th:id="${ads.id}" name="addressShip" type="radio" class="custom-control-input addressShip" required>
+                                    <label class="custom-control-label" th:for="${ads.id}"><span th:text="${ads.fullName}">fullName</span><span> - </span><span th:text="${ads.cellphone}"></span></label>
+                                    <label th:text="${ads.specificAddress}+', '+${ads.town}+', '+${ads.district}+', '+${ads.province}" class="custom-control-label" th:for="${ads.id}">Address</label>
+                                    <div class="invalid-feedback" th:if="${#lists.isEmpty(addresses)}"> Hãy tạo địa chỉ ! </div>
+                                </div>
+                                <label><a style="color:white;" class="btn hvr-hover" href="create-address">Thêm địa chỉ mới</a></label>
+                            </div>
+                            <hr class="mb-4">
+                            <div class="title"> <span>Thanh toán</span> </div>
+                            <div class="d-block my-3">
+                                <div class="custom-control custom-radio">
+                                    <input value="truc Tiep" id="1" name="paymentMethod" type="radio" class="custom-control-input" checked required>
+                                    <label class="custom-control-label" for="1">Thanh toán khi nhận hàng</label>
+                                </div>
+                                <div class="custom-control custom-radio">
+                                    <input value="VN PAY" id="2" name="paymentMethod" type="radio" class="custom-control-input" required>
+                                    <label class="custom-control-label" for="2">Thanh toán trực tuyến</label>
+                                </div>
+                            </div>
+                            <div class="title"> <span>Nhập Voucher</span> </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-sm-6">
+                                    <div class="coupon-box">
+                                        <div class="input-group input-group-sm">
+                                            <input id="v-code" class="form-control" placeholder="Nhập mã khuyến mại" aria-label="Coupon code" type="text">
+                                            <div class="input-group-append">
+                                                <button id="applyVoucher" class="btn btn-theme" type="button">Sử dụng</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="title">
+                                <h4 id="msgVoucher"></h4>
+                            </div>
+                            <hr class="mb-1">
+                        </form>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-6 mb-3">
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="shipping-method-box">
+                                <div class="title-left">
+                                    <h3>Phương thức vận chuyển</h3>
+                                </div>
+                                <div class="mb-4">
+                                    <div class="custom-control custom-radio">
+                                        <input id="shippingOption1" name="shipping-option" class="custom-control-input" checked="checked" type="radio">
+                                        <label class="custom-control-label" for="shippingOption1">Vận chuyển tiêu chuẩn</label> <span class="float-right font-weight-bold"><span>0</span><span> VND</span></span> </div>
+                                    <div class="ml-4 mb-2 small">(3-7 ngày)</div>
+                                    <div class="custom-control custom-radio">
+                                        <input id="shippingOption2" name="shipping-option" class="custom-control-input" type="radio">
+                                        <label class="custom-control-label" for="shippingOption2">Vận chuyển nhanh</label> <span class="float-right font-weight-bold"><span>25000</span><span> VND</span></span> </div>
+                                    <div class="ml-4 mb-2 small">(2-4 ngày)</div>
+                                    <div class="custom-control custom-radio">
+                                        <input id="shippingOption3" name="shipping-option" class="custom-control-input" type="radio">
+                                        <label class="custom-control-label" for="shippingOption3">Hỏa tốc</label> <span class="float-right font-weight-bold"><span>50000</span><span> VND</span></span> </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-lg-12">
+                            <div class="odr-box">
+                                <div class="title-left">
+                                    <h3>Giỏ hàng</h3>
+                                </div>
+                                <div class="rounded p-2 bg-light" th:each="item : ${cartItems}">
+                                    <div class="media mb-2 border-bottom" >
+                                        <div class="media-body"> <a th:href="@{'product-detail?productId=' + ${item.product.id}}"
+                                            th:text="${item.product.nameProduct}"> Name</a>
+                                            <div class="small text-muted">
+                                                <span>Giá: </span>
+                                                <span th:text="${item.product.priceSale}"> Price </span><span> VND</span>
+                                                <span class="mx-2"> | </span>
+                                                <span>Số lượng: </span>
+                                                <span th:text="${item.quantity}"> Qty </span>
+                                                <span class="mx-2"> | </span>
+                                                <span>Tạm tính: </span>
+                                                <span class="total-pr" th:text="${item.quantity * item.product.priceSale}"> Subtotal </span><span> VND</span>
+                                                <span style="display:none;" class="gg" th:text="${item.product.price - item.product.priceSale}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-lg-12">
+                            <div class="order-box">
+                                <div class="title-left">
+                                    <h3>Đơn hàng của bạn</h3>
+                                </div>
+                                <div class="d-flex">
+                                    <div class="font-weight-bold">Sản phẩm</div>
+                                    <div class="ml-auto font-weight-bold">Tổng tiền</div>
+                                </div>
+                                <hr class="my-1">
+                                <div class="d-flex">
+                                    <h4>Tổng tiền (tạm tính)</h4>
+                                    <div class="ml-auto font-weight-bold"><span id="totalPr"></span><span> VND</span></div>
+                                </div>
+                                <div class="d-flex">
+                                    <h4>Giảm giá</h4>
+                                    <div class="ml-auto font-weight-bold"><span id="discountPr">0</span><span> VND</span></div>
+                                </div>
+                                <hr class="my-1">
+                                <div class="d-flex">
+                                    <h4>Chiết khấu</h4>
+                                    <div class="ml-auto font-weight-bold"><span id="salePr"></span><span> VND</span></div>
+                                </div>
+                                <div class="d-flex">
+                                    <h4>Thuế</h4>
+                                    <div class="ml-auto font-weight-bold"><span id="thue"></span><span> VND</span></div>
+                                </div>
+                                <div class="d-flex">
+                                    <h4>Chi phí vận chuyển</h4>
+                                    <div class="ml-auto font-weight-bold"><span id="shipFee">0</span><span> VND</span></div>
+                                </div>
+                                <hr>
+                                <div class="d-flex gr-total">
+                                    <h5>Tổng cộng</h5>
+                                    <div class="ml-auto h5"><span id="finalPr"></span><span> VND</span></div>
+                                </div>
+                                <hr> </div>
+                        </div>
+                        <div class="col-12 d-flex shopping-box"> <button id="datHang" data-fancybox-close="" style="padding: 10px 20px; font-weight: 700; color: #ffffff; border: none;" class="ml-auto btn hvr-hover">Đặt hàng</button> </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Cart -->
+
+    <div th:replace="fragment :: instagramFeed" th:remove="tag"></div>
+    <footer>
+        <div th:replace="fragment :: footer" th:remove="tag"></div>
+    </footer>
+    <div th:replace="fragment :: copyright" th:remove="tag"></div>
+    <a th:replace="fragment :: backToTop" th:remove="tag"></a>
+    <div th:replace="fragment :: finalScript" th:remove="tag"></div>
+    <script type="text/javascript">
+        contextPath = "[[@{/}]]";
+    </script>
+    <script th:src="@{/js/cart-to-order.js}"></script>
+        <script th:src="@{/js/checkout.js}"></script>
+</body>
+
+</html>

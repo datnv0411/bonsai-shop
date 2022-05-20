@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import vn.haui.cntt.myproject.entity.Product;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductService {
     Page<Product> listAll(String pageNumber, String sortField, String sortDir, String categoryId);
@@ -24,4 +25,5 @@ public interface ProductService {
 
     void deleteProduct(Product product, String username);
 
+    Page<Product> findAll(String pageNumber, String sortField, String sortDir, String keySearch);
 }

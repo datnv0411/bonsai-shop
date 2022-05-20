@@ -2,6 +2,7 @@ package vn.haui.cntt.myproject.controller.admin;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -9,20 +10,27 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import vn.haui.cntt.myproject.dto.OrderDetailDto;
 import vn.haui.cntt.myproject.dto.OrderDto;
 import vn.haui.cntt.myproject.dto.PaymentOrderDto;
 import vn.haui.cntt.myproject.dto.UserDto;
 import vn.haui.cntt.myproject.enums.OrderStatusEnum;
+import vn.haui.cntt.myproject.mapper.OrderDetailMapper;
 import vn.haui.cntt.myproject.mapper.OrderMapper;
 import vn.haui.cntt.myproject.mapper.PaymentOrderMapper;
 import vn.haui.cntt.myproject.mapper.UserMapper;
+import vn.haui.cntt.myproject.service.OrderDetailService;
 import vn.haui.cntt.myproject.service.OrderService;
 import vn.haui.cntt.myproject.service.PaymentOrderService;
 import vn.haui.cntt.myproject.service.UserService;
 import vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl;
+import vn.haui.cntt.myproject.util.DateUtil;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.ZoneId;
+import java.util.*;
+import java.sql.Date;
 import java.util.stream.Collectors;
 
 @Controller
@@ -37,6 +45,8 @@ public class AdAppController {
     private final PaymentOrderService paymentOrderService;
     @Autowired
     private final OrderService orderService;
+    @Autowired
+    private final OrderDetailService orderDetailService;
 
     @GetMapping("/admin/home")
     public String viewHomePage(@AuthenticationPrincipal CustomUserDetailImpl loggerUser, Model model){
@@ -46,8 +56,8 @@ public class AdAppController {
             return LOGIN;
         }
         try {
-            String email = loggerUser.getEmail();
-            UserDto loggedUser = UserMapper.toUserDto(userService.getByEmail(email));
+            String username = loggerUser.getUsername();
+            UserDto loggedUser = UserMapper.toUserDto(userService.getByUsername(username));
             List<PaymentOrderDto> paymentOrder1 = paymentOrderService.findByStatus(PAID, "2022-01-01", "2022-01-31").stream().map(PaymentOrderMapper::toPaymentOrderDto).collect(Collectors.toList());
             List<PaymentOrderDto> paymentOrder2 = paymentOrderService.findByStatus(PAID, "2022-02-01", "2022-02-28").stream().map(PaymentOrderMapper::toPaymentOrderDto).collect(Collectors.toList());
             List<PaymentOrderDto> paymentOrder3 = paymentOrderService.findByStatus(PAID, "2022-03-01", "2022-03-31").stream().map(PaymentOrderMapper::toPaymentOrderDto).collect(Collectors.toList());
@@ -144,6 +154,46 @@ public class AdAppController {
             List<OrderDto> orders3 = orderService.findByStatus(OrderStatusEnum.Đã_giao).stream().map(OrderMapper::toOrderDto).collect(Collectors.toList());
             List<OrderDto> orders4 = orderService.findByStatus(OrderStatusEnum.Đã_hủy).stream().map(OrderMapper::toOrderDto).collect(Collectors.toList());
 
+            List<OrderDetailDto> orderDetailDtos = orderDetailService.findAll()
+                    .stream().map(OrderDetailMapper::toOrderDetailDto).collect(Collectors.toList());
+
+            for(int i = 0; i < orderDetailDtos.size(); i++){
+                for( int j = i+1; j < orderDetailDtos.size() - 1; j++){
+                    if(orderDetailDtos.get(i).getProduct().getId() == orderDetailDtos.get(j).getProduct().getId()){
+                        orderDetailDtos.get(i).setQuantity(orderDetailDtos.get(i).getQuantity() + orderDetailDtos.get(j).getQuantity());
+                        orderDetailDtos.remove(j);
+                    }
+                }
+            }
+
+            Collections.sort(orderDetailDtos, new Comparator<OrderDetailDto>() {
+                public int compare(OrderDetailDto c1, OrderDetailDto c2) {
+                    if (c1.getQuantity() > c2.getQuantity()) return -1;
+                    if (c1.getQuantity() < c2.getQuantity()) return 1;
+                    return 0;
+                }});
+
+            List<OrderDetailDto> newList = new ArrayList<>();
+            List<String> list = new ArrayList<>();
+
+            if(orderDetailDtos.size()>5){
+                for (int i = 0; i < 5; i++){
+                    newList.add(i,orderDetailDtos.get(i));
+                }
+
+                for (int i = 0; i < 5; i++){
+                    list.add(newList.get(i).getProduct().getNameProduct() + " ( " + newList.get(i).getQuantity() + " sản phẩm )");
+                }
+            } else {
+                for (int i = 0; i < orderDetailDtos.size(); i++){
+                    newList.add(i,orderDetailDtos.get(i));
+                }
+
+                for (int i = 0; i < orderDetailDtos.size(); i++){
+                    list.add(newList.get(i).getProduct().getNameProduct() + " ( " + newList.get(i).getQuantity() + " sản phẩm )");
+                }
+            }
+
             model.addAttribute("user", loggedUser);
             model.addAttribute("paymentOrder", money);
             model.addAttribute("total", moneyAll);
@@ -152,6 +202,7 @@ public class AdAppController {
             model.addAttribute("orderDangGiao", orders2.size());
             model.addAttribute("orderDaGiao", orders3.size());
             model.addAttribute("orderDaHuy", orders4.size());
+            model.addAttribute("saleProduct", list);
 
             return "admin/ad-index";
         } catch (Exception e){
@@ -204,10 +255,10 @@ public class AdAppController {
             return LOGIN;
         }
 
-        String email = loggerUser.getEmail();
-        UserDto loggedUser = UserMapper.toUserDto(userService.getByEmail(email));
+        String username = loggerUser.getUsername();
+        UserDto loggedUser = UserMapper.toUserDto(userService.getByUsername(username));
 
-        boolean checked = userService.checkRoleAdmin(loggedUser.getEmail());
+        boolean checked = userService.checkRoleAdmin(loggedUser.getUsername());
 
         if (checked){
             return "redirect:/admin/home";
@@ -224,7 +275,11 @@ public class AdAppController {
             if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
                 return LOGIN;
             }
-            return "redirect:/home";
+            if(authentication.getAuthorities().toString().equals("[ROLE_ADMIN]")){
+                return "redirect:/admin/home";
+            } else {
+                return "redirect:/home";
+            }
         } catch (Exception e){
             return "404";
         }

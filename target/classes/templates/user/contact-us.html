@@ -30,29 +30,29 @@
                     <div class="contact-form-right">
                         <h2>LIÊN HỆ VỚI CHÚNG TÔI</h2>
                         <p>Liên hệ ngay để cập nhật những thông tin mới nhất.</p>
-                        <form id="contactForm">
+                        <form id="contactForm" th:action="@{contact}" method="post">
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <input type="text" class="form-control" id="name" name="name" placeholder="Your Name" required data-error="Nhập tên của bạn">
+                                        <input type="text" class="form-control" id="name" name="name" placeholder="Tên" required data-error="Nhập tên của bạn">
                                         <div class="help-block with-errors"></div>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <input type="text" placeholder="Your Email" id="email" class="form-control" name="name" required data-error="Nhập email của bạn">
+                                        <input type="text" placeholder="Email" id="email" class="form-control" name="name" required data-error="Nhập email của bạn">
                                         <div class="help-block with-errors"></div>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <input type="text" class="form-control" id="subject" name="name" placeholder="Subject" required data-error="Nhập tiêu đề">
+                                        <input type="text" class="form-control" id="subject" name="name" placeholder="Tiêu đề" required data-error="Nhập tiêu đề">
                                         <div class="help-block with-errors"></div>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <textarea class="form-control" id="message" placeholder="Your Message" rows="4" data-error="Nội dung" required></textarea>
+                                        <textarea class="form-control" id="message" placeholder="Nội dung" rows="4" data-error="Nội dung" required></textarea>
                                         <div class="help-block with-errors"></div>
                                     </div>
                                     <div class="submit-button text-center">

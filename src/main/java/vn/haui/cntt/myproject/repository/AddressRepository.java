@@ -13,8 +13,8 @@ import java.util.List;
 @Repository
 public interface AddressRepository extends JpaRepository<Address, Long> {
     @Query(value = "select * from address a inner join user u on a.user_id=u.id" +
-            " where u.email = :email and a.deleted_flag = :deletedFlag and u.deleted_flag = 0", nativeQuery = true)
-    Page<Address> findAllByDeletedFlag(@Param(value = "deletedFlag") int i, @Param(value = "email") String email, Pageable pageable);
+            " where u.username = :username and a.deleted_flag = :deletedFlag and u.deleted_flag = 0", nativeQuery = true)
+    Page<Address> findAllByDeletedFlag(@Param(value = "deletedFlag") int i, @Param(value = "username") String username, Pageable pageable);
 
     @Query(value = "select * from address where id = :addressId and user_id = :userId and deleted_flag = :deletedFlag", nativeQuery = true)
     Address findByUserIdAndAddressId(@Param(value = "deletedFlag") int i, @Param(value = "userId") Long userId, @Param(value = "addressId") Long addressId);
@@ -23,7 +23,7 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
     Address findByIsDefault(@Param(value = "deletedFlag") int i, @Param(value = "isDefault") boolean isDefault,
                             @Param(value = "userId") Long userId);
 
-    @Query(value = "select * from address where user_id = :userId and deleted_flag = :deletedFlag", nativeQuery = true)
+    @Query(value = "select * from address where user_id = :userId and deleted_flag = :deletedFlag and is_default = 1", nativeQuery = true)
     List<Address> findByUserId(@Param(value = "deletedFlag") int i, @Param(value = "userId") Long id);
 
     Address findByIdAndDeletedFlag(Long i, boolean b);

@@ -50,7 +50,7 @@
                   </ul>
                   <div class="card mb-4">
                     <h5 class="card-header">Thông tin đơn hàng</h5>
-                    <h6 class="card-header" th:if="${message != null}">[[${message}]]</h6>
+                    <h6 class="card-header" style="color:red;" th:if="${message != null}"><strong>[[${message}]]</strong></h6>
                     <!-- Account -->
                     <hr class="my-0" />
                     <div class="card-body">
@@ -69,7 +69,7 @@
                           </div>
                           <div class="mb-3 col-md-6">
                             <label class="form-label">Trạng thái</label>
-                            <select class="btn btn-primary dropdown-toggle" th:field="*{orderStatus}">
+                            <select class="form-select color-dropdown" th:field="*{orderStatus}">
                               <option value="Chờ">Chờ</option>
                               <option value="Đang_giao_hàng">Đang_giao_hàng</option>
                               <option value="Đã_giao">Đã_giao</option>
@@ -78,16 +78,16 @@
                           </div>
                           <div class="mb-3 col-md-6" th:object="${paymentStatus}">
                             <label class="form-label">Trạng thái thanh toán</label>
-                            <select class="btn btn-primary dropdown-toggle" th:field="*{status}">
+                            <select class="form-select color-dropdown" th:field="*{status}">
                               <option id="stt0" th:value="${paymentStatus.status}" th:text="${paymentStatus.status}"></option>
                               <option id="dtt" value="Đã thanh toán">Đã thanh toán</option>
                               <option id="ctt" value="Chưa thanh toán">Chưa thanh toán</option>
                             </select>
                           </div>
-                        <div class="mt-2">
-                          <button type="submit" class="btn btn-primary me-2">Lưu</button>
-                          <a th:href="@{orders?page=1&sortField=id&sortDir=asc}" class="btn btn-outline-secondary">Hủy bỏ</a>
-                        </div>
+                          <div class="mt-2">
+                            <button type="submit" class="btn btn-primary me-2">Lưu</button>
+                            <button type="reset" class="btn btn-outline-secondary">Hủy bỏ</button>
+                          </div>
                         </div>
                       </form>
                     </div>

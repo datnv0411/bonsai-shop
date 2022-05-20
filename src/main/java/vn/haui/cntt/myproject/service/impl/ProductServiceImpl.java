@@ -61,7 +61,7 @@ public class ProductServiceImpl implements ProductService {
         if(categoryId == null || categoryId.equals("")){
             return productRepository.findByNameWithoutCategoryId(0, productSearch, pageable);
         } else {
-            return productRepository.findByNameWithCategoryId(0, 0, productSearch, categoryId, pageable);
+            return productRepository.findByNameWithCategoryId(0, productSearch, categoryId, pageable);
         }
     }
 
@@ -92,5 +92,27 @@ public class ProductServiceImpl implements ProductService {
         foundProduct.setUpdatedBy(username);
         foundProduct.setUpdatedDate(LocalDateTime.now());
         productRepository.save(foundProduct);
+    }
+
+    @Override
+    public Page<Product> findAll(String pageStr, String sortField, String sortDir, String keySearch) {
+        if (pageStr==null || !pageStr.chars().allMatch(Character::isDigit) || pageStr.equals("")) pageStr="1";
+        if (sortField==null || sortField.equals("")) sortField="id";
+        if (sortDir == null || sortDir.equals("")) sortDir="asc";
+
+        Sort sort = Sort.by(sortField);
+        sort = sortDir.equals("des") ? sort.descending() : sort.ascending();
+
+        int pageNumberInt = Integer.parseInt(pageStr);
+
+        String productSearch = StandardizeStringUtil.standardizeString(keySearch);
+        productSearch = VNCharacterUtil.removeAccent(productSearch);
+
+        Pageable pageable = PageRequest.of(pageNumberInt - 1,9, sort);
+        if(keySearch==null||keySearch.equals("")){
+            return productRepository.findAllWithDeletedFlag(pageable);
+        } else {
+            return productRepository.findProduct(productSearch, pageable);
+        }
     }
 }

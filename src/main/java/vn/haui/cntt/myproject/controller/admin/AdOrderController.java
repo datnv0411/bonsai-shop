@@ -15,18 +15,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import vn.haui.cntt.myproject.dto.OrderDetailDto;
-import vn.haui.cntt.myproject.dto.OrderDto;
-import vn.haui.cntt.myproject.dto.PaymentOrderDto;
-import vn.haui.cntt.myproject.dto.UserDto;
-import vn.haui.cntt.myproject.mapper.OrderDetailMapper;
-import vn.haui.cntt.myproject.mapper.OrderMapper;
-import vn.haui.cntt.myproject.mapper.PaymentOrderMapper;
-import vn.haui.cntt.myproject.mapper.UserMapper;
-import vn.haui.cntt.myproject.service.OrderDetailService;
-import vn.haui.cntt.myproject.service.OrderService;
-import vn.haui.cntt.myproject.service.PaymentOrderService;
-import vn.haui.cntt.myproject.service.UserService;
+import vn.haui.cntt.myproject.dto.*;
+import vn.haui.cntt.myproject.enums.OrderStatusEnum;
+import vn.haui.cntt.myproject.mapper.*;
+import vn.haui.cntt.myproject.service.*;
 import vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -45,10 +37,12 @@ public class AdOrderController {
     private final OrderDetailService orderDetailService;
     @Autowired
     private final PaymentOrderService paymentOrderService;
+    @Autowired
+    private final ProductService productService;
 
     @GetMapping("/admin/orders")
     public String viewListProducts(@AuthenticationPrincipal CustomUserDetailImpl loggedUser,
-                                   Model model, @Param("page") int page,
+                                   Model model, @Param("page") int page, @Param(value = "keySearch") String keySearch,
                                    @Param("sortField") String sortField, @Param("sortDir") String sortDir){
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -57,24 +51,25 @@ public class AdOrderController {
             return LOGIN;
         }
         try {
-        String email = loggedUser.getEmail();
-            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
+            String username = loggedUser.getUsername();
+            UserDto user = UserMapper.toUserDto(mUserService.getByUsername(username));
 
-        String pageStr = String.valueOf(page);
-        Page<OrderDto> pages = orderService.listAll(pageStr, sortField, sortDir).map(OrderMapper::toOrderDto);
-        long totalItems = pages.getTotalElements();
-        int totalPages = pages.getTotalPages();
-        List<OrderDto> orderList = pages.getContent();
+            String pageStr = String.valueOf(page);
+            Page<OrderDto> pages = orderService.listAll(pageStr, sortField, sortDir, keySearch).map(OrderMapper::toOrderDto);
+            long totalItems = pages.getTotalElements();
+            int totalPages = pages.getTotalPages();
+            List<OrderDto> orderList = pages.getContent();
 
-        model.addAttribute("user", user);
-        model.addAttribute("page", page);
-        model.addAttribute("totalItems", totalItems);
-        model.addAttribute("totalPages", totalPages);
-        model.addAttribute("listOrders", orderList);
-        model.addAttribute("sortField", sortField);
-        model.addAttribute("sortDir", sortDir);
+            model.addAttribute("user", user);
+            model.addAttribute("page", page);
+            model.addAttribute("totalItems", totalItems);
+            model.addAttribute("totalPages", totalPages);
+            model.addAttribute("listOrders", orderList);
+            model.addAttribute("sortField", sortField);
+            model.addAttribute("sortDir", sortDir);
+            model.addAttribute("keySearch", keySearch);
 
-        return "admin/list-order";
+            return "admin/list-order";
         } catch (Exception e){
             return "404";
         }
@@ -92,13 +87,15 @@ public class AdOrderController {
         }
 
         try {
-            String email = loggerUser.getEmail();
-            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
+            String username = loggerUser.getUsername();
+            UserDto user = UserMapper.toUserDto(mUserService.getByUsername(username));
 
             List<OrderDetailDto> list = orderDetailService.findByOrderId(id).stream().map(OrderDetailMapper::toOrderDetailDto).collect(Collectors.toList());
+            OrderDto orderDto = OrderMapper.toOrderDto(orderService.findById(id));
 
             model.addAttribute("user", user);
             model.addAttribute("listOrderDetails", list);
+            model.addAttribute("order", orderDto);
 
             return "admin/order-detail";
         } catch (Exception e){
@@ -117,8 +114,8 @@ public class AdOrderController {
         }
 
         try {
-            String email = loggerUser.getEmail();
-            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
+            String username = loggerUser.getUsername();
+            UserDto user = UserMapper.toUserDto(mUserService.getByUsername(username));
 
             OrderDto order = OrderMapper.toOrderDto(orderService.findById(id));
 
@@ -148,6 +145,18 @@ public class AdOrderController {
 
         try {
         OrderDto foundOrder = OrderMapper.toOrderDto(orderService.findById(id));
+
+        if(order.getOrderStatus().equals(OrderStatusEnum.Đã_giao) && paymentOrder.getStatus().equals("Đã thanh toán")){
+            List<OrderDetailDto> orderDto = orderDetailService.findByOrderId(foundOrder.getId())
+                    .stream().map(OrderDetailMapper::toOrderDetailDto).collect(Collectors.toList());
+
+            for (OrderDetailDto odd : orderDto
+            ) {
+                ProductDto productDto = ProductMapper.toProductDto(productService.findById(odd.getProduct().getId()));
+                productDto.setQuantity(productDto.getQuantity() - odd.getQuantity());
+                productService.save(productDto.toProduct());
+            }
+        }
 
         foundOrder.setOrderStatus(order.getOrderStatus());
         foundOrder.setUpdatedBy(loggerUser.getUsername());

@@ -28,6 +28,7 @@ public class UserDto {
     private GenderEnum gender;
     private String avatar;
     private String cellphone;
+    private String resetPasswordToken;
     private Collection<Role> role= new LinkedHashSet<Role>();
     private Collection<Address> address;
     private Boolean deletedFlag;
@@ -47,6 +48,7 @@ public class UserDto {
                 .gender(gender)
                 .avatar(avatar)
                 .cellphone(cellphone)
+                .resetPasswordToken(resetPasswordToken)
                 .address(address)
                 .role(role)
                 .deletedFlag(deletedFlag)

@@ -24,36 +24,112 @@
 
     <!-- Start Cart  -->
     <div class="cart-box-main">
+        <div class="text-center">
+            <h2><strong>CHI TIẾT ĐƠN HÀNG</strong></h2>
+        </div>
         <div class="container">
             <div class="row">
+                <div class="mb-3 col-md-6">
+                    <label for="firstName" class="form-label">Người nhận</label>
+                    <input maxlength="20"
+                           class="form-control"
+                           type="text"
+                           id="firstName"
+                           name="firstName"
+                           th:value="${order.deliveryAddress.fullName}"
+                           readonly
+                    />
+                </div>
+                <div class="mb-3 col-md-6">
+                    <label for="cellphone" class="form-label">Số điện thoại</label>
+                    <input maxlength="20"
+                           class="form-control"
+                           type="text"
+                           id="cellphone"
+                           name="firstName"
+                           th:value="${order.deliveryAddress.cellphone}"
+                           readonly
+                    />
+                </div>
+                <div class="mb-3 col-md-6">
+                    <label for="province" class="form-label">Tỉnh</label>
+                    <input maxlength="20"
+                           class="form-control"
+                           type="text"
+                           id="province"
+                           name="firstName"
+                           th:value="${order.deliveryAddress.province}"
+                           readonly
+                    />
+                </div>
+                <div class="mb-3 col-md-6">
+                    <label for="district" class="form-label">Huyện</label>
+                    <input maxlength="20"
+                           class="form-control"
+                           type="text"
+                           id="district"
+                           name="firstName"
+                           th:value="${order.deliveryAddress.district}"
+                           readonly
+                    />
+                </div>
+                <div class="mb-3 col-md-6">
+                    <label for="town" class="form-label">Xã</label>
+                    <input maxlength="20"
+                           class="form-control"
+                           type="text"
+                           id="town"
+                           name="firstName"
+                           th:value="${order.deliveryAddress.town}"
+                           readonly
+                    />
+                </div>
+                <div class="mb-3 col-md-6">
+                    <label for="address" class="form-label">Địa chỉ</label>
+                    <input maxlength="20"
+                           class="form-control"
+                           type="text"
+                           id="address"
+                           name="firstName"
+                           th:value="${order.deliveryAddress.specificAddress}"
+                           readonly
+                    />
+                </div>
+                <div class="mb-3 col-md-6" th:each="po : ${order.paymentOrders}">
+                    <label for="stt" class="form-label">Trạng thái</label>
+                    <input maxlength="20"
+                           class="form-control"
+                           type="text"
+                           id="stt"
+                           name="firstName"
+                           th:value="${po.status}"
+                           readonly
+                    />
+                </div>
                 <div class="col-lg-12">
                     <div class="table-main table-responsive">
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>Mã đơn hàng</th>
-                                    <th>Ảnh sản phẩm</th>
                                     <th>Tên sản phẩm</th>
+                                    <th>Ảnh sản phẩm</th>
                                     <th>Giá</th>
                                     <th>Số lượng</th>
-                                    <th>Tổng tiền sản phẩm</th>
+                                    <th>Thành tiền</th>
                                     <th>Chiết khấu</th>
                                 </tr>
                             </thead>
                             <tbody th:each="item : ${listOrderDetails}">
                                 <tr>
-                                    <td>
-                                        <p th:text="${item.order.orderCode}"></p>
+                                    <td class="name-pr">
+                                        <a class="nav-link" th:href="@{'product-detail?productId=' + ${item.product.id}}"
+                                           th:text="${item.product.nameProduct}" target="_blank">
+                                            Name Product
+                                        </a>
                                     </td>
                                     <td class="thumbnail-img">
                                         <a th:href="@{'product-detail?productId=' + ${item.product.id}}">
 									        <img class="img-fluid" th:src="@{'images/product/' + ${item.product.productImages[0].path}}" alt="" />
-								        </a>
-                                    </td>
-                                    <td class="name-pr">
-                                        <a class="nav-link" th:href="@{'product-detail?productId=' + ${item.product.id}}"
-                                            th:text="${item.product.nameProduct}" target="_blank">
-									        Name Product
 								        </a>
                                     </td>
                                     <td class="price-pr">

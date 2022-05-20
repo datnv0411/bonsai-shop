@@ -1,3 +1,9 @@
 
+‰
+java:S1130}"lRemove the declaration of thrown exception 'java.io.IOException', as it cannot be thrown from method's body.(‘ÿªà8‚ˆ§å0
+y
+java:S1192+"WDefine a constant instead of duplicating this literal "admin/auth-login-basic" 4 times.(­—”Ìÿÿÿÿÿ8ø¨å0
+j
+java:S1192N"HDefine a constant instead of duplicating this literal "message" 4 times.(ÒÙûÁûÿÿÿÿ8‰ˆ§å0
 «
-java:S4449I"Annotate the parameter with @javax.annotation.Nullable in method 'cleanPath' declaration, or make sure that null can not be passed as argument.(ëßøÿÿÿÿ
+java:S4449S"Annotate the parameter with @javax.annotation.Nullable in method 'cleanPath' declaration, or make sure that null can not be passed as argument.(ëßøÿÿÿÿ

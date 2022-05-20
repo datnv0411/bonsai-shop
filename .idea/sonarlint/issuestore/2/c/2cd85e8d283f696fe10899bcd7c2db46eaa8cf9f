@@ -1,0 +1,33 @@
+
+t
+java:S3776^"RRefactor this method to reduce its Cognitive Complexity from 20 to the 15 allowed.(çŞõîúÿÿÿÿ8ËÍşÚ0
+D
+java:S5413g")Verify that "remove()" is used correctly.( ÈÈÜûÿÿÿÿ
+D
+java:S5413g")Verify that "remove()" is used correctly.( ÈÈÜûÿÿÿÿ
+€
+java:S1128"eRemove this unused import 'org.springframework.security.authentication.AnonymousAuthenticationToken'.(¬Ÿ¡¿ûÿÿÿÿ
+c
+java:S1128"MRemove this unused import 'org.springframework.security.core.Authentication'.(ñıÓ“
+w
+java:S1128"aRemove this unused import 'org.springframework.security.core.annotation.AuthenticationPrincipal'.(Øù¢
+r
+java:S1128	"\Remove this unused import 'org.springframework.security.core.context.SecurityContextHolder'.(ŒÄæë
+k
+java:S1128"PRemove this unused import 'org.springframework.web.bind.annotation.PostMapping'.(äƒà°ùÿÿÿÿ
+U
+java:S1128"?Remove this unused import 'vn.haui.cntt.myproject.dto.UserDto'.(®°Êş
+[
+java:S1128"ERemove this unused import 'vn.haui.cntt.myproject.mapper.UserMapper'.(öß
+b
+java:S1128"GRemove this unused import 'vn.haui.cntt.myproject.service.UserService'.(çïßµşÿÿÿÿ
+k
+java:S1128"URemove this unused import 'vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl'.(À·¡‹
+\
+java:S1128"ARemove this unused import 'vn.haui.cntt.myproject.util.DateUtil'.(àƒãùÿÿÿÿ
+@
+java:S1128"*Remove this unused import 'java.sql.Date'.(ÙÀ½Ê
+>
+java:S1604l"(Make this anonymous inner class a lambda(öĞ„¯
+R
+java:S4973e"<Strings and Boxed types should be compared using "equals()".(ó†ä

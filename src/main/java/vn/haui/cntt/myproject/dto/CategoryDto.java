@@ -2,7 +2,8 @@ package vn.haui.cntt.myproject.dto;
 
 import lombok.*;
 import vn.haui.cntt.myproject.entity.Category;
-import vn.haui.cntt.myproject.entity.ProductCategory;
+import vn.haui.cntt.myproject.entity.Product;
+
 import java.time.LocalDateTime;
 import java.util.Collection;
 
@@ -15,7 +16,7 @@ public class CategoryDto {
     private long id;
     private String name;
     private Long parentId;
-    private Collection<ProductCategory> productCategories;
+    private Collection<Product> products;
     private Boolean deletedFlag;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
@@ -27,7 +28,7 @@ public class CategoryDto {
                 .id(id)
                 .name(name)
                 .parentId(parentId)
-                .productCategories(productCategories)
+                .products(products)
                 .deletedFlag(deletedFlag)
                 .createdDate(createdDate)
                 .updatedDate(updatedDate)

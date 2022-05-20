@@ -50,7 +50,7 @@ function datHang(link){
 
     var selected_Id = $('input[name="addressShip"]:checked').attr('id');
     voucherCode = document.getElementById("v-code").value;
-    var paymentName = $('input[name="paymentMethod"]:checked').attr('value');
+    var paymentName = $('input[name="payment-method"]:checked').attr('value');
     var total = document.getElementById("finalPr").innerHTML;
 
     url = contextPath + "save-order?addressId="+selected_Id+"&voucherCode="+voucherCode+"&paymentName="+paymentName+"̃&totalPrice="+total;
@@ -58,12 +58,12 @@ function datHang(link){
         method: "POST",
         url: url
         }).done(function(response){
-            if(response == "order?page=1&sortField=id&sortDir=des"){
-                location.href = response;
+            console.log(response);
+            if(response == "localhost:8080/order?page=1&sortField=id&sortDir=des"){
+                location.href = "http://" + response;
             } else{
                 location.href = response;
             }
-
         }).fail(function(){
 
         });

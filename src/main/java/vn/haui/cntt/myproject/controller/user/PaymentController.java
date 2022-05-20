@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import vn.haui.cntt.myproject.dto.*;
-import vn.haui.cntt.myproject.entity.Order;
 import vn.haui.cntt.myproject.mapper.*;
 import vn.haui.cntt.myproject.service.*;
 import vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl;
@@ -50,8 +49,8 @@ public class PaymentController {
         }
 
 //        try {
-            String email = loggedUser.getEmail();
-            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
+            String username = loggedUser.getUsername();
+            UserDto user = UserMapper.toUserDto(mUserService.getByUsername(username));
 
             OrderDto newOrder = new OrderDto();
             OrderDto order = OrderMapper.toOrderDto(orderService.save(newOrder.toOrder()));
@@ -79,7 +78,8 @@ public class PaymentController {
                      ) {
                     cartService.deleteCart(c.toCart());
                 }
-                return "order-detail?orderId=" + order.getId();
+
+                return "localhost:8080/order?page=1&sortField=id&sortDir=des";
             } else {
                 return paymentService.createLink(order.getId(), totalPrice, "13.160.92.202",
                         MvcUriComponentsBuilder.fromController(OrderController.class).toUriString() +"vnpay");

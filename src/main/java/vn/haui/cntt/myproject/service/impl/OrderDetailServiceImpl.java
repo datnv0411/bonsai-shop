@@ -58,4 +58,14 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     public void save(OrderDetail od) {
         orderDetailRepository.save(od);
     }
+
+    @Override
+    public List<OrderDetail> findByTime(String startTime, String endTime) {
+        return orderDetailRepository.findOrderDetail(startTime, endTime);
+    }
+
+    @Override
+    public List<OrderDetail> findAll() {
+        return orderDetailRepository.findAllByDeletedFlag(false);
+    }
 }

@@ -50,7 +50,7 @@
                   </ul>
                   <div class="card mb-4">
                     <h5 class="card-header">Thông tin sản phẩm</h5>
-                    <h6 class="card-header" th:if="${message != null}">[[${message}]]</h6>
+                    <h6 class="card-header" style="color:red;" th:if="${message != null}"><strong>[[${message}]]</strong></h6>
                     <!-- Account -->
                     <hr class="my-0" />
                     <div class="card-body">
@@ -60,7 +60,7 @@
                         <div class="row">
                           <div class="mb-3 col-md-6">
                             <label for="firstName" class="form-label">Tên sản phẩm</label>
-                            <input maxlength="20" th:field="*{nameProduct}"
+                            <input th:field="*{nameProduct}"
                               class="form-control"
                               type="text"
                               id="firstName"
@@ -70,9 +70,11 @@
                           </div>
                           <div class="mb-3 col-md-6" th:object="${category}">
                             <label class="form-label">Danh mục</label>
-                            <select class="btn btn-primary dropdown-toggle" th:field="*{name}">
-                              <option id="0" th:value="${productCategory.category.name}" th:text="${productCategory.category.name}"></option>
-                              <option th:each="c : ${listCategories}" th:value="${c.name}" th:id="'cate'+${c.id}" th:text="${c.name}"></option>
+                            <select class="form-select color-dropdown" th:field="*{name}">
+                              <option id="0" th:value="${foundProduct.category.name}" th:text="${foundProduct.category.name}"></option>
+                              <option th:each="c : ${listCategories}" th:value="${c.name}"
+                                      th:id="'cate'+${c.id}" th:text="${c.name}"
+                                      th:hidden="${foundProduct.category.name == c.name} ? 'true' : 'false'"></option>
                             </select>
                           </div>
                           <div class="mb-3 col-md-6">
@@ -115,11 +117,47 @@
                           </div>
                           <div class="mb-3 col-md-6">
                             <label class="form-label">Trạng thái</label>
-                            <select class="btn btn-primary dropdown-toggle" th:field="*{status}">
+                            <select class="form-select color-dropdown" th:field="*{status}">
                               <option id="stt0" th:value="${foundProduct.status}" th:text="${foundProduct.status}"></option>
                               <option th:value="'Còn_hàng'" th:id="'conHang'">Còn_hàng</option>
                               <option th:value="'Hết_hàng'" th:id="'hetHang'">Hết_hàng</option>
                             </select>
+                          </div>
+                          <div class="mb-3 col-md-6" th:object="${supplier}">
+                            <label class="form-label">Nhà cung cấp</label>
+                            <select class="form-select color-dropdown" th:field="*{nameSupplier}">
+                              <option id="ncc" th:value="${foundProduct.supplier.nameSupplier}" th:text="${foundProduct.supplier.nameSupplier}"></option>
+                              <option th:each="c : ${listSuppliers}" th:value="${c.nameSupplier}"
+                                      th:id="'sup'+${c.id}" th:text="${c.nameSupplier}"
+                                      th:hidden="${foundProduct.supplier.nameSupplier == c.nameSupplier} ? 'true' : 'false'"></option>
+                            </select>
+                          </div>
+                          <div class="mb-3 col-md-6">
+                            <label class="form-label">Số lượng nhập</label>
+                            <input th:field="*{importQuantity}"
+                                   type="text"
+                                   id="sln"
+                                   name="cellphone"
+                                   class="form-control" required
+                            />
+                          </div>
+                          <div class="mb-3 col-md-6">
+                            <label class="form-label">Giá nhập</label>
+                            <input th:field="*{importPrice}"
+                                   type="text"
+                                   id="gn"
+                                   name="cellphone"
+                                   class="form-control" required
+                            />
+                          </div>
+                          <div class="mb-3 col-md-6">
+                            <label class="form-label">Ngày nhập</label>
+                            <input th:field="*{importDate}"
+                                   type="text"
+                                   id="nn"
+                                   name="cellphone"
+                                   class="form-control" required
+                            />
                           </div>
                           <div class="mb-3 col-md-6">
                             <label class="form-label">Mô tả</label>
@@ -217,7 +255,7 @@
                           </div>
                         <div class="mt-2">
                           <button type="submit" class="btn btn-primary me-2">Lưu</button>
-                          <a th:href="@{products?page=1&sortField=id&sortDir=asc}" class="btn btn-outline-secondary">Hủy bỏ</a>
+                          <button type="reset" class="btn btn-outline-secondary">Hủy bỏ</button>
                         </div>
                         </div>
                       </form>
@@ -283,34 +321,12 @@
         });
       });
 
-      var s = "[[${foundProduct.status}]]";
-      if(s=="Còn_hàng"){
+      var s = [[${foundProduct.quantity}]];
+      if(s>0){
         $("#conHang").hide();
       } else {
-        if(s=="Hết_hàng"){
+        if(s<=0){
           $("#hetHang").hide();
-        }
-      }
-
-
-      var c = "[[${productCategory.category.name}]]";
-      if(c=="Cây để bàn"){
-        $("#cate1").hide();
-      } else {
-        if(c=="Cây nội thất"){
-          $("#cate2").hide();
-        } else {
-          if(c=="Cây phong thủy"){
-            $("#cate3").hide();
-          } else {
-            if(c=="Cây văn phòng"){
-              $("#cate4").hide();
-            } else {
-              if(c=="Cây dây leo"){
-                $("#cate5").hide();
-              }
-            }
-          }
         }
       }
     });

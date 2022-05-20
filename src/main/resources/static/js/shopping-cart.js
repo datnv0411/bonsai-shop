@@ -15,6 +15,11 @@ $(document).ready(function(){
         removeFromCart($(this));
     });
 
+    $(".removeALl").on("click", function(evt){
+        evt.preventDefault();
+        removeAllFromCart($(this));
+    });
+
     updateTotal();
 });
 
@@ -53,7 +58,7 @@ function increaseQuantity(link){
     maxPr = document.getElementById("quantity"+productId).max;
 
     newQty = parseInt(qtyInput.val()) + 1;
-    if(newQty <= maxPr + newQty){
+    if(newQty <= maxPr){
         qtyInput.val(newQty);
         updateQuantity(productId, newQty);
     }
@@ -105,3 +110,23 @@ function removeProduct(rowNumber){
     $("#"+rowId).remove();
 }
 
+function removeAllFromCart(link){
+    url = link.attr("href");
+
+    const count = document.getElementsByClassName("badge");
+
+    $.ajax({
+        method: "GET",
+        url: url
+        }).done(function(response){
+            removeAllProduct();
+            updateTotal();
+            count[0].innerHTML = 0;
+        }).fail(function(){
+
+        });
+}
+
+function removeAllProduct(){
+    $(".rm-rf").remove();
+}

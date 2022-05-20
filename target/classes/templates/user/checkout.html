@@ -36,23 +36,29 @@
                             <div class="mb-3">
                                 <label>Địa chỉ</label>
                                 <div class="custom-control custom-radio addressCl" th:each="ads : ${addresses}">
-                                    <input th:id="${ads.id}" name="addressShip" type="radio" class="custom-control-input addressShip" required>
+                                    <input th:id="${ads.id}" name="addressShip" type="radio" class="custom-control-input addressShip">
                                     <label class="custom-control-label" th:for="${ads.id}"><span th:text="${ads.fullName}">fullName</span><span> - </span><span th:text="${ads.cellphone}"></span></label>
                                     <label th:text="${ads.specificAddress}+', '+${ads.town}+', '+${ads.district}+', '+${ads.province}" class="custom-control-label" th:for="${ads.id}">Address</label>
                                     <div class="invalid-feedback" th:if="${#lists.isEmpty(addresses)}"> Hãy tạo địa chỉ ! </div>
+                                    <div th:unless="${#lists.isEmpty(addresses)}" class="invalid-feedback" >
+                                        <label><a style="color:white;" class="btn hvr-hover" th:href="@{address?page=1&sortField=is_default&sortDir=des}">Thay đổi</a></label>
+                                    </div>
                                 </div>
-                                <label><a style="color:white;" class="btn hvr-hover" href="create-address">Thêm địa chỉ mới</a></label>
+                                <label><a style="color:white;" class="btn hvr-hover"
+                                          th:href="${#lists.isEmpty(addresses) == true} ? @{create-address} : @{address?page=1&sortField=is_default&sortDir=des}"
+                                          th:text="${#lists.isEmpty(addresses) == true} ? 'Thêm địa chỉ' : 'Thay đổi'"
+                                >Thêm địa chỉ mới</a></label>
                             </div>
                             <hr class="mb-4">
                             <div class="title"> <span>Thanh toán</span> </div>
                             <div class="d-block my-3">
                                 <div class="custom-control custom-radio">
-                                    <input value="truc Tiep" id="1" name="paymentMethod" type="radio" class="custom-control-input" checked required>
-                                    <label class="custom-control-label" for="1">Thanh toán khi nhận hàng</label>
+                                    <input value="truc Tiep" id="tttt" name="payment-method" checked="checked" type="radio" class="custom-control-input">
+                                    <label class="custom-control-label" for="tttt">Thanh toán khi nhận hàng</label>
                                 </div>
                                 <div class="custom-control custom-radio">
-                                    <input value="VN PAY" id="2" name="paymentMethod" type="radio" class="custom-control-input" required>
-                                    <label class="custom-control-label" for="2">Thanh toán trực tuyến</label>
+                                    <input value="VN PAY" id="tt" name="payment-method" type="radio" class="custom-control-input">
+                                    <label class="custom-control-label" for="tt">Thanh toán trực tuyến</label>
                                 </div>
                             </div>
                             <div class="title"> <span>Nhập Voucher</span> </div>
@@ -180,7 +186,7 @@
         contextPath = "[[@{/}]]";
     </script>
     <script th:src="@{/js/cart-to-order.js}"></script>
-        <script th:src="@{/js/checkout.js}"></script>
+    <script th:src="@{/js/checkout.js}"></script>
 </body>
 
 </html>

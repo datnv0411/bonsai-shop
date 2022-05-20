@@ -38,8 +38,8 @@ public class CartController {
         }
 
         try {
-            String email = loggedUser.getEmail();
-            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
+            String username = loggedUser.getUsername();
+            UserDto user = UserMapper.toUserDto(mUserService.getByUsername(username));
 
             List<CartDto> carts = cartService.listCart(user.toUser()).stream().map(CartMapper::toCartDto).collect(Collectors.toList());
 
@@ -62,10 +62,27 @@ public class CartController {
         }
 
         try {
-            String email = loggedUser.getEmail();
-            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
+            String username = loggedUser.getUsername();
+            UserDto user = UserMapper.toUserDto(mUserService.getByUsername(username));
 
             cartService.removeProduct(productId, user.toUser());
+
+            return "redirect:/cart";
+        } catch (Exception e){
+            return "404";
+        }
+    }
+
+    @GetMapping("/cart/delete-all")
+    public String removeAllProduct(@AuthenticationPrincipal CustomUserDetailImpl loggedUser){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
+            return "admin/auth-login-basic";
+        }
+
+        try {
+            cartService.removeProduct();
 
             return "redirect:/cart";
         } catch (Exception e){

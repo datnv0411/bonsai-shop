@@ -77,7 +77,7 @@
                                                            th:text="${product.price == product.priceSale} ? 'New' : 'Sale'">Sale</p>
                                                     </div>
                                                     <img th:src="@{'images/product/' + ${product.productImages[0].path}}" class="img-fluid" alt="Image">
-                                                    <div class="mask-icon" th:if="${product.status.toString() == 'Còn_hàng'}">
+                                                    <div class="mask-icon" th:if="${product.quantity > 0}">
                                                         <a th:href="@{'product-detail?productId=' + ${product.id}}" class="cart" href="#">Mua ngay</a>
                                                     </div>
                                                 </div>
@@ -85,7 +85,7 @@
                                                     <h4 style="display:none;" th:text="${product.id}"></h4>
                                                     <h4>
                                                         <span th:text="${product.nameProduct}">Name Product</span>
-                                                        <p style="margin-top:10px; text-transform: uppercase;font-size: x-large;color: red;" th:text="${product.status.toString() != 'Còn_hàng'} ? 'Hết hàng' : 'Còn hàng'">Status</p>
+                                                        <p style="margin-top:10px; text-transform: uppercase;font-size: x-large;color: red;" th:text="${product.quantity <= 0} ? 'Hết hàng' : 'Còn hàng'">Status</p>
                                                     </h4>
                                                     <h5><span th:text="${product.price == product.priceSale} ? ${product.price} : ${product.priceSale}">Price</span> VND<span></span></h5>
                                                 </div>
@@ -116,13 +116,13 @@
                                                         <del><span th:text="${product.price}"></span><span> VND</span></del>&nbsp;
                                                         <span th:text="${product.priceSale}"></span><span> VND</span>
                                                     </h5>
-                                                    <p style="margin-top:10px; text-transform: uppercase;font-size: x-large;color: red;" th:text="${product.status.toString() == 'Còn_hàng'} ? 'Còn hàng' : 'Đã bán hết'">Status</p>
+                                                    <p style="margin-top:10px; text-transform: uppercase;font-size: x-large;color: red;" th:text="${product.quantity > 0} ? 'Còn hàng' : 'Hết hàng'">Status</p>
                                                     <p th:text="${product.description}">Description</p>
                                                     <p>
                                                         <span>Nguồn gốc: </span>
                                                         <span th:text="${product.origin}">Origin</span>
                                                     </p>
-                                                    <a th:if="${product.status.toString() == 'Còn_hàng'}" th:href="@{'product-detail?productId=' + ${product.id}}" class="btn hvr-hover" href="#">Mua ngay</a>
+                                                    <a th:if="${product.quantity > 0}" th:href="@{'product-detail?productId=' + ${product.id}}" class="btn hvr-hover" href="#">Mua ngay</a>
                                                 </div>
                                             </div>
                                         </div>

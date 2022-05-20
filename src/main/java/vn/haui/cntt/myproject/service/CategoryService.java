@@ -10,7 +10,7 @@ public interface CategoryService {
 
     Category findByName(String name);
 
-    Page<Category> listAll(String pageStr, String sortField, String sortDir);
+    Page<Category> listAll(String pageStr, String sortField, String sortDir, String keySearch);
 
     Category findById(Long id);
 

@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import vn.haui.cntt.myproject.entity.*;
 import vn.haui.cntt.myproject.enums.OrderStatusEnum;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface OrderService {
@@ -17,7 +18,7 @@ public interface OrderService {
 
     boolean isBought(Long id, Long productId, String os);
 
-    Page<Order> listAll(String pageStr, String sortField, String sortDir);
+    Page<Order> listAll(String pageStr, String sortField, String sortDir, String keySearch);
 
     Order findById(Long id);
 
@@ -26,4 +27,8 @@ public interface OrderService {
     List<Order> findAll();
 
     List<Order> findByStatus(OrderStatusEnum orderStatusEnum);
+
+    List<Order> findAllByTime(String st, String et);
+
+    List<Order> findByStatusByTime(OrderStatusEnum chờ, String startTime, String endTime);
 }

@@ -7,7 +7,7 @@ public class CategoryMapper {
     public CategoryMapper(){super();}
 
     public static CategoryDto toCategoryDto(Category category){
-        return new CategoryDto(category.getId(), category.getName(), category.getParentId(), category.getProductCategories(),
+        return new CategoryDto(category.getId(), category.getName(), category.getParentId(), category.getProducts(),
                 category.getDeletedFlag(), category.getCreatedDate(), category.getUpdatedDate(), category.getCreatedBy(), category.getUpdatedBy());
     }
 }

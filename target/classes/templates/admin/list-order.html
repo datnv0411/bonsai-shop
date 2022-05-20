@@ -44,20 +44,38 @@
               <!-- Basic Bootstrap Table -->
               <div class="card">
                 <h5 class="card-header">Danh sách đơn hàng</h5>
+                <h6 class="card-header">Hiển thị <span th:text="${totalItems}"></span> kết quả</h6>
+                <form th:action="@{orders}">
+                  <div class="navbar-nav align-items-left" style="margin-left: 20px;margin-bottom: 10px;">
+                    <div class="nav-item d-flex align-items-center">
+                      <input type="hidden" name="page" th:value="1">
+                      <input type="hidden" name="sortField" th:value="${sortField}">
+                      <input type="hidden" name="sortDir" th:value="${sortDir}">
+                      <i class="bx bx-search fs-4 lh-0"></i>
+                      <input
+                              type="text"
+                              name="keySearch"
+                              th:value="${keySearch}"
+                              class="form-control border-0 shadow-none"
+                              placeholder="Tìm kiếm..."
+                              aria-label="Tìm kiếm..."
+                      />
+                      <button class="btn btn-primary me-2" style="width:150px;" type="submit">Tìm kiếm</button>
+                    </div>
+                  </div>
+                </form>
 <!--                <a style="width:100px; margin-left:20px;" class="btn btn-primary" href="create"> Thêm</a>-->
-                <h6 class="card-header" th:if="${message != null}">[[${message}]]</h6>
+                <h6 class="card-header" style="color:red;" th:if="${message != null}"><strong>[[${message}]]</strong></h6>
                 <div class="table-responsive text-nowrap">
                   <table class="table">
                     <thead>
                       <tr>
                         <th>Mã đơn hàng</th>
                         <th>Tên người dùng</th>
+                        <th>Số điện thoại</th>
                         <th>Địa chỉ</th>
-                        <th>Voucher</th>
-                        <th>Tổng tiền(+ Ship)</th>
-                        <th>Trạng thái GH</th>
-                        <th>PTTT</th>
-                        <th>Trạng thái TT</th>
+                        <th>Thành tiền</th>
+                        <th>Trạng thái</th>
                       </tr>
                     </thead>
                     <tbody class="table-border-bottom-0" th:each="order : ${listOrders}">
@@ -66,18 +84,23 @@
                         <td>
                           <p th:text="${order.user.firstName} + ' ' + ${order.user.lastName}"
                              th:title="${order.user.firstName} + ' ' + ${order.user.lastName}"
-                             style="display: block;width: 100px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;"></p>
+                             ></p>
+                        </td>
+                        <td>
+                          <p th:text="${order.user.cellphone}"
+                             th:title="${order.user.cellphone}"
+                          ></p>
                         </td>
                         <td>
                           <p th:text="${order.deliveryAddress.specificAddress}+', '+${order.deliveryAddress.town}+', '+${order.deliveryAddress.district}+', '+${order.deliveryAddress.province}"
                              th:title="${order.deliveryAddress.specificAddress}+', '+${order.deliveryAddress.town}+', '+${order.deliveryAddress.district}+', '+${order.deliveryAddress.province}"
-                             style="display: block;width: 100px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;"></p>
+                             ></p>
                         </td>
-                        <td th:text="${order.voucher != null} ? ${order.voucher.codeVoucher} : 'Không'">voucher</td>
+<!--                        <td th:text="${order.voucher != null} ? ${order.voucher.codeVoucher} : 'Không'">voucher</td>-->
                         <td th:each="op : ${order.paymentOrders}"><span th:text="${op.totalPaid}">tong tien</span><span> VND</span></td>
                         <td><span class="badge bg-label-primary me-1" th:text="${order.orderStatus}">trang thai</span></td>
-                        <td th:each="op : ${order.paymentOrders}"><span th:text="${op.payment.paymentName == 'Truc Tiep'} ? 'Trực tiếp' : ${op.payment.paymentName}"></span></td>
-                        <td th:each="op : ${order.paymentOrders}"><span class="badge bg-label-primary me-1" th:text="${op.status}">Active</span></td>
+<!--                        <td th:each="op : ${order.paymentOrders}"><span th:text="${op.payment.paymentName == 'Truc Tiep'} ? 'Trực tiếp' : ${op.payment.paymentName}"></span></td>-->
+<!--                        <td th:each="op : ${order.paymentOrders}"><span class="badge bg-label-primary me-1" th:text="${op.status}">Active</span></td>-->
                         <td>
                           <div class="dropdown">
                             <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
@@ -105,16 +128,16 @@
               <nav aria-label="Page navigation example">
                 <ul class="pagination">
                   <li th:class="${page>1} ? 'page-item' : 'page-item disabled'">
-                    <a class="page-link" th:href="${page>1} ? @{'/admin/orders?page=' + ${page - 1} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&categoryId=' + ${categoryId}} : ''" aria-label="Previous">
+                    <a class="page-link" th:href="${page>1} ? @{'/admin/orders?page=' + ${page - 1} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keySearch=' + ${keySearch}} : ''" aria-label="Previous">
                       <span aria-hidden="true">&laquo;</span>
                       <span class="sr-only">Previous</span>
                     </a>
                   </li>
                   <li th:each="i : ${#numbers.sequence(1, totalPages)}" th:class="${i == page} ? 'page-item active' : 'page-item'">
-                    <a class="page-link" th:href="${i!=page} ? @{'/admin/orders?page=' + ${i} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&categoryId=' + ${categoryId}} : ''">[[${i}]]</a>
+                    <a class="page-link" th:href="${i!=page} ? @{'/admin/orders?page=' + ${i} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keySearch=' + ${keySearch}} : ''">[[${i}]]</a>
                   </li>
                   <li th:class="${page<totalPages} ? 'page-item' : 'page-item disabled'">
-                    <a class="page-link" th:href="@{'/admin/orders?page=' + ${page + 1} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&categoryId=' + ${categoryId}}" aria-label="Next">
+                    <a class="page-link" th:href="@{'/admin/orders?page=' + ${page + 1} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keySearch=' + ${keySearch}}" aria-label="Next">
                       <span aria-hidden="true">&raquo;</span>
                       <span class="sr-only">Next</span></a>
                   </li>

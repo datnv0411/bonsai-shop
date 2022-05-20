@@ -12,11 +12,17 @@ import java.util.List;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    Category findByNameAndDeletedFlag(String name, boolean b);
+    @Query(value = "select * from category where name like %:name% and deleted_flag = :deletedFlag", nativeQuery = true)
+    Category findByNameAndDeletedFlag(@Param(value = "name") String name, @Param(value = "deletedFlag") boolean b);
 
     @Query(value = "select * from category where deleted_flag = 0", nativeQuery = true)
     List<Category> findAllWithDeletedFlag();
 
     @Query(value = "select * from category where deleted_flag = :deletedFlag", nativeQuery = true)
     Page<Category> findAllBYDeletedFlag(@Param(value = "deletedFlag") int i, Pageable pageable);
+
+    @Query(value = "select * from category c where " +
+            "concat(c.name) " +
+            "like %:keySearch% and deleted_flag = 0", nativeQuery = true)
+    Page<Category> findCategory(@Param(value = "keySearch") String productSearch, Pageable pageable);
 }

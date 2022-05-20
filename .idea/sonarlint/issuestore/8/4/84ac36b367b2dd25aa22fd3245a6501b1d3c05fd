@@ -1,3 +1,9 @@
 
 W
-java:S1126Z"AReplace this if-then-else statement by a single return statement.(Œ†‡é
+java:S1126]"AReplace this if-then-else statement by a single return statement.(Œ†‡é
+p
+java:S1128"NRemove this unused import 'vn.haui.cntt.myproject.util.StandardizeStringUtil'.(Òˆ·íøÿÿÿÿ8ç°‚è0
+j
+java:S1128"HRemove this unused import 'vn.haui.cntt.myproject.util.VNCharacterUtil'.(¿âÈöøÿÿÿÿ8ç°‚è0
+S
+java:S1128"1Remove this unused import 'java.util.Collection'.(¹ÉĞšùÿÿÿÿ8Ò™è0

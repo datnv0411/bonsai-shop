@@ -78,7 +78,7 @@
                           </div>
                           <div class="mb-3 col-md-6" th:object="${category}">
                             <label class="form-label">Danh mục</label>
-                            <select class="btn btn-primary dropdown-toggle form-control" th:field="*{name}">
+                            <select class="form-select color-dropdown" th:field="*{name}">
                               <option th:each="c : ${listCategories}" th:value="${c.name}" th:text="${c.name}"></option>
                             </select>
                           </div>
@@ -91,18 +91,15 @@
                               name="email" required
                             />
                           </div>
-                          <div class="mb-3 col-md-6">
-                            <label for="username" class="form-label">Giá</label>
-                            <input th:field="*{price}"
-                              type="text"
-                              class="form-control"
-                              id="username"
-                              name="username" required
-                            />
+                          <div class="mb-3 col-md-6" th:object="${supplier}">
+                            <label class="form-label">Nhà cung cấp</label>
+                            <select class="form-select color-dropdown" th:field="*{nameSupplier}">
+                              <option th:each="c : ${listSuppliers}" th:value="${c.nameSupplier}" th:text="${c.nameSupplier}"></option>
+                            </select>
                           </div>
                           <div class="mb-3 col-md-6">
-                            <label class="form-label">Số lượng</label>
-                            <input th:field="*{quantity}"
+                            <label class="form-label">Số lượng nhập</label>
+                            <input th:field="*{importQuantity}"
                                    type="text"
                                    id="sl"
                                    name="cellphone"
@@ -110,10 +107,31 @@
                             />
                           </div>
                           <div class="mb-3 col-md-6">
-                            <label class="form-label">Trạng thái</label>
-                            <select class="btn btn-primary dropdown-toggle form-control" th:field="*{status}">
-                              <option th:value="'Còn_hàng'" th:text="'Còn hàng'"></option>
-                            </select>
+                            <label for="importPrice" class="form-label">Giá nhập</label>
+                            <input th:field="*{importPrice}"
+                                   type="text"
+                                   class="form-control"
+                                   id="importPrice"
+                                   name="username" required
+                            />
+                          </div>
+                          <div class="mb-3 col-md-6">
+                            <label for="importDate" class="form-label">Ngày nhập</label>
+                            <input th:field="*{importDate}"
+                                   type="datetime-local"
+                                   class="form-control"
+                                   id="importDate"
+                                   name="username" required
+                            />
+                          </div>
+                          <div class="mb-3 col-md-6">
+                            <label for="username" class="form-label">Giá bán</label>
+                            <input th:field="*{price}"
+                              type="text"
+                              class="form-control"
+                              id="username"
+                              name="username" required
+                            />
                           </div>
                           <div class="mb-3 col-md-6">
                             <label class="form-label">Mô tả</label>
@@ -211,7 +229,7 @@
                           </div>
                         <div class="mt-2">
                           <button type="submit" class="btn btn-primary me-2">Lưu</button>
-                          <a th:href="@{products?page=1&sortField=id&sortDir=asc}" class="btn btn-outline-secondary">Hủy bỏ</a>
+                          <button type="reset" class="btn btn-outline-secondary">Hủy bỏ</button>
                         </div>
                         </div>
                       </form>

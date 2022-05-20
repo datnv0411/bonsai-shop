@@ -40,15 +40,26 @@ public class Product extends BaseEntity {
 
     private String origin;
 
+    private String importQuantity;
+
+    private String importPrice;
+
+    private String importDate;
+
     @OneToMany(targetEntity = ProductImage.class, mappedBy = "product")
     private Collection<ProductImage> productImages;
 
-    @OneToMany(targetEntity = ProductCategory.class, mappedBy = "product")
-    private Collection<ProductCategory> productCategories;
+    @ManyToOne(targetEntity = Category.class)
+    @JoinColumn(columnDefinition = "category_id")
+    private Category category;
 
     @OneToMany(targetEntity = ProductComment.class, mappedBy = "product")
     private Collection<ProductComment> productComments;
 
     @OneToMany(targetEntity = OrderDetail.class, mappedBy = "product")
     private Collection<OrderDetail> orderDetails;
+
+    @ManyToOne(targetEntity = Supplier.class)
+    @JoinColumn(columnDefinition = "supplier_id")
+    private Supplier supplier;
 }

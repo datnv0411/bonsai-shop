@@ -354,7 +354,7 @@ public class AdProductController {
 
             redirectAttributes.addFlashAttribute(MESSAGE, "Đã xóa.");
 
-            return "redirect:/admin/products?page=1&sortField=id&sortDir=asc&keySearch=";
+            return "redirect:/admin/products?page=1&sortField=id&sortDir=des&keySearch=";
         } catch (Exception e){
             return "404";
         }

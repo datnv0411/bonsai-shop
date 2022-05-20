@@ -199,7 +199,7 @@ public class AdSupplierController {
             supplierService.delete(foundSupplier.toSupplier(), username);
 
             redirectAttributes.addFlashAttribute(MESSAGE, "Đã xóa.");
-            return "redirect:/admin/suppliers?page=1&sortField=id&sortDir=asc&keySearch=";
+            return "redirect:/admin/suppliers?page=1&sortField=id&sortDir=des&keySearch=";
         } catch (Exception e){
             return "404";
         }

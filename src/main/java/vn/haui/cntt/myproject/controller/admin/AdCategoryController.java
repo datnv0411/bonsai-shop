@@ -194,7 +194,7 @@ public class AdCategoryController {
             categoryService.delete(foundCategory.toCategory(), username);
 
             redirectAttributes.addFlashAttribute(MESSAGE, "Đã xóa.");
-            return "redirect:/admin/categories?page=1&sortField=id&sortDir=asc";
+            return "redirect:/admin/categories?page=1&sortField=id&sortDir=des";
         } catch (Exception e){
             return "404";
         }

@@ -217,7 +217,7 @@ public class AdOrderController {
 
             redirectAttributes.addFlashAttribute("message", "Đã xóa.");
 
-            return "redirect:/admin/orders?page=1&sortField=id&sortDir=asc";
+            return "redirect:/admin/orders?page=1&sortField=id&sortDir=des";
         } catch (Exception e){
             return "404";
         }

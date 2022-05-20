@@ -53,16 +53,23 @@ function datHang(link){
     var paymentName = $('input[name="payment-method"]:checked').attr('value');
     var total = document.getElementById("finalPr").innerHTML;
 
+    if(typeof selected_Id === 'undefined'){
+        selected_Id = "null";
+    }
+
     url = contextPath + "save-order?addressId="+selected_Id+"&voucherCode="+voucherCode+"&paymentName="+paymentName+"̃&totalPrice="+total;
     $.ajax({
         method: "POST",
         url: url
         }).done(function(response){
-            console.log(response);
             if(response == "localhost:8080/order?page=1&sortField=id&sortDir=des"){
                 location.href = "http://" + response;
             } else{
-                location.href = response;
+                if(response == "Địa chỉ nhận hàng không được để trống."){
+                    document.getElementById("msg").innerHTML = response;
+                } else {
+                    location.href = response;
+                }
             }
         }).fail(function(){
 

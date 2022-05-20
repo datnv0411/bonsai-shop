@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import vn.haui.cntt.myproject.dto.*;
 import vn.haui.cntt.myproject.mapper.*;
 import vn.haui.cntt.myproject.service.*;
@@ -41,7 +42,8 @@ public class PaymentController {
                             @Param(value = "addressId") String addressId,
                             @Param(value = "voucherCode") String voucherCode,
                             @Param(value = "paymentName") String paymentName,
-                            @Param(value = "totalPrice") Long totalPrice) throws UnsupportedEncodingException {
+                            @Param(value = "totalPrice") Long totalPrice,
+                            RedirectAttributes redirectAttributes) throws UnsupportedEncodingException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
@@ -51,6 +53,12 @@ public class PaymentController {
 //        try {
             String username = loggedUser.getUsername();
             UserDto user = UserMapper.toUserDto(mUserService.getByUsername(username));
+
+            if(addressId.equals(null) || addressId.equals("null")){
+                return "Địa chỉ nhận hàng không được để trống.";
+            }
+
+            AddressDto checkAddress = AddressMapper.toAddressDto(addressService.findByAddressId(addressId));
 
             OrderDto newOrder = new OrderDto();
             OrderDto order = OrderMapper.toOrderDto(orderService.save(newOrder.toOrder()));
@@ -64,8 +72,6 @@ public class PaymentController {
             }
 
             PaymentDto foundPayment = PaymentMapper.toPaymentDto(paymentService.findByPaymentName(paymentName));
-
-            AddressDto checkAddress = AddressMapper.toAddressDto(addressService.findByAddressId(addressId));
 
             orderService.save(order.toOrder(), user.toUser(), voucher.toVoucher(), checkAddress.toAddress(), foundPayment.toPayment(), totalPrice);
 

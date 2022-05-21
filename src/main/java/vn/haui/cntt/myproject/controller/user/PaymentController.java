@@ -36,6 +36,8 @@ public class PaymentController {
     private final AddressService addressService;
     @Autowired
     private final PaymentService paymentService;
+    @Autowired
+    private final ProductService productService;
 
     @PostMapping("/save-order")
     public String saveOrder(@AuthenticationPrincipal CustomUserDetailImpl loggedUser,
@@ -83,6 +85,15 @@ public class PaymentController {
                 for (CartDto c : carts
                      ) {
                     cartService.deleteCart(c.toCart());
+                }
+
+                List<OrderDetailDto> orderDetailDtos = orderDetailService.findByOrderId(order.getId())
+                        .stream().map(OrderDetailMapper::toOrderDetailDto).collect(Collectors.toList());
+                for (OrderDetailDto odd : orderDetailDtos
+                     ) {
+                    ProductDto productDto = ProductMapper.toProductDto(productService.findById(odd.getProduct().getId()));
+                    productDto.setQuantity(productDto.getQuantity() - odd.getQuantity());
+                    productService.save(productDto.toProduct());
                 }
 
                 return "localhost:8080/order?page=1&sortField=id&sortDir=des";

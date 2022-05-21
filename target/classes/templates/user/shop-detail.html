@@ -121,7 +121,7 @@
                                 <p th:text="${c.content}">content</p>
                                 <small class="text-muted">Đăng bởi <span th:text="${c.createdBy}">username</span> vào <span th:text="${c.createdDate}">time</span></small>
                             </div>
-                            <a class="margin-left:20px; color:black;" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{'/product/remove-comment?id=' + ${c.id}}">X</a>
+                            <a style="margin-left:20px;color:black;" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{'/product/remove-comment?id=' + ${c.id}}">X</a>
                             <hr>
                         </div>
                         <div th:if="${#lists.isEmpty(comments)}">

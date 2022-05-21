@@ -146,18 +146,6 @@ public class AdOrderController {
         try {
         OrderDto foundOrder = OrderMapper.toOrderDto(orderService.findById(id));
 
-        if(order.getOrderStatus().equals(OrderStatusEnum.Đã_giao) && paymentOrder.getStatus().equals("Đã thanh toán")){
-            List<OrderDetailDto> orderDto = orderDetailService.findByOrderId(foundOrder.getId())
-                    .stream().map(OrderDetailMapper::toOrderDetailDto).collect(Collectors.toList());
-
-            for (OrderDetailDto odd : orderDto
-            ) {
-                ProductDto productDto = ProductMapper.toProductDto(productService.findById(odd.getProduct().getId()));
-                productDto.setQuantity(productDto.getQuantity() - odd.getQuantity());
-                productService.save(productDto.toProduct());
-            }
-        }
-
         foundOrder.setOrderStatus(order.getOrderStatus());
         foundOrder.setUpdatedBy(loggerUser.getUsername());
         foundOrder.setUpdatedDate(LocalDateTime.now());

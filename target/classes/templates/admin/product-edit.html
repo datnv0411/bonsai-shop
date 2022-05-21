@@ -92,6 +92,7 @@
                               type="text"
                               class="form-control"
                               id="username"
+                                   min="1"
                               name="username" required
                             />
                           </div>
@@ -112,15 +113,16 @@
                                    type="text"
                                    id="sl"
                                    name="cellphone"
+                                   min="1"
+                                   oninput="checkStatus(this)"
+                                   onchange="checkSLChange(this)"
                                    class="form-control" required
                             />
                           </div>
                           <div class="mb-3 col-md-6">
                             <label class="form-label">Trạng thái</label>
-                            <select class="form-select color-dropdown" th:field="*{status}">
+                            <select name="tr_th" class="form-select color-dropdown" th:field="*{status}">
                               <option id="stt0" th:value="${foundProduct.status}" th:text="${foundProduct.status}"></option>
-                              <option th:value="'Còn_hàng'" th:id="'conHang'">Còn_hàng</option>
-                              <option th:value="'Hết_hàng'" th:id="'hetHang'">Hết_hàng</option>
                             </select>
                           </div>
                           <div class="mb-3 col-md-6" th:object="${supplier}">
@@ -138,6 +140,7 @@
                                    type="text"
                                    id="sln"
                                    name="cellphone"
+                                   min="1"
                                    class="form-control" required
                             />
                           </div>
@@ -147,6 +150,7 @@
                                    type="text"
                                    id="gn"
                                    name="cellphone"
+                                   min="1"
                                    class="form-control" required
                             />
                           </div>
@@ -321,14 +325,7 @@
         });
       });
 
-      var s = [[${foundProduct.quantity}]];
-      if(s>0){
-        $("#conHang").hide();
-      } else {
-        if(s<=0){
-          $("#hetHang").hide();
-        }
-      }
+
     });
 
     function showImageThumbnail(fileInput, index){
@@ -341,7 +338,22 @@
 
       reader.readAsDataURL(file);
     }
-
+    function checkStatus(sl){
+      if(sl.value > $("#sln").val()){
+        sl.setCustomValidity("Số lượng sản phẩm không vượt quá số lượng nhập.");
+      } else {
+        sl.setCustomValidity("");
+      }
+    }
+    function checkSLChange(sl){
+      if(sl.value == 0){
+        document.getElementById("stt0").innerHTML = 'Hết_hàng';
+        document.getElementById("stt0").value = 'Hết_hàng';
+      } else {
+        document.getElementById("stt0").innerHTML = 'Còn_hàng';
+        document.getElementById("stt0").value = 'Còn_hàng';
+      }
+    }
   </script>
   </body>
 </html>

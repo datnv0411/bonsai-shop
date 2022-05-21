@@ -27,7 +27,7 @@ function locSaleProduct(link){
             }).done(function(response){
                 var temp = "";
                 for(var i= 0; i < response.length; i++) {
-                   temp += response[i] + "<br>";
+                   temp += response[i] + "<br><br>";
                 }
                 document.getElementById("sale-product").innerHTML = temp;
                 console.log('response sale product: ' + temp);

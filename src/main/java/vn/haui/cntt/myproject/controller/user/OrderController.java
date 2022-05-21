@@ -171,11 +171,22 @@ public class OrderController {
             String username = loggedUser.getUsername();
             UserDto user = UserMapper.toUserDto(mUserService.getByUsername(username));
 
+            long orderId = Long.parseLong(vnpTxnRef);
+
             paymentService.checkResultPaid(vnpResponseCode, vnpTxnRef , vnpAmount);
             List<CartDto> carts = cartService.listCart(user.toUser()).stream().map(CartMapper::toCartDto).collect(Collectors.toList());
             for (CartDto c : carts
             ) {
                 cartService.deleteCart(c.toCart());
+            }
+
+            List<OrderDetailDto> orderDetailDtos = orderDetailService.findByOrderId(orderId)
+                    .stream().map(OrderDetailMapper::toOrderDetailDto).collect(Collectors.toList());
+            for (OrderDetailDto odd : orderDetailDtos
+            ) {
+                ProductDto productDto = ProductMapper.toProductDto(productService.findById(odd.getProduct().getId()));
+                productDto.setQuantity(productDto.getQuantity() - odd.getQuantity());
+                productService.save(productDto.toProduct());
             }
 
             return "redirect:/order?page=1&sortField=id&sortDir=des";

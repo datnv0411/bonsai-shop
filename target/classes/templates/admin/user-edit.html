@@ -128,11 +128,6 @@
                             <input required type="radio" value="Nam" th:field="*{gender}">Nam</input>
                             <input type="radio" value="Nữ" th:field="*{gender}">Nữ</input>
                           </div>
-                          <div class="mb-3 col-md-6">
-                            <label class="form-label">Mật khẩu</label>
-                            <input type="password" class="form-control" th:field="*{password}"
-                                   placeholder="Để trống nếu như bạn không muốn thay đổi mật khẩu"/>
-                          </div>
                           <div class="mb-3 col-md-6" th:object="${role}">
                             <label class="form-label">Phân quyền</label>
                             <select class="form-select color-dropdown" th:field="*{name}">

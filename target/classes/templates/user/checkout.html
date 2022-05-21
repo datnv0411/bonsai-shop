@@ -44,14 +44,14 @@
                                     </div>
                                 </div>
                                 <br>
-                                <label style="color:red;" id="msg"></label>
-                                <br>
                                 <label>
                                     <a style="color:white;" class="btn hvr-hover"
                                           th:href="${#lists.isEmpty(addresses) == true} ? @{create-address} : @{address?page=1&sortField=is_default&sortDir=des}"
                                           th:text="${#lists.isEmpty(addresses) == true} ? 'Thêm địa chỉ' : 'Thay đổi'"
                                 >Thêm địa chỉ mới</a>
                                 </label>
+                                <br>
+                                <label style="color:red;" id="msg"></label>
                             </div>
                             <hr class="mb-4">
                             <div class="title"> <span>Thanh toán</span> </div>

@@ -1,2 +1,2 @@
 # bonsai-shop
-My big project about shopping website.
+Shopping website (Spring boot + MySQL)

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import vn.haui.cntt.myproject.entity.Order;
 import vn.haui.cntt.myproject.entity.Payment;
 import vn.haui.cntt.myproject.entity.PaymentOrder;
 import vn.haui.cntt.myproject.repository.PaymentOrderRepository;
@@ -17,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 @Transactional
@@ -46,12 +48,12 @@ public class PaymentServiceImpl implements PaymentService {
              ) {
             String[] arr2 = null;
             arr2 = p.getPaymentName().split(" ");
-            if (arr[0].equals(arr2[0])){
+            if (arr[0].toLowerCase(Locale.ROOT).equals(arr2[0].toLowerCase(Locale.ROOT))){
                 payment = p.getPaymentName();
             }
         }
 
-        return paymentRepository.findByPaymentNameAndDeletedFlag(payment, false);
+        return paymentRepository.findByPaymentNameAndDeletedFlag(payment);
     }
 
     public String createLink(long orderId, long totalPrice, String ipClient, String returnUrl) throws UnsupportedEncodingException {

@@ -8,8 +8,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import vn.haui.cntt.myproject.dto.UserDto;
+import vn.haui.cntt.myproject.mapper.UserMapper;
 import vn.haui.cntt.myproject.service.impl.UserServiceImpl;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -33,11 +38,17 @@ public class AppController {
     }
  
     @PostMapping("/process-register")
-    public String processRegistration(@ModelAttribute(name = "user") UserDto user){
+    public String processRegistration(@ModelAttribute(name = "user") UserDto user, RedirectAttributes redirectAttributes){
         try{
-            userService.isRoleUser(user.toUser());
+            List<UserDto> checkUser = userService.checkExistUser(user.getUsername(), user.getEmail(), user.getCellphone()).stream().map(UserMapper::toUserDto).collect(Collectors.toList());
+            if (checkUser.size() > 0){
+                redirectAttributes.addFlashAttribute("message", "Người dùng đã tồn tại.");
+                return "redirect:/register";
+            }
             userService.encodePassword(user.toUser());
-            userService.setAvatarDefault(user.toUser());
+            UserDto foundUser = UserMapper.toUserDto(userService.getByUsername(user.getUsername()));
+            userService.isRoleUser(foundUser.toUser());
+            userService.setAvatarDefault(foundUser.toUser());
 
             return "redirect:/login";
         } catch (Exception e) {

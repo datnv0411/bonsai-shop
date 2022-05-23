@@ -44,13 +44,94 @@
               <!-- Basic Bootstrap Table -->
               <div class="card">
                 <h5 class="card-header">Chi tiết đơn hàng</h5>
-<!--                <a style="width:100px; margin-left:20px;" class="btn btn-primary" href="create"> Thêm</a>-->
-                <h6 class="card-header" th:if="${message != null}">[[${message}]]</h6>
+                <h6 class="card-header" style="color:red;" th:if="${message != null}"><strong>[[${message}]]</strong></h6>
+                <div class="row" style="margin:10px;">
+                  <div class="mb-3 col-md-6">
+                    <label for="firstName" class="form-label">Họ và tên</label>
+                    <input th:value="${order.user.firstName}+' '+${order.user.lastName}"
+                           class="form-control"
+                           type="text"
+                           id="firstName"
+                           name="firstName"
+                           readonly
+                    />
+                  </div>
+                  <div class="mb-3 col-md-6">
+                    <label for="cellphone" class="form-label">Số điện thoại</label>
+                    <input th:value="${order.user.cellphone}"
+                           class="form-control"
+                           type="text"
+                           id="cellphone"
+                           name="firstName"
+                           readonly
+                    />
+                  </div>
+                  <div class="mb-3 col-md-6">
+                    <label for="province" class="form-label">Tỉnh</label>
+                    <input th:value="${order.deliveryAddress.province}"
+                           class="form-control"
+                           type="text"
+                           id="province"
+                           name="firstName"
+                           readonly
+                    />
+                  </div>
+                  <div class="mb-3 col-md-6">
+                    <label for="district" class="form-label">Huyện</label>
+                    <input th:value="${order.deliveryAddress.district}"
+                           class="form-control"
+                           type="text"
+                           id="district"
+                           name="firstName"
+                           readonly
+                    />
+                  </div>
+                  <div class="mb-3 col-md-6">
+                    <label for="town" class="form-label">Xã</label>
+                    <input th:value="${order.deliveryAddress.town}"
+                           class="form-control"
+                           type="text"
+                           id="town"
+                           name="firstName"
+                           readonly
+                    />
+                  </div>
+                  <div class="mb-3 col-md-6">
+                    <label for="address" class="form-label">Địa chỉ</label>
+                    <input th:value="${order.deliveryAddress.specificAddress}"
+                           class="form-control"
+                           type="text"
+                           id="address"
+                           name="firstName"
+                           readonly
+                    />
+                  </div>
+                  <div class="mb-3 col-md-6" th:each="op : ${order.paymentOrders}">
+                    <label for="pttt" class="form-label">Phương thức thanh toán</label>
+                    <input th:value="${op.payment.paymentName == 'Truc Tiep'} ? 'Trực tiếp' : ${op.payment.paymentName}"
+                           class="form-control"
+                           type="text"
+                           id="pttt"
+                           name="firstName"
+                           readonly
+                    />
+                  </div>
+                  <div class="mb-3 col-md-6" th:each="op : ${order.paymentOrders}">
+                    <label for="stt" class="form-label">Trạng thái</label>
+                    <input th:value="${op.status}"
+                           class="form-control"
+                           type="text"
+                           id="stt"
+                           name="firstName"
+                           readonly
+                    />
+                  </div>
+                </div>
+                <hr class="my-5" />
                 <div class="table-responsive text-nowrap">
                   <table class="table">
                     <thead>
                       <tr>
-                        <th>Mã đơn hàng</th>
                         <th>Tên người dùng</th>
                         <th>Tên sản phẩm</th>
                         <th>Giá</th>
@@ -61,24 +142,12 @@
                     </thead>
                     <tbody class="table-border-bottom-0" th:each="od : ${listOrderDetails}">
                       <tr>
-                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <span class="badge bg-label-primary me-1" th:text="${od.order.orderCode}">Active</span></td>
                         <td th:text="${od.order.user.firstName} + ' ' + ${od.order.user.lastName}">ten nguoi dung</td>
                         <td th:text="${od.product.nameProduct}">ten san pham</td>
                         <td th:text="${od.product.priceSale}">gia</td>
                         <td th:text="${od.quantity}">sl</td>
                         <td><span class="badge bg-label-primary me-1" th:text="${od.price}">thanh tien</span></td>
                         <td th:text="${od.discount}">chiet khau</td>
-                        <td>
-                          <div class="dropdown">
-                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                              <i class="bx bx-dots-vertical-rounded"></i>
-                            </button>
-                            <div class="dropdown-menu">
-                              <a class="dropdown-item btn btn-hover" th:href="@{orders?page=1&sortField=id&sortDir=asc}"
-                              >Trở về</a>
-                            </div>
-                          </div>
-                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -89,10 +158,9 @@
                 <h3>Không tìm thấy kết quả nào.</h3>
               </div>
 
-              <hr class="my-5" />
+              <a style="margin-top:10px;" class="btn btn-primary" th:href="@{orders?page=1&sortField=id&sortDir=asc&keySearch=}">Trở về</a>
 
               <!-- Bootstrap Dark Table -->
-              <hr class="my-5" />
             </div>
             <!-- / Content -->
 

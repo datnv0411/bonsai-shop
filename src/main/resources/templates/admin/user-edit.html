@@ -50,7 +50,7 @@
                   </ul>
                   <div class="card mb-4">
                     <h5 class="card-header">Thông tin cá nhân</h5>
-                    <h6 class="card-header" th:if="${message != null}">[[${message}]]</h6>
+                    <h6 class="card-header" style="color:red;" th:if="${message != null}"><strong>[[${message}]]</strong></h6>
                     <!-- Account -->
                     <hr class="my-0" />
                     <div class="card-body">
@@ -102,15 +102,15 @@
                               name="email"
                             />
                           </div>
-                          <div class="mb-3 col-md-6">
-                            <label for="username" class="form-label">Tên người dùng</label>
-                            <input th:field="*{username}"
-                              type="text"
-                              class="form-control"
-                              id="username"
-                              name="username" required
-                            />
-                          </div>
+<!--                          <div class="mb-3 col-md-6">-->
+<!--                            <label for="username" class="form-label">Tên người dùng</label>-->
+<!--                            <input th:field="*{username}"-->
+<!--                              type="text"-->
+<!--                              class="form-control"-->
+<!--                              id="username"-->
+<!--                              name="username" required-->
+<!--                            />-->
+<!--                          </div>-->
                           <div class="mb-3 col-md-6">
                             <label class="form-label" for="cellphone">Số điện thoại</label>
                             <div class="input-group input-group-merge">
@@ -128,21 +128,16 @@
                             <input required type="radio" value="Nam" th:field="*{gender}">Nam</input>
                             <input type="radio" value="Nữ" th:field="*{gender}">Nữ</input>
                           </div>
-                          <div class="mb-3 col-md-6">
-                            <label class="form-label">Mật khẩu</label>
-                            <input type="password" class="form-control" th:field="*{password}"
-                                   placeholder="Để trống nếu như bạn không muốn thay đổi mật khẩu"/>
-                          </div>
                           <div class="mb-3 col-md-6" th:object="${role}">
                             <label class="form-label">Phân quyền</label>
-                            <select th:field="*{name}">
+                            <select class="form-select color-dropdown" th:field="*{name}">
                               <option value="ROLE_USER">Người dùng</option>
                               <option value="ROLE_ADMIN">Người quản trị</option>
                             </select>
                           </div>
                         <div class="mt-2">
                           <button type="submit" class="btn btn-primary me-2">Lưu</button>
-                          <a th:href="@{users?page=1&sortField=id&sortDir=asc}" class="btn btn-outline-secondary">Hủy bỏ</a>
+                          <button type="reset" class="btn btn-outline-secondary">Hủy bỏ</button>
                         </div>
                         </div>
                       </form>

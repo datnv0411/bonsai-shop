@@ -48,10 +48,10 @@ public class AddressController {
         }
 
         try {
-            String email = loggedUser.getEmail();
+            String username = loggedUser.getUsername();
 
             String pageStr = String.valueOf(page);
-            Page<AddressDto> pages = addressService.listAll(pageStr, sortField, sortDir, email).map(AddressMapper::toAddressDto);
+            Page<AddressDto> pages = addressService.listAll(pageStr, sortField, sortDir, username).map(AddressMapper::toAddressDto);
             long totalItems = pages.getTotalElements();
             int totalPages = pages.getTotalPages();
             List<AddressDto> list = pages.getContent();
@@ -99,8 +99,8 @@ public class AddressController {
         }
 
         try {
-            String email = loggerUser.getEmail();
-            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
+            String username = loggerUser.getUsername();
+            UserDto user = UserMapper.toUserDto(mUserService.getByUsername(username));
 
             List<AddressDto> addressList = addressService.findByUserId(user.getId()).stream().map(AddressMapper::toAddressDto).collect(Collectors.toList());
             address.setDefault(addressList.isEmpty());
@@ -130,8 +130,8 @@ public class AddressController {
         }
 
        try {
-           String email = loggerUser.getEmail();
-           UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
+           String username = loggerUser.getUsername();
+           UserDto user = UserMapper.toUserDto(mUserService.getByUsername(username));
            AddressDto address = AddressMapper.toAddressDto(addressService.findByUserIdAndAddressId(user.getId(), addressId));
 
            model.addAttribute("address", address);
@@ -156,8 +156,8 @@ public class AddressController {
         try {
             address.setId(addressId);
 
-            String email = loggedUser.getEmail();
-            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
+            String username = loggedUser.getUsername();
+            UserDto user = UserMapper.toUserDto(mUserService.getByUsername(username));
 
             addressService.updateAddress(address.toAddress(), user.toUser());
 
@@ -180,8 +180,8 @@ public class AddressController {
         }
 
         try {
-            String email = loggedUser.getEmail();
-            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
+            String username = loggedUser.getUsername();
+            UserDto user = UserMapper.toUserDto(mUserService.getByUsername(username));
 
             addressService.deleteAddress(addressId, user.toUser());
 
@@ -204,8 +204,8 @@ public class AddressController {
         }
 
         try {
-            String email = loggedUser.getEmail();
-            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
+            String username = loggedUser.getUsername();
+            UserDto user = UserMapper.toUserDto(mUserService.getByUsername(username));
 
             addressService.setDefaultAddress(addressId, user.getId());
 

@@ -16,21 +16,17 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, L
     Page<Product> findByNameWithoutCategoryId(@Param(value = "deletedFlag") int i, @Param(value = "productSearch") String productSearch, Pageable pageable);
 
     @Query(value = "select * from product p " +
-            "inner join product_category pc on p.id=pc.product_id " +
-            "where p.deleted_flag = :deletedFlag and pc.deleted_flag = :deletedFlag2 and pc.category_id = :category_id and product_search LIKE %:productSearch%", nativeQuery = true)
+            "where p.deleted_flag = :deletedFlag and p.category_id = :category_id and product_search LIKE %:productSearch%", nativeQuery = true)
     Page<Product> findByNameWithCategoryId(@Param(value = "deletedFlag") int i,
-                                           @Param(value = "deletedFlag2") int j,
                                            @Param(value = "productSearch") String productSearch,
                                            @Param(value = "category_id") String category_id, Pageable pageable);
 
     @Query(value = "select * from product p " +
-            "inner join product_category pc on p.id=pc.product_id " +
-            "where p.deleted_flag = 0 and pc.deleted_flag = 0 and pc.category_id = :category_id", nativeQuery = true)
+            "where p.deleted_flag = 0 and p.category_id = :category_id", nativeQuery = true)
     Page<Product> findAllWithCategoryId(@Param(value = "category_id") String category_id, Pageable pageable);
 
     @Query(value = "select * from product p " +
-            "inner join product_category pc on p.id=pc.product_id " +
-            "where p.deleted_flag = 0 and pc.deleted_flag = 0 and pc.category_id = :category_id", nativeQuery = true)
+            "where p.deleted_flag = 0 and p.category_id = :category_id", nativeQuery = true)
     List<Product> findByCategoryId(@Param(value = "category_id") Long category_id);
 
     @Query(value = "select * from product p " +
@@ -41,4 +37,10 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, L
 
     @Query(value = "select * from product where deleted_flag = :deletedFlag", nativeQuery = true)
     List<Product> findAllByDeletedFlag(@Param(value = "deletedFlag") int i);
+
+    @Query(value = "select * from product p inner join category c on p.category_id = c.id " +
+            "inner join supplier s on p.supplier_id = s.id where " +
+            "concat(p.product_search, p.origin, c.name, s.name_supplier) " +
+            "like %:keySearch% and p.deleted_flag = 0", nativeQuery = true)
+    Page<Product> findProduct(@Param(value = "keySearch") String keySearch, Pageable pageable);
 }

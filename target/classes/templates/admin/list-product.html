@@ -44,8 +44,28 @@
               <!-- Basic Bootstrap Table -->
               <div class="card">
                 <h5 class="card-header">Danh sách sản phẩm</h5>
+                <h6 class="card-header">Hiển thị <span th:text="${totalItems}"></span> kết quả</h6>
+                <form th:action="@{products}">
+                  <div class="navbar-nav align-items-left" style="margin-left: 20px;margin-bottom: 10px;">
+                    <div class="nav-item d-flex align-items-center">
+                      <input type="hidden" name="page" th:value="1">
+                      <input type="hidden" name="sortField" th:value="${sortField}">
+                      <input type="hidden" name="sortDir" th:value="${sortDir}">
+                      <i class="bx bx-search fs-4 lh-0"></i>
+                      <input
+                              type="text"
+                              name="keySearch"
+                              th:value="${keySearch}"
+                              class="form-control border-0 shadow-none"
+                              placeholder="Tìm kiếm..."
+                              aria-label="Tìm kiếm..."
+                      />
+                      <button class="btn btn-primary me-2" style="width:150px;" type="submit">Tìm kiếm</button>
+                    </div>
+                  </div>
+                </form>
                 <a style="width:100px; margin-left:20px;" class="btn btn-primary" href="create"> Thêm</a>
-                <h6 class="card-header" th:if="${message != null}">[[${message}]]</h6>
+                <h6 class="card-header" style="color:red;" th:if="${message != null}"><strong>[[${message}]]</strong></h6>
                 <div class="table-responsive text-nowrap">
                   <table class="table">
                     <thead>
@@ -53,36 +73,32 @@
                         <th>Tên sản phẩm</th>
                         <th>Danh mục</th>
                         <th>Nguồn gốc</th>
-                        <th>Giá gốc</th>
+                        <th>Giá bán</th>
                         <th>Số lượng</th>
                         <th>Trạng thái</th>
-                        <th>Hình ảnh sản phẩm</th>
-                        <th>Mô tả</th>
                       </tr>
                     </thead>
                     <tbody class="table-border-bottom-0" th:each="pc : ${listProducts}">
                       <tr>
                         <td>
                           <i class="fab fa-angular fa-lg text-danger me-3"></i>
-                          <strong th:text="${pc.product.nameProduct}" th:title="${pc.product.nameProduct}" style="display: block;width: 100px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;"></strong>
+                          <strong th:text="${pc.nameProduct}" th:title="${pc.nameProduct}"></strong>
                         </td>
                         <td th:text="${pc.category.name}"></td>
-                        <td th:text="${pc.product.origin}"></td>
-                        <td th:text="${pc.product.price}"></td>
-                        <td th:text="${pc.product.quantity}">lastName</td>
-                        <td><span class="badge bg-label-primary me-1" th:text="${pc.product.quantity > 0} ? 'Còn hàng' : 'Hết hàng'">Active</span></td>
-                        <td><img th:each="pImage : ${pc.product.productImages}" height="50" width="50" th:src="@{'images/product/' + ${pImage.path}}" alt="Ảnh sản phẩm" class="rounded-circle"></td>
-                        <td><p th:text="${pc.product.description}" th:title="${pc.product.description}" style="display: block;width: 100px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;"></p></td>
+                        <td th:text="${pc.origin}"></td>
+                        <td th:text="${pc.priceSale}"></td>
+                        <td th:text="${pc.quantity}">lastName</td>
+                        <td><span class="badge bg-label-primary me-1" th:text="${pc.quantity > 0} ? 'Còn hàng' : 'Hết hàng'">Active</span></td>
                         <td>
                           <div class="dropdown">
                             <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
                               <i class="bx bx-dots-vertical-rounded"></i>
                             </button>
                             <div class="dropdown-menu">
-                              <a class="dropdown-item" th:href="@{'product?id=' + ${pc.product.id}}"
-                                ><i class="bx bx-edit-alt me-1"></i> Sửa</a
+                              <a class="dropdown-item" th:href="@{'product?id=' + ${pc.id}}"
+                                ><i class="bx bx-edit-alt me-1"></i> Xem chi tiết</a
                               >
-                              <a class="dropdown-item" th:href="@{'/admin/delete/product/'+ ${pc.product.id}}"
+                              <a class="dropdown-item" th:href="@{'/admin/delete/product/'+ ${pc.id}}"
                                 ><i class="bx bx-trash me-1"></i> Xóa</a
                               >
                             </div>
@@ -92,26 +108,26 @@
                     </tbody>
                   </table>
                 </div>
+                <nav aria-label="Page navigation example">
+                  <ul class="pagination">
+                    <li th:class="${page>1} ? 'page-item' : 'page-item disabled'">
+                      <a class="page-link" th:href="${page>1} ? @{'/admin/products?page=' + ${page - 1} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keySearch=' + ${keySearch}} : ''" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">Previous</span>
+                      </a>
+                    </li>
+                    <li th:each="i : ${#numbers.sequence(1, totalPages)}" th:class="${i == page} ? 'page-item active' : 'page-item'">
+                      <a class="page-link" th:href="${i!=page} ? @{'/admin/products?page=' + ${i} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keySearch=' + ${keySearch}} : ''">[[${i}]]</a>
+                    </li>
+                    <li th:class="${page<totalPages} ? 'page-item' : 'page-item disabled'">
+                      <a class="page-link" th:href="@{'/admin/products?page=' + ${page + 1} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keySearch=' + ${keySearch}}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">Next</span></a>
+                    </li>
+                  </ul>
+                </nav>
               </div>
               <!--/ Basic Bootstrap Table -->
-              <nav aria-label="Page navigation example">
-                <ul class="pagination">
-                  <li th:class="${page>1} ? 'page-item' : 'page-item disabled'">
-                    <a class="page-link" th:href="${page>1} ? @{'/admin/products?page=' + ${page - 1} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&categoryId=' + ${categoryId}} : ''" aria-label="Previous">
-                      <span aria-hidden="true">&laquo;</span>
-                      <span class="sr-only">Previous</span>
-                    </a>
-                  </li>
-                  <li th:each="i : ${#numbers.sequence(1, totalPages)}" th:class="${i == page} ? 'page-item active' : 'page-item'">
-                    <a class="page-link" th:href="${i!=page} ? @{'/admin/products?page=' + ${i} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&categoryId=' + ${categoryId}} : ''">[[${i}]]</a>
-                  </li>
-                  <li th:class="${page<totalPages} ? 'page-item' : 'page-item disabled'">
-                    <a class="page-link" th:href="@{'/admin/products?page=' + ${page + 1} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&categoryId=' + ${categoryId}}" aria-label="Next">
-                      <span aria-hidden="true">&raquo;</span>
-                      <span class="sr-only">Next</span></a>
-                  </li>
-                </ul>
-              </nav>
               <div th:if="${#lists.isEmpty(listProducts)}">
                 <h3>Không tìm thấy kết quả nào.</h3>
               </div>

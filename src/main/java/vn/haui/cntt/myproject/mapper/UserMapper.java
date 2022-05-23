@@ -8,7 +8,7 @@ public class UserMapper {
 
     public static UserDto toUserDto(User user){
         return new UserDto(user.getId(), user.getUsername(), user.getEmail(), user.getPassword(), user.getFirstName(), user.getLastName(),
-                user.getGender(), user.getAvatar(), user.getCellphone(), user.getRole(), user.getAddress(),
+                user.getGender(), user.getAvatar(), user.getCellphone(), user.getResetPasswordToken(), user.getRole(), user.getAddress(),
                 user.getDeletedFlag(), user.getCreatedDate(), user.getUpdatedDate(), user.getCreatedBy(), user.getUpdatedBy());
     }
 }

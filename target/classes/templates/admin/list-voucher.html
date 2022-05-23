@@ -44,8 +44,28 @@
               <!-- Basic Bootstrap Table -->
               <div class="card">
                 <h5 class="card-header">Danh sách voucher</h5>
+                <h6 class="card-header">Hiển thị <span th:text="${totalItems}"></span> kết quả</h6>
+                <form th:action="@{vouchers}">
+                  <div class="navbar-nav align-items-left" style="margin-left: 20px;margin-bottom: 10px;">
+                    <div class="nav-item d-flex align-items-center">
+                      <input type="hidden" name="page" th:value="1">
+                      <input type="hidden" name="sortField" th:value="${sortField}">
+                      <input type="hidden" name="sortDir" th:value="${sortDir}">
+                      <i class="bx bx-search fs-4 lh-0"></i>
+                      <input
+                              type="text"
+                              name="keySearch"
+                              th:value="${keySearch}"
+                              class="form-control border-0 shadow-none"
+                              placeholder="Tìm kiếm..."
+                              aria-label="Tìm kiếm..."
+                      />
+                      <button class="btn btn-primary me-2" style="width:150px;" type="submit">Tìm kiếm</button>
+                    </div>
+                  </div>
+                </form>
                 <a style="width:100px; margin-left:20px;" class="btn btn-primary" href="voucher-create"> Thêm</a>
-                <h6 class="card-header" th:if="${message != null}">[[${message}]]</h6>
+                <h6 class="card-header" style="color:red;" th:if="${message != null}"><strong>[[${message}]]</strong></h6>
                 <div class="table-responsive text-nowrap">
                   <table class="table">
                     <thead>
@@ -77,7 +97,7 @@
                             </button>
                             <div class="dropdown-menu">
                               <a class="dropdown-item" th:href="@{'voucher?id=' + ${voucher.id}}"
-                                ><i class="bx bx-edit-alt me-1"></i> Sửa</a
+                                ><i class="bx bx-edit-alt me-1"></i> Xem chi tiết</a
                               >
                               <a class="dropdown-item" th:href="@{'/admin/delete/voucher/'+ ${voucher.id}}"
                                 ><i class="bx bx-trash me-1"></i> Xóa</a
@@ -89,25 +109,25 @@
                     </tbody>
                   </table>
                 </div>
+                <nav aria-label="Page navigation example">
+                  <ul class="pagination">
+                    <li th:class="${page>1} ? 'page-item' : 'page-item disabled'">
+                      <a class="page-link" th:href="${page>1} ? @{'/admin/vouchers?page=' + ${page - 1} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keySearch=' + ${keySearch}} : ''" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">Previous</span>
+                      </a>
+                    </li>
+                    <li th:each="i : ${#numbers.sequence(1, totalPages)}" th:class="${i == page} ? 'page-item active' : 'page-item'">
+                      <a class="page-link" th:href="${i!=page} ? @{'/admin/vouchers?page=' + ${i} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keySearch=' + ${keySearch}} : ''">[[${i}]]</a>
+                    </li>
+                    <li th:class="${page<totalPages} ? 'page-item' : 'page-item disabled'">
+                      <a class="page-link" th:href="@{'/admin/vouchers?page=' + ${page + 1} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keySearch=' + ${keySearch}}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">Next</span></a>
+                    </li>
+                  </ul>
+                </nav>
               </div>
-              <nav aria-label="Page navigation example">
-                <ul class="pagination">
-                  <li th:class="${page>1} ? 'page-item' : 'page-item disabled'">
-                    <a class="page-link" th:href="${page>1} ? @{'/admin/vouchers?page=' + ${page - 1} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&categoryId=' + ${categoryId}} : ''" aria-label="Previous">
-                      <span aria-hidden="true">&laquo;</span>
-                      <span class="sr-only">Previous</span>
-                    </a>
-                  </li>
-                  <li th:each="i : ${#numbers.sequence(1, totalPages)}" th:class="${i == page} ? 'page-item active' : 'page-item'">
-                    <a class="page-link" th:href="${i!=page} ? @{'/admin/vouchers?page=' + ${i} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&categoryId=' + ${categoryId}} : ''">[[${i}]]</a>
-                  </li>
-                  <li th:class="${page<totalPages} ? 'page-item' : 'page-item disabled'">
-                    <a class="page-link" th:href="@{'/admin/vouchers?page=' + ${page + 1} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&categoryId=' + ${categoryId}}" aria-label="Next">
-                      <span aria-hidden="true">&raquo;</span>
-                      <span class="sr-only">Next</span></a>
-                  </li>
-                </ul>
-              </nav>
               <div th:if="${#lists.isEmpty(listVouchers)}">
                 <h3>Không tìm thấy kết quả nào.</h3>
               </div>

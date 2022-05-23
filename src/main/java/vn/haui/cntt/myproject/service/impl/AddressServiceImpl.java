@@ -25,7 +25,7 @@ public class AddressServiceImpl implements AddressService {
     private AddressRepository addressRepository;
 
     @Override
-    public Page<Address> listAll(String pageNumber, String sortField, String sortDir, String email){
+    public Page<Address> listAll(String pageNumber, String sortField, String sortDir, String username){
         if (pageNumber==null || !pageNumber.chars().allMatch(Character::isDigit) || pageNumber.equals("")) pageNumber="1";
         if (sortField==null || sortField.equals("")) sortField="isDefault";
         if (sortDir == null || sortDir.equals("")) sortDir="des";
@@ -37,7 +37,7 @@ public class AddressServiceImpl implements AddressService {
 
         Pageable pageable = PageRequest.of(pageNumberInt - 1,9, sort);
 
-        return addressRepository.findAllByDeletedFlag(0, email, pageable);
+        return addressRepository.findAllByDeletedFlag(0, username, pageable);
     }
 
     @Override

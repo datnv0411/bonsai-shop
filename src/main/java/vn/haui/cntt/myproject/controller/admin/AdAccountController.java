@@ -22,6 +22,9 @@ import vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl;
 import vn.haui.cntt.myproject.service.impl.ImageServiceImpl;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -41,8 +44,8 @@ public class AdAccountController {
         }
 
         try {
-            String email = loggedUser.getEmail();
-            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
+            String username = loggedUser.getUsername();
+            UserDto user = UserMapper.toUserDto(mUserService.getByUsername(username));
 
             model.addAttribute("user", user);
 
@@ -66,8 +69,15 @@ public class AdAccountController {
         }
 
         try {
-            String email = loggerUser.getEmail();
-            UserDto loggedUser = UserMapper.toUserDto(mUserService.getByEmail(email));
+            String username = loggerUser.getUsername();
+            UserDto loggedUser = UserMapper.toUserDto(mUserService.getByUsername(username));
+            user.setRole(loggedUser.getRole());
+
+            List<UserDto> checkUser = mUserService.checkExistUser(user.getUsername(), user.getEmail(), user.getCellphone()).stream().map(UserMapper::toUserDto).collect(Collectors.toList());
+            if (checkUser.size() > 1){
+                redirectAttributes.addFlashAttribute("message", "Thông tin người dùng đã tồn tại.");
+                return "redirect:/admin/account";
+            }
 
             if(!multipartFile.isEmpty()){
                 String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
@@ -79,17 +89,67 @@ public class AdAccountController {
                 user.setAvatar(loggedUser.getAvatar());
             }
 
-            if (user.getPassword() == null || user.getPassword().equals("")){
-                mUserService.updateAccountWithoutPassword(user.toUser(), loggerUser.getUsername());
-            } else {
-                mUserService.updateAccount(user.toUser(), loggerUser.getUsername());
-            }
-
-            loggerUser.setUsername(user.getUsername());
+            mUserService.updateAccountWithoutPassword(user.toUser(), loggerUser.getUsername());
 
             redirectAttributes.addFlashAttribute("message", "Thông tin cá nhân đã được cập nhật.");
 
             return "redirect:/admin/account";
+        } catch (Exception e){
+            return "404";
+        }
+    }
+
+    @GetMapping("/admin/password")
+    public String viewChangPassword(@AuthenticationPrincipal CustomUserDetailImpl loggedUser,
+                                    Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
+            return "admin/auth-login-basic";
+        }
+
+        try {
+            String username = loggedUser.getUsername();
+            UserDto user = UserMapper.toUserDto(mUserService.getByUsername(username));
+
+            model.addAttribute("user", user);
+
+            return "admin/change-password";
+        } catch (Exception e){
+            return "404";
+        }
+    }
+
+    @PostMapping("/admin/password/save")
+    public String changePassword(@ModelAttribute(name = "user") UserDto user, RedirectAttributes redirectAttributes,
+                                 @AuthenticationPrincipal CustomUserDetailImpl loggerUser) throws IOException {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
+            return "admin/auth-login-basic";
+        }
+
+        try {
+            String username = loggerUser.getUsername();
+            UserDto loggedUser = UserMapper.toUserDto(mUserService.getByUsername(username));
+
+            boolean checkPass = mUserService.decodePass(user.getPassword(), loggedUser.toUser());
+
+            if(!checkPass){
+                redirectAttributes.addFlashAttribute("message", "Mật khẩu hiện tại không đúng.");
+
+                return "redirect:/admin/password";
+            }
+
+            loggedUser.setPassword(user.getResetPasswordToken());
+            loggedUser.setUpdatedBy(username);
+            loggedUser.setUpdatedDate(LocalDateTime.now());
+            mUserService.encodePassword(loggedUser.toUser());
+
+            redirectAttributes.addFlashAttribute("message", "Đã thay đổi mật khẩu.");
+
+            return "redirect:/admin/password";
         } catch (Exception e){
             return "404";
         }

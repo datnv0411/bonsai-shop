@@ -23,7 +23,7 @@ public class ProductDto {
     private long priceSale;
     private String origin;
     private Collection<ProductImage> productImages;
-    private Collection<ProductCategory> productCategories;
+    private Category category;
     private Collection<ProductComment> productComments;
     private Collection<OrderDetail> orderDetails;
     private Boolean deletedFlag;
@@ -31,6 +31,10 @@ public class ProductDto {
     private LocalDateTime updatedDate;
     private String createdBy;
     private String updatedBy;
+    private String importQuantity;
+    private String importPrice;
+    private String importDate;
+    private Supplier supplier;
 
     public Product toProduct(){
         return Product.builder()
@@ -44,7 +48,7 @@ public class ProductDto {
                 .priceSale(priceSale)
                 .origin(origin)
                 .productImages(productImages)
-                .productCategories(productCategories)
+                .category(category)
                 .productComments(productComments)
                 .orderDetails(orderDetails)
                 .deletedFlag(deletedFlag)
@@ -52,6 +56,10 @@ public class ProductDto {
                 .updatedDate(updatedDate)
                 .createdBy(createdBy)
                 .updatedBy(updatedBy)
+                .importQuantity(importQuantity)
+                .importPrice(importPrice)
+                .importDate(importDate)
+                .supplier(supplier)
                 .build();
     }
 }

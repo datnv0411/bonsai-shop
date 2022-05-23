@@ -23,4 +23,13 @@ public interface VoucherRepository extends JpaRepository<Voucher, Long> {
 
     @Query(value = "select * from voucher where deleted_flag = :deletedFlag and id = :voucherId", nativeQuery = true)
     Voucher findByIdAndDeletedFlag(@Param("voucherId") Long id, @Param(value = "deletedFlag") Integer i);
+
+    @Query(value = "select * from voucher " +
+            "where deleted_flag = 0", nativeQuery = true)
+    Page<Voucher> findAllVoucher(Pageable pageable);
+
+    @Query(value = "select * from voucher where " +
+            "concat(code_voucher, applicable, end_time, start_time, percent_value, quantity, title, up_to_value) " +
+            "like %:keySearch% and deleted_flag = 0", nativeQuery = true)
+    Page<Voucher> findVoucher(@Param(value = "keySearch") String keySearch, Pageable pageable);
 }

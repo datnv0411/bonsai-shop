@@ -20,7 +20,6 @@ import vn.haui.cntt.myproject.dto.UserDto;
 import vn.haui.cntt.myproject.mapper.CategoryMapper;
 import vn.haui.cntt.myproject.mapper.UserMapper;
 import vn.haui.cntt.myproject.service.CategoryService;
-import vn.haui.cntt.myproject.service.ProductCategoryService;
 import vn.haui.cntt.myproject.service.UserService;
 import vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl;
 
@@ -37,12 +36,10 @@ public class AdCategoryController {
     private final CategoryService categoryService;
     @Autowired
     private final UserService mUserService;
-    @Autowired
-    private final ProductCategoryService productCategoryService;
 
     @GetMapping("/admin/categories")
     public String viewListCategories(@AuthenticationPrincipal CustomUserDetailImpl loggedUser,
-                                     Model model, @Param("page") int page,
+                                     Model model, @Param("page") int page, @Param(value = "keySearch") String keySearch,
                                      @Param("sortField") String sortField, @Param("sortDir") String sortDir){
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -52,11 +49,11 @@ public class AdCategoryController {
         }
 
         try {
-            String email = loggedUser.getEmail();
-            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
+            String username = loggedUser.getUsername();
+            UserDto user = UserMapper.toUserDto(mUserService.getByUsername(username));
 
             String pageStr = String.valueOf(page);
-            Page<CategoryDto> pages = categoryService.listAll(pageStr, sortField, sortDir).map(CategoryMapper::toCategoryDto);
+            Page<CategoryDto> pages = categoryService.listAll(pageStr, sortField, sortDir, keySearch).map(CategoryMapper::toCategoryDto);
             long totalItems = pages.getTotalElements();
             int totalPages = pages.getTotalPages();
             List<CategoryDto> categories = pages.getContent();
@@ -68,11 +65,12 @@ public class AdCategoryController {
             model.addAttribute("listCategories", categories);
             model.addAttribute("sortField", sortField);
             model.addAttribute("sortDir", sortDir);
+            model.addAttribute("keySearch", keySearch);
+
+            return "admin/list-category";
         } catch (Exception e){
             return "404";
         }
-
-        return "admin/list-category";
     }
 
     @GetMapping("/admin/category-create")
@@ -86,8 +84,8 @@ public class AdCategoryController {
         }
 
         try {
-            String email = loggerUser.getEmail();
-            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
+            String username = loggerUser.getUsername();
+            UserDto user = UserMapper.toUserDto(mUserService.getByUsername(username));
 
             CategoryDto category = new CategoryDto();
 
@@ -136,8 +134,8 @@ public class AdCategoryController {
         }
 
         try {
-            String email = loggerUser.getEmail();
-            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
+            String username = loggerUser.getUsername();
+            UserDto user = UserMapper.toUserDto(mUserService.getByUsername(username));
 
             CategoryDto category = CategoryMapper.toCategoryDto(categoryService.findById(id));
 
@@ -196,7 +194,7 @@ public class AdCategoryController {
             categoryService.delete(foundCategory.toCategory(), username);
 
             redirectAttributes.addFlashAttribute(MESSAGE, "Đã xóa.");
-            return "redirect:/admin/categories?page=1&sortField=id&sortDir=asc";
+            return "redirect:/admin/categories?page=1&sortField=id&sortDir=des";
         } catch (Exception e){
             return "404";
         }

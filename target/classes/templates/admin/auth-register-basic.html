@@ -44,6 +44,8 @@
               <h4 class="mb-2">Đăng ký ngay 🚀</h4>
               <p class="mb-4">Cùng nhau chia sẻ thời gian quản lý!</p>
 
+              <p class="mb-4" style="color:red;" th:if="${message != null}"><strong>[[${message}]]</strong></p>
+
               <form id="formAuthentication" class="mb-3" th:action="@{/process-register}" method="POST"
                     th:object="${user}">
                 <div class="mb-3">
@@ -66,6 +68,23 @@
                       th:field="*{password}" minlength="6"
                       placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
                       aria-describedby="password"
+                    />
+                    <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                  </div>
+                </div>
+                <div class="mb-3 form-password-toggle">
+                  <label class="form-label" for="confirmPassword">Nhập lại mật khẩu</label>
+                  <div class="input-group input-group-merge">
+                    <input
+                            required
+                            type="password"
+                            id="confirmPassword"
+                            class="form-control"
+                            name="confirmPassword"
+                            th:field="*{password}" minlength="6"
+                            placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                            aria-describedby="password"
+                            oninput="checkPasswordMatch(this)"
                     />
                     <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                   </div>
@@ -106,5 +125,14 @@
     <!-- / Content -->
 
     <div th:replace="a-fragment :: coreScript" th:remove="tag"></div>
+  <script type="text/javascript">
+    function checkPasswordMatch(confirmPassword){
+      if(confirmPassword.value != $("#password").val()){
+        confirmPassword.setCustomValidity("Mật khẩu không đúng.");
+      } else {
+        confirmPassword.setCustomValidity("");
+      }
+    }
+  </script>
   </body>
 </html>

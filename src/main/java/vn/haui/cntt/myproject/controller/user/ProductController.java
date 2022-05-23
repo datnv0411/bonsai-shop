@@ -18,6 +18,7 @@ import vn.haui.cntt.myproject.service.*;
 import vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,8 +31,6 @@ public class ProductController {
     private final CategoryService categoryService;
     @Autowired
     private final ProductImageService productImageService;
-    @Autowired
-    private final ProductCategoryService productCategoryService;
     @Autowired
     private final ProductCommentService productCommentService;
     @Autowired
@@ -120,9 +119,8 @@ public class ProductController {
         try {
             ProductDto product = ProductMapper.toProductDto(productService.findById(productId));
 
-            Long categoryId = productCategoryService.findCategoryByProductId(productId).getCategory().getId();
-
-            List<ProductDto> list = productService.findByCategoryId(categoryId).stream().map(ProductMapper::toProductDto).collect(Collectors.toList());
+            List<ProductDto> list = productService.findByCategoryId(product.getCategory().getId())
+                    .stream().map(ProductMapper::toProductDto).collect(Collectors.toList());
 
             List<ProductCommentDto> productComments = productCommentService.findAll(productId).stream().map(ProductCommentMapper::toProductCommentDto).collect(Collectors.toList());
 
@@ -131,8 +129,8 @@ public class ProductController {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if(authentication != null && !(authentication instanceof AnonymousAuthenticationToken)){
-                String email = loggedUser.getEmail();
-                UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
+                String username = loggedUser.getUsername();
+                UserDto user = UserMapper.toUserDto(mUserService.getByUsername(username));
 
                 boolean isBought = orderService.isBought(user.getId(), productId, "Đã_giao");
 
@@ -163,8 +161,8 @@ public class ProductController {
         }
 
         try {
-            String email = loggedUser.getEmail();
-            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
+            String username = loggedUser.getUsername();
+            UserDto user = UserMapper.toUserDto(mUserService.getByUsername(username));
 
             ProductDto product = ProductMapper.toProductDto(productService.findById(productId));
 

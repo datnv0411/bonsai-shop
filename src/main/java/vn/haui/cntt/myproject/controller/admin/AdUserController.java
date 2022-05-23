@@ -24,14 +24,16 @@ import vn.haui.cntt.myproject.service.impl.CustomUserDetailImpl;
 import vn.haui.cntt.myproject.service.impl.ImageServiceImpl;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
 public class AdUserController {
     private static final String LOGIN = "admin/auth-login-basic";
     private static final String MESSAGE = "message";
-    private static final String RETURN_URL = "redirect:/admin/users?page=1&sortField=id&sortDir=asc";
+    private static final String RETURN_URL = "redirect:/admin/users?page=1&sortField=id&sortDir=des&keySearch=";
 
     @Autowired
     private final UserService mUserService;
@@ -39,40 +41,6 @@ public class AdUserController {
     private final ImageServiceImpl imageService;
     @Autowired
     private final RoleService roleService;
-
-    @GetMapping("/admin/users")
-    public String viewListUsers(@AuthenticationPrincipal CustomUserDetailImpl loggedUser,
-                                Model model, @Param("page") int page,
-                                @Param("sortField") String sortField, @Param("sortDir") String sortDir) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return LOGIN;
-        }
-
-        try {
-            String email = loggedUser.getEmail();
-            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
-
-            String pageStr = String.valueOf(page);
-            Page<UserDto> pages = mUserService.listAll(pageStr, sortField, sortDir).map(UserMapper::toUserDto);
-            long totalItems = pages.getTotalElements();
-            int totalPages = pages.getTotalPages();
-            List<UserDto> list = pages.getContent();
-
-            model.addAttribute("user", user);
-            model.addAttribute("page", page);
-            model.addAttribute("totalItems", totalItems);
-            model.addAttribute("totalPages", totalPages);
-            model.addAttribute("listUsers", list);
-            model.addAttribute("sortField", sortField);
-            model.addAttribute("sortDir", sortDir);
-
-            return "admin/list-user";
-        } catch (Exception e){
-            return "404";
-        }
-    }
 
     @GetMapping("/admin/create-user")
     public String createUser(RedirectAttributes redirectAttributes,
@@ -85,8 +53,8 @@ public class AdUserController {
         }
 
         try {
-            String email = loggerUser.getEmail();
-            UserDto loggedUser = UserMapper.toUserDto(mUserService.getByEmail(email));
+            String username = loggerUser.getUsername();
+            UserDto loggedUser = UserMapper.toUserDto(mUserService.getByUsername(username));
 
             UserDto user = new UserDto();
             RoleDto role = new RoleDto();
@@ -114,23 +82,31 @@ public class AdUserController {
         }
 
         try {
-        RoleDto foundRole = RoleMapper.toRoleDto(roleService.findByName(role.getName()));
-        mUserService.encodePassword(user.toUser());
-        mUserService.save(user.toUser(), foundRole.toRole(), loggerUser.getUsername());
+            List<UserDto> checkUser = mUserService.checkExistUser(user.getUsername(), user.getEmail(), user.getCellphone()).stream().map(UserMapper::toUserDto).collect(Collectors.toList());
+            if (checkUser.size() > 0){
+                redirectAttributes.addFlashAttribute(MESSAGE, "Người dùng đã tồn tại.");
+                return RETURN_URL;
+            }
 
-        if(!multipartFile.isEmpty()){
-            String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-            user.setAvatar(fileName);
-        } else {
-            user.setAvatar("avatar-default.png");
-        }
-        String uploadDir = "user/" + user.getId();
-        imageService.uploadFile(uploadDir, multipartFile, user.getAvatar());
-        mUserService.saveUser(user.toUser());
+            UserDto newUser = UserMapper.toUserDto(mUserService.saveUser(user.toUser()));
 
-        redirectAttributes.addFlashAttribute(MESSAGE, "Thông tin người dùng đã được cập nhật.");
+            RoleDto foundRole = RoleMapper.toRoleDto(roleService.findByName(role.getName()));
 
-        return RETURN_URL;
+            if(!multipartFile.isEmpty()){
+                String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+                newUser.setAvatar(fileName);
+            } else {
+                newUser.setAvatar("avatar-default.png");
+            }
+            String uploadDir = "user/" + newUser.getId();
+            imageService.uploadFile(uploadDir, multipartFile, newUser.getAvatar());
+
+            mUserService.encodePassword(newUser.toUser());
+            mUserService.save(newUser.toUser(), foundRole.toRole(), loggerUser.getUsername());
+
+            redirectAttributes.addFlashAttribute(MESSAGE, "Đã thêm.");
+
+            return RETURN_URL;
         } catch (Exception e){
             return "404";
         }
@@ -147,8 +123,8 @@ public class AdUserController {
         }
 
         try {
-            String email = loggerUser.getEmail();
-            UserDto loggedUser = UserMapper.toUserDto(mUserService.getByEmail(email));
+            String username = loggerUser.getUsername();
+            UserDto loggedUser = UserMapper.toUserDto(mUserService.getByUsername(username));
 
             UserDto foundUser = UserMapper.toUserDto(mUserService.findById(id));
             RoleDto role = RoleMapper.toRoleDto(roleService.findByUserId(id));
@@ -177,6 +153,12 @@ public class AdUserController {
         }
 
         try {
+            List<UserDto> checkUser = mUserService.checkExistUser(user.getUsername(), user.getEmail(), user.getCellphone()).stream().map(UserMapper::toUserDto).collect(Collectors.toList());
+            if (checkUser.size() > 1){
+                redirectAttributes.addFlashAttribute(MESSAGE, "Thông tin người dùng đã tồn tại.");
+                return RETURN_URL;
+            }
+
             UserDto foundUser = UserMapper.toUserDto(mUserService.findById(id));
             RoleDto foundRole = RoleMapper.toRoleDto(roleService.findByName(role.getName()));
             user.addRole(foundRole.toRole());
@@ -191,11 +173,7 @@ public class AdUserController {
                 user.setAvatar(foundUser.getAvatar());
             }
 
-            if (user.getPassword() == null || user.getPassword().equals("")){
-                mUserService.updateAccountWithoutPassword(user.toUser(), loggerUser.getUsername());
-            } else {
-                mUserService.updateAccount(user.toUser(), loggerUser.getUsername());
-            }
+            mUserService.updateAccountWithoutPassword(user.toUser(), loggerUser.getUsername());
 
             redirectAttributes.addFlashAttribute(MESSAGE, "Thông tin người dùng đã được cập nhật.");
 
@@ -224,6 +202,42 @@ public class AdUserController {
             redirectAttributes.addFlashAttribute(MESSAGE, "Đã xóa.");
 
             return RETURN_URL;
+        } catch (Exception e){
+            return "404";
+        }
+    }
+
+    @GetMapping("/admin/users")
+    public String searchUser(@AuthenticationPrincipal CustomUserDetailImpl loggedUser,
+                             Model model, @Param("page") int page,
+                             @Param("sortField") String sortField, @Param("sortDir") String sortDir,
+                             @Param(value = "keySearch") String keySearch){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
+            return LOGIN;
+        }
+
+        try {
+            String username = loggedUser.getUsername();
+            UserDto user = UserMapper.toUserDto(mUserService.getByUsername(username));
+
+            String pageStr = String.valueOf(page);
+            Page<UserDto> pages = mUserService.findUser(pageStr, sortField, sortDir, keySearch).map(UserMapper::toUserDto);
+            long totalItems = pages.getTotalElements();
+            int totalPages = pages.getTotalPages();
+            List<UserDto> list = pages.getContent();
+
+            model.addAttribute("user", user);
+            model.addAttribute("keySearch", keySearch);
+            model.addAttribute("page", page);
+            model.addAttribute("totalItems", totalItems);
+            model.addAttribute("totalPages", totalPages);
+            model.addAttribute("listUsers", list);
+            model.addAttribute("sortField", sortField);
+            model.addAttribute("sortDir", sortDir);
+
+            return "admin/list-user";
         } catch (Exception e){
             return "404";
         }

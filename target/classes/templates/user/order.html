@@ -35,10 +35,8 @@
                                     <th>Người nhận</th>
                                     <th>Số điện thoại</th>
                                     <th>Địa chỉ</th>
-                                    <th>Voucher</th>
                                     <th>Tổng tiền</th>
-                                    <th>TTGH</th>
-                                    <th>TT thanh toán</th>
+                                    <th>Trạng thái đơn</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -55,7 +53,7 @@
                                     </td>
                                     <td>
                                         <p th:title="${item.deliveryAddress.specificAddress}+', '+${item.deliveryAddress.town}+', '+${item.deliveryAddress.district}+', '+${item.deliveryAddress.province}"
-                                           style="display: block;width: 100px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">
+                                           >
                                             <span th:text="${item.deliveryAddress.specificAddress}"></span>
                                             <span>, </span>
                                             <span th:text="${item.deliveryAddress.town}"></span>
@@ -64,17 +62,12 @@
                                             <span>, </span>
                                             <span th:text="${item.deliveryAddress.province}"></span>
                                         </p>
-                                    <td>
-                                        <p th:text="${item.voucher == null} ? 'Trống' : ${item.voucher.codeVoucher}"></p>
                                     </td>
                                     <td th:each="po : ${item.paymentOrders}">
                                         <p><span th:text="${po.totalPaid}"></span><span> VND</span></p>
                                     </td>
                                     <td>
                                         <p class="total-pr" th:text="${item.orderStatus}"></p>
-                                    </td>
-                                    <td th:each="po : ${item.paymentOrders}">
-                                        <p class="total-pr" th:text="${po.status}"></p>
                                     </td>
                                     <td>
                                         <a class="btn hvr-hover" style="color:white;"

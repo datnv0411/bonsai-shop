@@ -42,7 +42,7 @@ public class AdVoucherController {
 
     @GetMapping("/admin/vouchers")
     public String viewListVoucher(@AuthenticationPrincipal CustomUserDetailImpl loggedUser,
-                                     Model model, @Param("page") int page,
+                                     Model model, @Param("page") int page, @Param(value = "keySearch") String keySearch,
                                      @Param("sortField") String sortField, @Param("sortDir") String sortDir){
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -52,11 +52,11 @@ public class AdVoucherController {
         }
 
         try {
-            String email = loggedUser.getEmail();
-            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
+            String username = loggedUser.getUsername();
+            UserDto user = UserMapper.toUserDto(mUserService.getByUsername(username));
 
             String pageStr = String.valueOf(page);
-            Page<VoucherDto> pages = voucherService.listAll(pageStr, sortField, sortDir).map(VoucherMapper::toVoucherDto);
+            Page<VoucherDto> pages = voucherService.listAll(pageStr, sortField, sortDir, keySearch).map(VoucherMapper::toVoucherDto);
             long totalItems = pages.getTotalElements();
             int totalPages = pages.getTotalPages();
             List<VoucherDto> vouchers = pages.getContent();
@@ -68,6 +68,7 @@ public class AdVoucherController {
             model.addAttribute("listVouchers", vouchers);
             model.addAttribute("sortField", sortField);
             model.addAttribute("sortDir", sortDir);
+            model.addAttribute("keySearch", keySearch);
 
             return "admin/list-voucher";
         } catch (Exception e){
@@ -86,8 +87,8 @@ public class AdVoucherController {
         }
 
         try {
-            String email = loggerUser.getEmail();
-            UserDto loggedUser = UserMapper.toUserDto(mUserService.getByEmail(email));
+            String username = loggerUser.getUsername();
+            UserDto loggedUser = UserMapper.toUserDto(mUserService.getByUsername(username));
 
             VoucherDto voucher = new VoucherDto();
 
@@ -150,8 +151,8 @@ public class AdVoucherController {
         }
 
         try {
-            String email = loggerUser.getEmail();
-            UserDto loggedUser = UserMapper.toUserDto(mUserService.getByEmail(email));
+            String username = loggerUser.getUsername();
+            UserDto loggedUser = UserMapper.toUserDto(mUserService.getByUsername(username));
 
             VoucherDto voucher = VoucherMapper.toVoucherDto(voucherService.findByIdAndDeletedFlag(id));
 

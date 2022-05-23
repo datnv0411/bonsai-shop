@@ -45,8 +45,6 @@ public class CartServiceImpl implements CartService {
             cart.setCreatedDate(LocalDateTime.now());
             cart.setCreatedBy(user.getUsername());
         }
-        product.setQuantity(product.getQuantity() - quantity);
-        productRepository.save(product);
         cartRepository.save(cart);
 
         return addedQuantity;
@@ -55,17 +53,11 @@ public class CartServiceImpl implements CartService {
     public long updateQuantity(Integer quantity, long productId, User user){
         cartRepository.updateQuantity(quantity, productId, user.getId(), user.getUsername(), LocalDateTime.now());
         Product product = productRepository.findById(productId).get();
-        product.setQuantity(product.getQuantity() - quantity);
-        productRepository.save(product);
         return product.getPriceSale() * quantity;
     }
 
     public void removeProduct(Long productId, User user){
         Cart cart = cartRepository.findByUserIdAndProductId(user.getId(), productId);
-        Integer qty = cart.getQuantity();
-        Product product = productRepository.findById(productId).get();
-        product.setQuantity(product.getQuantity() + qty);
-        productRepository.save(product);
         cartRepository.delete(cart);
     }
 
@@ -78,5 +70,10 @@ public class CartServiceImpl implements CartService {
     public Integer countCart(User user) {
         List<Cart> carts = cartRepository.findByUser(user);
         return carts.size();
+    }
+
+    @Override
+    public void removeProduct() {
+        cartRepository.deleteAll();
     }
 }

@@ -10,7 +10,7 @@ public interface VoucherService {
 
     Voucher findByVoucherCode(String voucherCode);
 
-    Page<Voucher> listAll(String pageStr, String sortField, String sortDir);
+    Page<Voucher> listAll(String pageStr, String sortField, String sortDir, String keySearch);
 
     void save(Voucher voucher);
 

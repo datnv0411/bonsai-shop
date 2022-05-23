@@ -99,7 +99,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                     .permitAll()
                     .loginPage("/login")
-                    .usernameParameter("email")
+                    .usernameParameter("username")
                     .passwordParameter("psw")
                     .defaultSuccessUrl("/home")
                 .successHandler(new AuthenticationSuccessHandler() {

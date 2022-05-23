@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import vn.haui.cntt.myproject.entity.Category;
 import vn.haui.cntt.myproject.repository.CategoryRepository;
 import vn.haui.cntt.myproject.service.CategoryService;
+import vn.haui.cntt.myproject.util.StandardizeStringUtil;
+import vn.haui.cntt.myproject.util.VNCharacterUtil;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,7 +36,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Page<Category> listAll(String pageNumber, String sortField, String sortDir) {
+    public Page<Category> listAll(String pageNumber, String sortField, String sortDir, String keySearch) {
         if (pageNumber==null || !pageNumber.chars().allMatch(Character::isDigit) || pageNumber.equals("")) pageNumber="1";
         if (sortField==null || sortField.equals("")) sortField="id";
         if (sortDir == null || sortDir.equals("")) sortDir="des";
@@ -43,9 +45,13 @@ public class CategoryServiceImpl implements CategoryService {
 
         int pageNumberInt = Integer.parseInt(pageNumber);
 
-        Pageable pageable = PageRequest.of(pageNumberInt - 1,9, sort);
+        Pageable pageable = PageRequest.of(pageNumberInt - 1,5, sort);
 
-        return categoryRepository.findAllBYDeletedFlag(0, pageable);
+        if(keySearch==null||keySearch.equals("")){
+            return categoryRepository.findAllBYDeletedFlag(0, pageable);
+        } else {
+            return categoryRepository.findCategory(keySearch, pageable);
+        }
     }
 
     @Override

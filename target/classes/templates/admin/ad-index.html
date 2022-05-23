@@ -40,7 +40,7 @@
 
                 <div class="container-xxl flex-grow-1 container-p-y">
                     <div class="row">
-                        <div class="col-lg-8 mb-4 order-0">
+                        <div class="col-lg-12 mb-4 order-0">
                             <div class="card">
                                 <div class="d-flex align-items-end row">
                                     <div class="col-sm-7">
@@ -49,6 +49,7 @@
                                             <p class="mb-4">
                                                 Chúc bạn có một ngày mới tốt lành, may mắn ~
                                             </p>
+                                            <a th:href="@{/home}" class="btn btn-primary">Chuyển sang trang bán hàng</a>
                                         </div>
                                     </div>
                                     <div class="col-sm-5 text-center text-sm-left">
@@ -66,10 +67,37 @@
                             </div>
                         </div>
                         <!-- Total Revenue -->
-                        <div class="col-12 col-lg-8 order-2 order-md-3 order-lg-2 mb-4">
+                        <div class="col-12 col-lg-12 order-2 order-md-3 order-lg-2 mb-4">
                             <div class="card">
                                 <div class="row row-bordered g-0">
-                                    <div class="col-md-8">
+                                    <form method="post" >
+                                        <div class="row">
+                                            <div class="mb-3 col-md-4" style="margin-left:10px;">
+                                                <label for="from" class="form-label">Từ</label>
+                                                <input
+                                                       class="form-control"
+                                                       type="date"
+                                                       id="from"
+                                                       name="firstName"
+                                                       required
+                                                />
+                                            </div>
+                                            <div class="mb-3 col-md-4">
+                                                <label for="to" class="form-label">Đến</label>
+                                                <input
+                                                       class="form-control"
+                                                       type="date"
+                                                       id="to"
+                                                       name="to"
+                                                       required
+                                                />
+                                            </div>
+                                            <div class="mb-3 col-md-2" style="margin-top:30px;">
+                                                <button id="loc" type="submit" class="btn btn-primary me-2">Lọc</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <div class="col-md-8" style="margin-top:10px;">
                                         <h5 class="card-header m-0 me-2 pb-3">Doanh thu theo tháng</h5>
                                         <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
                                     </div>
@@ -81,7 +109,7 @@
                             </div>
                         </div>
                         <!--/ Total Revenue -->
-                        <div class="col-12 col-lg-8 order-2 order-md-3 order-lg-2 mb-4">
+                        <div class="col-12 col-lg-12 order-2 order-md-3 order-lg-2 mb-4">
                             <div class="card">
                                 <div class="row row-bordered g-0">
                                     <div class="col-md-8">
@@ -89,15 +117,44 @@
                                         <canvas id="myChart1" style="width:100%;max-width:600px"></canvas>
                                     </div>
                                     <div class="col-md-4">
-                                        <h6 class="card-header m-0 me-2 pb-3">Tổng số đơn hàng: <span th:text="${orders}"></span></h6>
-                                        <h6 class="card-header m-0 me-2 pb-3">Số đơn đang chờ: <span th:text="${orderCho}"></span></h6>
-                                        <h6 class="card-header m-0 me-2 pb-3">Số đơn đang giao: <span th:text="${orderDangGiao}"></span></h6>
-                                        <h6 class="card-header m-0 me-2 pb-3">Số đơn đã giao: <span th:text="${orderDaGiao}"></span></h6>
-                                        <h6 class="card-header m-0 me-2 pb-3">Số đơn bị hủy: <span th:text="${orderDaHuy}"></span></h6>
+                                        <h6 class="card-header m-0 me-2 pb-3">Tổng số đơn hàng: <span id="ord" th:text="${orders}"></span></h6>
+                                        <h6 class="card-header m-0 me-2 pb-3">Số đơn đang chờ: <span style="color:red;" id="ordCho" th:text="${orderCho}"></span></h6>
+                                        <h6 class="card-header m-0 me-2 pb-3">Số đơn đang giao: <span style="color:orange;" id="ordDang" th:text="${orderDangGiao}"></span></h6>
+                                        <h6 class="card-header m-0 me-2 pb-3">Số đơn đã giao: <span style="color:green;" id="ordDa" th:text="${orderDaGiao}"></span></h6>
+                                        <h6 class="card-header m-0 me-2 pb-3">Số đơn bị hủy: <span style="color:blue;" id="ordHuy" th:text="${orderDaHuy}"></span></h6>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4 col-xl-4 order-0 mb-4">
+                            <div class="card h-100">
+                                <div style="margin-bottom:25px;" class="card-header d-flex align-items-center justify-content-between pb-0">
+                                    <div class="card-title mb-0">
+                                        <h5 class="m-0 me-2"><strong>SẢN PHẨM BÁN CHẠY NHẤT</strong></h5>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="p-0 m-0">
+                                        <li class="d-flex mb-4 pb-1">
+                                            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                                                <div class="me-2">
+                                                    <h6 id="sale-product" class="mb-0">
+                                                        <span th:each="sp : ${saleProduct}">
+                                                            <span th:text="${sp}"></span>
+                                                            <br><br><br><br>
+                                                        </span>
+                                                    </h6>
+
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!--/ Order Statistics -->
                     </div>
                 </div>
                 <!-- / Content -->
@@ -153,59 +210,14 @@
 
 <div th:replace="a-fragment :: coreScript" th:remove="tag"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script th:src="@{/js/report.js}"></script>
 <script language="JavaScript" type="text/javascript">
-      var xValues = ["Jan 2022", "Feb 2022", "Mar 2022", "Apr 2022", "May 2022", "Jun 2022", "Jul 2022", "Aug 2022", "Sep 2022", "Oct 2022", "Nov 2022", "Dec 2022"];
-var yValues = [[${paymentOrder}]];
-var barColors = ["blue", "red", "yellow", "green","brown","orange", "violet", "cornsilk", "carrot", "bisque", "limegreen", "antiquewhite"];
-console.log(yValues);
-
-new Chart("myChart", {
-  type: "bar",
-  data: {
-    labels: xValues,
-    datasets: [{
-      backgroundColor: barColors,
-      data: yValues
-    }]
-  },
-  options: {
-    legend: {display: false},
-    title: {
-      display: true,
-      text: "TỔNG SỐ TIỀN ĐÃ THANH TOÁN NĂM 2022"
-    }
-  }
-});
-
-var xValues1 = ["Chờ", "Đang giao", "Đã giao", "Bị hủy"];
+const contextPath = "[[@{/}]]";
+const paymentOrder = [[${paymentOrder}]];
 var v1 = [[${orderCho}]];
 var v2 = [[${orderDangGiao}]];
 var v3 = [[${orderDaGiao}]];
 var v4 = [[${orderDaHuy}]];
-var yValues1 = [v1, v2, v3, v4];
-var barColors1 = [
-  "red",
-  "orange",
-  "green",
-  "blue"
-];
-
-new Chart("myChart1", {
-  type: "pie",
-  data: {
-    labels: xValues1,
-    datasets: [{
-      backgroundColor: barColors1,
-      data: yValues1
-    }]
-  },
-  options: {
-    title: {
-      display: true,
-      text: "ĐƠN HÀNG"
-    }
-  }
-});
 
 </script>
 </body>

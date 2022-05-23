@@ -16,7 +16,7 @@ public interface PaymentOrderRepository extends JpaRepository<PaymentOrder, Long
 
     @Query(value = "select * from payment_order po inner join ordered o on po.order_id = o.id " +
             "where po.status = :status and po.deleted_flag = :deletedFlag " +
-            "and po.created_date >= :startTime and po.created_date <= :endTime " +
+            "and o.created_date >= :startTime and o.created_date <= :endTime " +
             "and o.order_status = 'Đã_giao'", nativeQuery = true)
     List<PaymentOrder> findByStatusAndDeletedFlag(@Param(value = "status") String status,
                                                   @Param(value = "deletedFlag") boolean b,

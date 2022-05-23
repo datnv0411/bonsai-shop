@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import vn.haui.cntt.myproject.dto.UserDto;
 import vn.haui.cntt.myproject.entity.Role;
 import vn.haui.cntt.myproject.entity.User;
 import vn.haui.cntt.myproject.repository.RoleRepository;
@@ -58,8 +59,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean checkRoleAdmin(String email) {
-        User user = mUserRepository.findByEmailAndRoleAdmin(email);
+    public Boolean checkRoleAdmin(String username) {
+        User user = mUserRepository.findByUsernameAndRoleAdmin(username);
         if(user == null){
             return false;
         } else {
@@ -98,13 +99,15 @@ public class UserServiceImpl implements UserService {
         user.setCreatedDate(LocalDateTime.now());
         user.setCreatedBy(user.getUsername());
         user.setDeletedFlag(false);
+        mUserRepository.save(user);
     }
 
     @Override
     public User updateAccount(User user, String username) {
         User newUser = mUserRepository.findByIdAndDeletedFlag(user.getId(), false);
-        newUser.setUsername(user.getUsername());
+
         newUser.setFirstName(user.getFirstName());
+        newUser.setEmail(user.getEmail());
         newUser.setLastName(user.getLastName());
         newUser.setCellphone(user.getCellphone());
         newUser.setGender(user.getGender());
@@ -119,20 +122,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateAccountWithoutPassword(User user, String username) {
         User newUser = mUserRepository.findByIdAndDeletedFlag(user.getId(), false);
-        newUser.setUsername(user.getUsername());
-        newUser.setFirstName(user.getFirstName());
-        newUser.setLastName(user.getLastName());
-        newUser.setCellphone(user.getCellphone());
-        newUser.setGender(user.getGender());
-        newUser.setAvatar(user.getAvatar());
-        newUser.setUpdatedBy(username);
-        newUser.setUpdatedDate(LocalDateTime.now());
-        return mUserRepository.save(newUser);
+        user.setUsername(newUser.getUsername());
+        user.setResetPasswordToken(newUser.getResetPasswordToken());
+        user.setAddress(newUser.getAddress());
+        user.setDeletedFlag(newUser.getDeletedFlag());
+        user.setCreatedBy(newUser.getCreatedBy());
+        user.setCreatedDate(newUser.getCreatedDate());
+        user.setUpdatedBy(username);
+        user.setUpdatedDate(LocalDateTime.now());
+        user.setPassword(newUser.getPassword());
+        return mUserRepository.save(user);
     }
 
     @Override
-    public User getByEmail(String email) {
-        return mUserRepository.findByEmail(email);
+    public User getByUsername(String username) {
+        return mUserRepository.findByUsername(username);
     }
 
     @Override
@@ -165,17 +169,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void save(User user, Role foundRole, String username) {
+    public User save(User user, Role foundRole, String username) {
         user.addRole(foundRole);
         user.setDeletedFlag(false);
         user.setCreatedDate(LocalDateTime.now());
         user.setCreatedBy(username);
-        mUserRepository.save(user);
+        encodePassword(user);
+        User found = mUserRepository.save(user);
+        return found;
     }
 
     @Override
-    public void saveUser(User user) {
-        mUserRepository.save(user);
+    public User saveUser(User user) {
+        return mUserRepository.save(user);
     }
 
     @Override
@@ -209,9 +215,40 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> checkExistUser(String username, String email, String cellphone) {
+        return mUserRepository.checkExistUser(username, email, cellphone);
+    }
+
+    @Override
+    public Page<User> findUser(String pageStr, String sortField, String sortDir, String keySearch) {
+        if (pageStr==null || !pageStr.chars().allMatch(Character::isDigit) || pageStr.equals("")) pageStr="1";
+        if (sortField==null || sortField.equals("")) sortField="id";
+        if (sortDir == null || sortDir.equals("")) sortDir="asc";
+
+        Sort sort = Sort.by(sortField);
+        sort = sortDir.equals("des") ? sort.descending() : sort.ascending();
+
+        int pageNumberInt = Integer.parseInt(pageStr);
+
+        Pageable pageable = PageRequest.of(pageNumberInt - 1,5, sort);
+        if(keySearch==null||keySearch.equals("")){
+            return mUserRepository.findAllUser(0, pageable);
+        } else {
+            return mUserRepository.findUser(keySearch, pageable);
+        }
+    }
+
+    @Override
+    public boolean decodePass(String password, User user) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        return encoder.matches(password, user.getPassword());
+    }
+
+    @Override
     public void encodePassword(User user) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         String encodedPassword = encoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
+        mUserRepository.save(user);
     }
 }

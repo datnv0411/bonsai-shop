@@ -65,37 +65,41 @@
                         <h5 th:if="${foundProduct.price == foundProduct.priceSale}"><span th:text="${foundProduct.price}"></span><span> VND</span></h5>
                         <h5 th:unless="${foundProduct.price == foundProduct.priceSale}"> <del><span th:text="${foundProduct.price}"></span><span> VND</span></del>
                             <h5><span th:text="${foundProduct.priceSale}"></span><span> VND</span></h5></h5>
-                        <p class="available-stock"><span>Có sẵn </span><span th:text="${foundProduct.quantity}">Quantity</span><span> sản phẩm </span></a></p>
+                        <p class="available-stock" th:if="${foundProduct.quantity > 0}"><span>Có sẵn </span><span th:text="${foundProduct.quantity}">Quantity</span><span> sản phẩm </span></p>
+                        <p class="available-stock" th:unless="${foundProduct.quantity > 0}"><span>Hết hàng</span></p>
 						<h4>Mô tả sản phẩm:</h4>
 						<p th:text="${foundProduct.description}">Description</p>
 						<ul>
 							<li>
 								<div class="form-group quantity-box">
-                                    <p class="control-label" th:text="${foundProduct.status}">Status</p>
-									<label class="control-label">Số lượng</label>
+                                    <h4>Số lượng:</h4>
                                     <div th:replace="quantity_control :: quantity_control(1, ${foundProduct.id}, ${foundProduct.quantity})" th:remove="tag"></div>
 								</div>
 							</li>
 						</ul>
                         <p id="msgAddToCart"></p>
 						<div class="price-box-bar">
-							<div class="cart-and-bay-btn">
+							<div class="cart-and-bay-btn" th:if="${foundProduct.quantity > 0}">
                                 <button id="addOneToCart" class="btn hvr-hover" data-fancybox-close=""
                                         style="padding: 10px 20px; font-weight: 700; color: #ffffff; border: none;">Mua hàng</button>
 								<button id="addToCart" class="btn hvr-hover" data-fancybox-close=""
                                 style="padding: 10px 20px; font-weight: 700; color: #ffffff; border: none;">Thêm vào giỏ hàng</button>
 							</div>
+                            <div class="cart-and-bay-btn" th:unless="${foundProduct.quantity > 0}">
+                                <button disabled id="outOfStock" class="btn hvr-hover" data-fancybox-close=""
+                                        style="padding: 10px 20px; font-weight: 700; color: #ffffff; border: none;">Hết hàng</button>
+                            </div>
 						</div>
 
-						<div class="add-to-btn">
-							<div class="share-bar">
-								<a class="btn hvr-hover" href="#"><i class="fab fa-facebook" aria-hidden="true"></i></a>
-								<a class="btn hvr-hover" href="#"><i class="fab fa-google-plus" aria-hidden="true"></i></a>
-								<a class="btn hvr-hover" href="#"><i class="fab fa-twitter" aria-hidden="true"></i></a>
-								<a class="btn hvr-hover" href="#"><i class="fab fa-pinterest-p" aria-hidden="true"></i></a>
-								<a class="btn hvr-hover" href="#"><i class="fab fa-whatsapp" aria-hidden="true"></i></a>
-							</div>
-						</div>
+<!--						<div class="add-to-btn">-->
+<!--							<div class="share-bar">-->
+<!--								<a class="btn hvr-hover" href="#"><i class="fab fa-facebook" aria-hidden="true"></i></a>-->
+<!--								<a class="btn hvr-hover" href="#"><i class="fab fa-google-plus" aria-hidden="true"></i></a>-->
+<!--								<a class="btn hvr-hover" href="#"><i class="fab fa-twitter" aria-hidden="true"></i></a>-->
+<!--								<a class="btn hvr-hover" href="#"><i class="fab fa-pinterest-p" aria-hidden="true"></i></a>-->
+<!--								<a class="btn hvr-hover" href="#"><i class="fab fa-whatsapp" aria-hidden="true"></i></a>-->
+<!--							</div>-->
+<!--						</div>-->
                     </div>
                 </div>
             </div>
@@ -117,7 +121,7 @@
                                 <p th:text="${c.content}">content</p>
                                 <small class="text-muted">Đăng bởi <span th:text="${c.createdBy}">username</span> vào <span th:text="${c.createdDate}">time</span></small>
                             </div>
-                            <a class="margin-left:20px; color:black;" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{'/product/remove-comment?id=' + ${c.id}}">X</a>
+                            <a style="margin-left:20px;color:black;" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{'/product/remove-comment?id=' + ${c.id}}">X</a>
                             <hr>
                         </div>
                         <div th:if="${#lists.isEmpty(comments)}">

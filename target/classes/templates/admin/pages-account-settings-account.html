@@ -60,7 +60,7 @@
                   </ul>
                   <div class="card mb-4">
                     <h5 class="card-header">Thông tin cá nhân</h5>
-                    <h6 class="card-header" th:if="${message != null}">[[${message}]]</h6>
+                    <h6 class="card-header" style="color:red;" th:if="${message != null}"><strong>[[${message}]]</strong></h6>
                     <!-- Account -->
                     <hr class="my-0" />
                     <div class="card-body">
@@ -69,7 +69,7 @@
                         <div class="d-flex align-items-start align-items-sm-center gap-4">
                           <input type="hidden" th:field="*{id}">
                           <img
-                            th:src="@{'images/user/' + ${user.id} + '/' + ${user.avatar}}"
+                                  th:src="${user.avatar == 'avatar-default.png'} ? @{images/user/0/avatar-default.png} : @{'images/user/' + ${user.id} + '/' + ${user.avatar}}"
                             alt="user-avatar"
                             class="d-block rounded"
                             height="100"
@@ -112,15 +112,15 @@
                               name="email" required
                             />
                           </div>
-                          <div class="mb-3 col-md-6">
-                            <label for="username" class="form-label">Tên người dùng</label>
-                            <input th:field="*{username}"
-                              type="text"
-                              class="form-control"
-                              id="username"
-                              name="username" required
-                            />
-                          </div>
+<!--                          <div class="mb-3 col-md-6">-->
+<!--                            <label for="username" class="form-label">Tên người dùng</label>-->
+<!--                            <input th:field="*{username}"-->
+<!--                              type="text"-->
+<!--                              class="form-control"-->
+<!--                              id="username"-->
+<!--                              name="username" required-->
+<!--                            />-->
+<!--                          </div>-->
                           <div class="mb-3 col-md-6">
                             <label class="form-label" for="cellphone">Số điện thoại</label>
                             <div class="input-group input-group-merge">
@@ -137,11 +137,6 @@
                             <label class="form-label">Giới tính</label>
                             <input type="radio" value="Nam" th:field="*{gender}"  required>Nam</input>
                             <input type="radio" value="Nữ" th:field="*{gender}">Nữ</input>
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label class="form-label">Mật khẩu</label>
-                            <input required type="password" class="form-control" th:field="*{password}"
-                                   placeholder="Để trống nếu như bạn không muốn thay đổi mật khẩu"/>
                           </div>
                         <div class="mt-2">
                           <button type="submit" class="btn btn-primary me-2">Lưu</button>

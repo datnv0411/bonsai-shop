@@ -25,6 +25,6 @@ public class Category extends BaseEntity {
 
     private Long parentId;
 
-    @OneToMany(targetEntity = ProductCategory.class, mappedBy = "category")
-    private Collection<ProductCategory> productCategories;
+    @OneToMany(targetEntity = Product.class, mappedBy = "category")
+    private Collection<Product> products;
 }

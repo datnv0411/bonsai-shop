@@ -64,7 +64,7 @@ public class CustomUserDetailImpl implements UserDetails {
         this.user.setUsername(username);
     }
 
-    public String getEmail(){
-        return user.getEmail();
-    }
+//    public String getEmail(){
+//        return user.getUsername();
+//    }
 }

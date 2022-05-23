@@ -14,8 +14,11 @@ import vn.haui.cntt.myproject.repository.OrderRepository;
 import vn.haui.cntt.myproject.repository.PaymentOrderRepository;
 import vn.haui.cntt.myproject.service.OrderService;
 import vn.haui.cntt.myproject.util.RandomOrderCode;
+import vn.haui.cntt.myproject.util.StandardizeStringUtil;
+import vn.haui.cntt.myproject.util.VNCharacterUtil;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -94,7 +97,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<Order> listAll(String pageNumber, String sortField, String sortDir) {
+    public Page<Order> listAll(String pageNumber, String sortField, String sortDir, String keySearch) {
         if (pageNumber==null || !pageNumber.chars().allMatch(Character::isDigit) || pageNumber.equals("")) pageNumber="1";
         if (sortField==null || sortField.equals("")) sortField="id";
         if (sortDir == null || sortDir.equals("")) sortDir="des";
@@ -106,7 +109,11 @@ public class OrderServiceImpl implements OrderService {
 
         Pageable pageable = PageRequest.of(pageNumberInt - 1,9, sort);
 
-        return orderRepository.findByDeletedFlag(pageable);
+        if(keySearch==null||keySearch.equals("")){
+            return orderRepository.findByDeletedFlag(pageable);
+        } else {
+            return orderRepository.findOrder(keySearch, pageable);
+        }
     }
 
     @Override
@@ -127,5 +134,15 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> findByStatus(OrderStatusEnum status) {
         return orderRepository.findByOrderStatusAndDeletedFlag(status, false);
+    }
+
+    @Override
+    public List<Order> findAllByTime(String startTime, String endTime) {
+        return orderRepository.findAllByTime(startTime, endTime);
+    }
+
+    @Override
+    public List<Order> findByStatusByTime(OrderStatusEnum status, String startTime, String endTime) {
+        return orderRepository.findByStatusAndTime(status.toString(), startTime, endTime);
     }
 }

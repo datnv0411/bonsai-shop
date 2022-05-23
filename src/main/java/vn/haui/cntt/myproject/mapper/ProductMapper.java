@@ -9,7 +9,8 @@ public class ProductMapper {
     public static ProductDto toProductDto(Product product){
         return new ProductDto(product.getId(), product.getNameProduct(), product.getStatus(), product.getProductSearch(),
                 product.getQuantity(), product.getDescription(), product.getPrice(), product.getPriceSale(), product.getOrigin(),
-                product.getProductImages(), product.getProductCategories(), product.getProductComments(), product.getOrderDetails(),
-                product.getDeletedFlag(), product.getCreatedDate(), product.getUpdatedDate(), product.getCreatedBy(), product.getUpdatedBy());
+                product.getProductImages(), product.getCategory(), product.getProductComments(), product.getOrderDetails(),
+                product.getDeletedFlag(), product.getCreatedDate(), product.getUpdatedDate(), product.getCreatedBy(), product.getUpdatedBy(),
+                product.getImportQuantity(), product.getImportPrice(), product.getImportDate(), product.getSupplier());
     }
 }

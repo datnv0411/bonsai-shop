@@ -1,5 +1,27 @@
 
 J
-java:S3740@"/Provide the parametrized type for this generic.(åªÌÉşÿÿÿÿ
+java:S3740J"/Provide the parametrized type for this generic.(åªÌÉşÿÿÿÿ
 q
-java:S4144¸"ZUpdate this method so that its implementation is not identical to "adSignOut" on line 168.(•§ï
+java:S4144ë"ZUpdate this method so that its implementation is not identical to "adSignOut" on line 219.(•§ï
+o
+java:S37764"RRefactor this method to reduce its Cognitive Complexity from 35 to the 15 allowed.(Ê‘¶°8ê´ŠÚ0
+L
+java:S5413¤")Verify that "remove()" is used correctly.( ÈÈÜûÿÿÿÿ8ƒµŠÚ0
+L
+java:S5413¤")Verify that "remove()" is used correctly.( ÈÈÜûÿÿÿÿ8„µŠÚ0
+i
+java:S1128"LRemove this unused import 'org.springframework.data.repository.query.Param'.(©”šô8¤–òÚ0
+p
+java:S1128"SRemove this unused import 'org.springframework.web.bind.annotation.ModelAttribute'.(®ùæé8¤–òÚ0
+r
+java:S1128"PRemove this unused import 'org.springframework.web.bind.annotation.PostMapping'.(äƒà°ùÿÿÿÿ8¤–òÚ0
+c
+java:S1128"ARemove this unused import 'vn.haui.cntt.myproject.util.DateUtil'.(àƒãùÿÿÿÿ8¤–òÚ0
+J
+java:S1128"-Remove this unused import 'java.time.ZoneId'.( Æ½“8¤–òÚ0
+G
+java:S1128!"*Remove this unused import 'java.sql.Date'.(ÙÀ½Ê8¤–òÚ0
+F
+java:S1604©"(Make this anonymous inner class a lambda(öĞ„¯8“µŠÚ0
+Z
+java:S4973¢"<Strings and Boxed types should be compared using "equals()".(ó†ä8•µŠÚ0

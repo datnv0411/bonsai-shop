@@ -54,8 +54,8 @@ public class OrderController {
         }
 
         try {
-            String email = loggedUser.getEmail();
-            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
+            String username = loggedUser.getUsername();
+            UserDto user = UserMapper.toUserDto(mUserService.getByUsername(username));
 
             String pageStr = String.valueOf(page);
             Page<OrderDto> pages = orderService.listAll(pageStr, sortField, sortDir, user.getId()).map(OrderMapper::toOrderDto);
@@ -87,8 +87,10 @@ public class OrderController {
 
         try {
             List<OrderDetailDto> list = orderDetailService.findByOrderId(orderId).stream().map(OrderDetailMapper::toOrderDetailDto).collect(Collectors.toList());
+            OrderDto orderDtoList = OrderMapper.toOrderDto(orderService.findById(orderId));
 
             model.addAttribute("listOrderDetails", list);
+            model.addAttribute("order", orderDtoList);
 
             return "user/order-detail";
         } catch (Exception e){
@@ -105,8 +107,8 @@ public class OrderController {
         }
 
         try {
-            String email = loggedUser.getEmail();
-            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
+            String username = loggedUser.getUsername();
+            UserDto user = UserMapper.toUserDto(mUserService.getByUsername(username));
 
             List<CartDto> carts = cartService.listCart(user.toUser()).stream().map(CartMapper::toCartDto).collect(Collectors.toList());
             List<AddressDto> addresses = addressService.findByUserId(user.getId()).stream().map(AddressMapper::toAddressDto).collect(Collectors.toList());
@@ -131,8 +133,8 @@ public class OrderController {
         }
 
         try {
-            String email = loggedUser.getEmail();
-            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
+            String username = loggedUser.getUsername();
+            UserDto user = UserMapper.toUserDto(mUserService.getByUsername(username));
             orderService.cancelOrder(user.toUser(), orderId);
 
             OrderDto orderDto = OrderMapper.toOrderDto(orderService.findById(orderId));
@@ -166,8 +168,11 @@ public class OrderController {
             return LOGIN;
         }
         try {
-            String email = loggedUser.getEmail();
-            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
+            String username = loggedUser.getUsername();
+            UserDto user = UserMapper.toUserDto(mUserService.getByUsername(username));
+
+            long orderId = Long.parseLong(vnpTxnRef);
+
             paymentService.checkResultPaid(vnpResponseCode, vnpTxnRef , vnpAmount);
             List<CartDto> carts = cartService.listCart(user.toUser()).stream().map(CartMapper::toCartDto).collect(Collectors.toList());
             for (CartDto c : carts
@@ -175,9 +180,16 @@ public class OrderController {
                 cartService.deleteCart(c.toCart());
             }
 
-            long orderId = Long.parseLong(vnpTxnRef);
+            List<OrderDetailDto> orderDetailDtos = orderDetailService.findByOrderId(orderId)
+                    .stream().map(OrderDetailMapper::toOrderDetailDto).collect(Collectors.toList());
+            for (OrderDetailDto odd : orderDetailDtos
+            ) {
+                ProductDto productDto = ProductMapper.toProductDto(productService.findById(odd.getProduct().getId()));
+                productDto.setQuantity(productDto.getQuantity() - odd.getQuantity());
+                productService.save(productDto.toProduct());
+            }
 
-            return "redirect:/order-detail?orderId=" + orderId;
+            return "redirect:/order?page=1&sortField=id&sortDir=des";
         } catch (Exception e){
             return "404";
         }

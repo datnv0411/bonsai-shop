@@ -5,11 +5,15 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
 public final class DateUtil {
+    private static final String DATE_PATTERN = "dd-MM-yyyy";
+    private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DATE_PATTERN, Locale.getDefault());
 
     private DateUtil() {
     }
@@ -93,5 +97,10 @@ public final class DateUtil {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 
         return Optional.of(sdf.format(date));
+    }
+
+    public static String dateSqlToString(java.sql.Date date) {
+        LocalDate localDate = date.toLocalDate();
+        return localDate.format(dateFormatter);
     }
 }

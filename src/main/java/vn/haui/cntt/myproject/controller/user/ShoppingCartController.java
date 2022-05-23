@@ -36,8 +36,8 @@ public class ShoppingCartController {
             return LOGIN;
         }
 
-        String email = loggedUser.getEmail();
-        UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
+        String username = loggedUser.getUsername();
+        UserDto user = UserMapper.toUserDto(mUserService.getByUsername(username));
 
         Integer addedQuantity = cartService.addProductToCart(productId, quantity, user.toUser());
 
@@ -53,8 +53,8 @@ public class ShoppingCartController {
             return LOGIN;
         }
 
-        String email = loggedUser.getEmail();
-        UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
+        String username = loggedUser.getUsername();
+        UserDto user = UserMapper.toUserDto(mUserService.getByUsername(username));
 
         Long subtotal = cartService.updateQuantity(quantity, productId, user.toUser());
 
@@ -70,8 +70,8 @@ public class ShoppingCartController {
         }
 
         try {
-            String email = loggedUser.getEmail();
-            UserDto user = UserMapper.toUserDto(mUserService.getByEmail(email));
+            String username = loggedUser.getUsername();
+            UserDto user = UserMapper.toUserDto(mUserService.getByUsername(username));
 
             Integer count = cartService.countCart(user.toUser());
 

@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import vn.haui.cntt.myproject.entity.Voucher;
 import vn.haui.cntt.myproject.repository.VoucherRepository;
 import vn.haui.cntt.myproject.service.VoucherService;
+import vn.haui.cntt.myproject.util.StandardizeStringUtil;
+import vn.haui.cntt.myproject.util.VNCharacterUtil;
 
 import java.time.LocalDateTime;
 
@@ -51,7 +53,7 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     @Override
-    public Page<Voucher> listAll(String pageNumber, String sortField, String sortDir) {
+    public Page<Voucher> listAll(String pageNumber, String sortField, String sortDir, String keySearch) {
         if (pageNumber==null || !pageNumber.chars().allMatch(Character::isDigit) || pageNumber.equals("")) pageNumber="1";
         if (sortField==null || sortField.equals("")) sortField="id";
         if (sortDir == null || sortDir.equals("")) sortDir="des";
@@ -62,7 +64,11 @@ public class VoucherServiceImpl implements VoucherService {
 
         Pageable pageable = PageRequest.of(pageNumberInt - 1,9, sort);
 
-        return voucherRepository.findAllByDeletedFlag(0, pageable);
+        if(keySearch==null||keySearch.equals("")){
+            return voucherRepository.findAllVoucher(pageable);
+        } else {
+            return voucherRepository.findVoucher(keySearch, pageable);
+        }
     }
 
     @Override
